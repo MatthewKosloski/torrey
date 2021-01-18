@@ -7,7 +7,7 @@ This is the first compiler of the Torrey programming language.
 The parser of this compiler implements the following grammar:
 
 ```
-program       -> expression * ;
+program       -> expression* ;
 
 expression    -> integer
                | unary
