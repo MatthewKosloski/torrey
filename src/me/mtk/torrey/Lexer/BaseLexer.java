@@ -134,20 +134,13 @@ public abstract class BaseLexer
     {
         tokenEndLine = curLine;
         tokenEndCol = curCol;
-        
-        // The token's start and end indices into the input.
-        final int start = tokenIndexStart;
-        final int end = tokenIndexEnd;
 
-        // The start and end indices can be used together to
-        // extract the token's text from the input.
-        String text;
-
-        if (end > input.length())
-            // end of file
-            text = "\0";
-        else
-            text = input.substring(start, end);
+        // The rawText of the token is either the null
+        // character "\0" or a substring of the input 
+        // bounded by [tokenIndexStart, tokenIndexEnd).
+        final String text = tokenIndexEnd > input.length()
+            ? "\0"
+            : input.substring(tokenIndexStart, tokenIndexEnd);
 
         // The line number and column number of the first
         // character of the token.
@@ -159,7 +152,8 @@ public abstract class BaseLexer
         final Position endPos = new Position(tokenEndLine,
             tokenEndCol);
             
-        tokens.add(new Token(type, text, start, end, startPos, endPos));
+        tokens.add(new Token(type, text, tokenIndexStart, tokenIndexEnd, 
+            startPos, endPos));
     }
 
     /**
