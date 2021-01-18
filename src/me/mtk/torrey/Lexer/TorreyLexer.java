@@ -22,6 +22,12 @@ public final class TorreyLexer extends BaseLexer
         super(input);
     }
 
+    /**
+     * Examines the character under the cursor and
+     * routes control flow to the appropriate subroutine
+     * that subsequently produces a token based on a 
+     * pattern match.
+     */
     public void nextToken()
     {
         final char currentChar = nextChar();
@@ -58,16 +64,26 @@ public final class TorreyLexer extends BaseLexer
         }
     }
 
+    /*
+     * Consumes any substring of one or more white space characters.
+     */
     private void consumeWhitespace()
     {
         while (isWhitespace(peek())) nextChar();
     }
 
+    /*
+     * Assumes the previous character was the start of an in-line comment
+     * and consumes any characters up to the newline character.
+     */
     private void consumeComment()
     {
         while (peek() != '\n' && !isEOF()) nextChar();
     }
 
+    /*
+     * Adds an integer token to the collection, matching against [0-9]+.
+     */
     private void consumeInteger()
     {
         while (isDigit(peek())) nextChar();
@@ -75,6 +91,9 @@ public final class TorreyLexer extends BaseLexer
         addToken(TokenType.INTEGER, len);
     }
 
+    /*
+     * Adds an identifier or unidentified token to the collection.
+     */
     private void consumeIdentifier()
     {
         // Consume the identifier.
