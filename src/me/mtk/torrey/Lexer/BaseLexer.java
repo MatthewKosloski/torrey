@@ -93,35 +93,9 @@ public abstract class BaseLexer
         tokenIndexStart++;
         tokenStartCol++;
         curCol++;
-        addOneCharToken(TokenType.EOF);
+        addToken(TokenType.EOF);
 
         return tokens;
-    }
-
-    /**
-     * Adds a token to the collection with the specified
-     * token type. The length of the rawText is assumed to
-     * be 1.
-     * 
-     * @param type The TokenType of the token.
-     */
-    public void addOneCharToken(final TokenType type)
-    {
-        addToken(type, 1);
-    }
-    
-    /**
-     * Adds a token to the collection with the specified
-     * token type and length. The length specifies the string
-     * length of the token's rawText.
-     * 
-     * @param type The TokenType of the token.
-     * @param length The length of the token's rawText.
-     */
-    public void addToken(final TokenType type, final int length)
-    {
-        tokenIndexEnd = tokenIndexStart + length;
-        addToken(type);
     }
 
     /**
@@ -132,6 +106,7 @@ public abstract class BaseLexer
      */
     public void addToken(final TokenType type)
     {
+        tokenIndexEnd = cursor;
         tokenEndLine = curLine;
         tokenEndCol = curCol;
 

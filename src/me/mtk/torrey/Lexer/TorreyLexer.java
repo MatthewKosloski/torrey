@@ -41,13 +41,13 @@ public final class TorreyLexer extends BaseLexer
 
             case ';': consumeComment(); break;
 
-            case '(': addOneCharToken(TokenType.LPAREN); break;
-            case ')': addOneCharToken(TokenType.RPAREN); break;
+            case '(': addToken(TokenType.LPAREN); break;
+            case ')': addToken(TokenType.RPAREN); break;
 
-            case '+': addOneCharToken(TokenType.PLUS); break;
-            case '-': addOneCharToken(TokenType.MINUS); break;
-            case '*': addOneCharToken(TokenType.STAR); break;
-            case '/': addOneCharToken(TokenType.SLASH); break;
+            case '+': addToken(TokenType.PLUS); break;
+            case '-': addToken(TokenType.MINUS); break;
+            case '*': addToken(TokenType.STAR); break;
+            case '/': addToken(TokenType.SLASH); break;
 
             default:
                 if (isDigit(currentChar))
@@ -57,7 +57,7 @@ public final class TorreyLexer extends BaseLexer
                 else
                 {
                     hasLexicalError = true;
-                    addOneCharToken(TokenType.UNIDENTIFIED); 
+                    addToken(TokenType.UNIDENTIFIED); 
                 }
 
                 break;
@@ -87,8 +87,7 @@ public final class TorreyLexer extends BaseLexer
     private void addIntegerToken()
     {
         while (isDigit(peek())) nextChar();
-        final int len = cursor - tokenIndexStart;
-        addToken(TokenType.INTEGER, len);
+        addToken(TokenType.INTEGER);
     }
 
     /*
