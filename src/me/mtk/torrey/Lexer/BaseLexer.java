@@ -13,43 +13,43 @@ import java.util.ArrayList;
 public abstract class BaseLexer
 {
     // Stores the tokens that are to be emitted.
-    public final List<Token> tokens;
+    protected final List<Token> tokens;
 
     // The current index into the input program.
-    public int cursor;
+    protected int cursor;
 
     // The number of the line currently being processed.
-    public int curLine;
+    protected int curLine;
 
     // The index (into the input) of the first character 
     // of the line currently being processed.
-    public int curLineStart;
+    protected int curLineStart;
 
     // The number of the column of the line currently being processed.
-    public int curCol;
+    protected int curCol;
 
     // The index (into the input) of the first character 
     // of the token currently being constructed. 
-    public int tokenIndexStart;
+    protected int tokenIndexStart;
 
     // The index (into the input) of the last character 
     // of the token currently being constructed.
-    public int tokenIndexEnd;
+    protected int tokenIndexEnd;
 
     // The start position of the token.
-    public int tokenStartLine;
-    public int tokenStartCol;
+    protected int tokenStartLine;
+    protected int tokenStartCol;
 
     // The end position of the token.
-    public int tokenEndLine;
-    public int tokenEndCol;
+    protected int tokenEndLine;
+    protected int tokenEndCol;
 
     // True if we encounter at least one unidentified
     // token; False otherwise.
-    public boolean hasLexicalError;
+    protected boolean hasLexicalError;
 
     // The input program from which we will extract tokens.
-    public final String input;
+    protected final String input;
 
     /**
      * Constructs a new base lexer with the given input buffer and
