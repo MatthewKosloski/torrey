@@ -51,6 +51,12 @@ public abstract class BaseLexer
     // The input program from which we will extract tokens.
     public final String input;
 
+    /**
+     * Constructs a new base lexer with the given input buffer and
+     * an empty token list.
+     * 
+     * @param input The input program that is to be lex'd.
+     */
     public BaseLexer(final String input)
     {
         this.input = input;
@@ -59,6 +65,12 @@ public abstract class BaseLexer
         curCol = 1;
     }
 
+    /**
+     * Examines the character under the cursor and
+     * routes control flow to the appropriate subroutine
+     * that subsequently produces a token based on a 
+     * pattern match.
+     */
     public abstract void nextToken();
 
     /**
@@ -81,22 +93,43 @@ public abstract class BaseLexer
         tokenIndexStart++;
         tokenStartCol++;
         curCol++;
-        addToken(TokenType.EOF, 1);
+        addOneCharToken(TokenType.EOF);
 
         return tokens;
     }
 
+    /**
+     * Adds a token to the collection with the specified
+     * token type. The length of the rawText is assumed to
+     * be 1.
+     * 
+     * @param type The TokenType of the token.
+     */
     public void addOneCharToken(final TokenType type)
     {
         addToken(type, 1);
     }
     
+    /**
+     * Adds a token to the collection with the specified
+     * token type and length. The length specifies the string
+     * length of the token's rawText.
+     * 
+     * @param type The TokenType of the token.
+     * @param length The length of the token's rawText.
+     */
     public void addToken(final TokenType type, final int length)
     {
         tokenIndexEnd = tokenIndexStart + length;
         addToken(type);
     }
 
+    /**
+     * Adds a token to the collection with the specified
+     * token type.
+     * 
+     * @param type The TokenType of the token.
+     */
     public void addToken(final TokenType type)
     {
         tokenEndLine = curLine;
@@ -129,6 +162,12 @@ public abstract class BaseLexer
         tokens.add(new Token(type, text, start, end, startPos, endPos));
     }
 
+    /**
+     * Moves the cursor over the next character, returning
+     * the next character and updating relevant state properties.
+     * 
+     * @return The next character in the input buffer.
+     */
     protected char nextChar()
     {
         final char nextChar = input.charAt(cursor++);
@@ -147,7 +186,7 @@ public abstract class BaseLexer
         return nextChar;
     }
 
-    /*
+    /**
      * Returns the next character to be scanned (one character
      * of lookahead).
      * 
@@ -164,7 +203,7 @@ public abstract class BaseLexer
         return peek;
     }
 
-    /*
+    /**
      * Indicates if the provided character is a digit as
      * specified by the regular expression [0-9].
      * 
