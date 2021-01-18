@@ -17,7 +17,7 @@ public final class Token
     private final int beginIndex;
 
     // The index at which the raw text ends
-    // in the input program string, inclusive.
+    // in the input program string, exclusive.
     private final int endIndex;
 
     // The line number and column number
@@ -69,5 +69,28 @@ public final class Token
     public Position endPos()
     {
         return endPos;
+    }
+
+    public String toString()
+    {
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append("<");
+        sb.append("'");
+        sb.append(rawText);
+        sb.append("'");
+        sb.append(",");
+        sb.append(type);
+        sb.append(",");
+        sb.append(startPos.line());
+        sb.append(":");
+        sb.append(startPos.col());
+        sb.append(",");
+        sb.append(endPos.line());
+        sb.append(":");
+        sb.append(endPos.col());
+        sb.append(">");
+
+        return sb.toString();
     }
 }
