@@ -51,9 +51,9 @@ public final class TorreyLexer extends BaseLexer
 
             default:
                 if (isDigit(currentChar))
-                    consumeInteger();
+                    addIntegerToken();
                 else if (isStartOfIdentifier(currentChar))
-                    consumeIdentifier();
+                    addIdentifierToken();
                 else
                 {
                     hasLexicalError = true;
@@ -84,7 +84,7 @@ public final class TorreyLexer extends BaseLexer
     /*
      * Adds an integer token to the collection, matching against [0-9]+.
      */
-    private void consumeInteger()
+    private void addIntegerToken()
     {
         while (isDigit(peek())) nextChar();
         final int len = cursor - tokenIndexStart;
@@ -94,7 +94,7 @@ public final class TorreyLexer extends BaseLexer
     /*
      * Adds an identifier or unidentified token to the collection.
      */
-    private void consumeIdentifier()
+    private void addIdentifierToken()
     {
         // Consume the identifier.
         while (isPartOfIdentifier(peek())) nextChar();
