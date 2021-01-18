@@ -11,7 +11,7 @@ public enum TokenType
     // Print expression
     PRINT, PRINTLN,
 
-    NUMBER,
+    INTEGER,
 
     UNIDENTIFIED,
 
