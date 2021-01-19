@@ -6,8 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import me.mtk.torrey.Lexer.TorreyLexer;
-import me.mtk.torrey.Lexer.Token;
+import java.util.ArrayList;
+
+import me.mtk.torrey.Lexer.*;
+import me.mtk.torrey.Parser.*;
+import me.mtk.torrey.AST.*;
 
 public class Torrey 
 {
@@ -24,8 +27,32 @@ public class Torrey
             final String input = read(args[0]);
             final TorreyLexer lexer = new TorreyLexer(input);
             List<Token> tokens = lexer.start();
-            System.out.println(tokens);
-            System.out.println();
+
+            // (+ 2 3)
+            // IntegerExprNode first = new IntegerExprNode(tokens.get(2));
+            // IntegerExprNode second = new IntegerExprNode(tokens.get(3));
+            // BinaryExprNode root = new BinaryExprNode(tokens.get(1), first, second);
+
+            // (println
+            //    (+ 25 5)
+            //    (/ (* 6 2) 3))
+            // List<ExprNode> exprList = new ArrayList<>();
+            // exprList.add(new BinaryExprNode(tokens.get(3), 
+            //     new IntegerExprNode(tokens.get(4)),
+            //     new IntegerExprNode(tokens.get(5))));
+            // exprList.add(new BinaryExprNode(tokens.get(8), 
+            //     new BinaryExprNode(tokens.get(10),
+            //         new IntegerExprNode(tokens.get(11)),
+            //         new IntegerExprNode(tokens.get(12))),
+            //     new IntegerExprNode(tokens.get(14))));
+            // PrintExprNode root = new PrintExprNode(tokens.get(1), exprList);
+
+            System.out.println(root);
+
+
+
+            // Grammar grammar = new Grammar(tokens);
+            // grammar.program();
         }
         catch (IOException e)
         {
