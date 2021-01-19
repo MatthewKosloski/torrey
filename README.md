@@ -14,10 +14,14 @@ expression    -> integer
                | binary
                | print ;
 
-unary         -> "(" "-" expression ")" ;
+unary         -> "(" unaryOp expression ")" ;
 binary        -> "(" binOp expression expression ")" ;
-print         -> "(" [ print | println ] expression+ ")" ;
+print         -> "(" printOp exprlist ")" ;
+
+exprlist      -> expression+ ;
 
 integer       -> [0-9]+ ;
+unaryOp       -> "-" ;
 binOp         -> "+" | "-" | "*" | "/" ;
+printOp       -> "print" | "println" ;
 ```
