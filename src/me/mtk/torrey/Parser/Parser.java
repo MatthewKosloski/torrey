@@ -160,6 +160,17 @@ public abstract class Parser
         return tok;
     }
 
+    /**
+     * Indicates whether there are still tokens in the buffer
+     * that have yet to be processed.
+     * 
+     * @return True if there are remaining tokens; False otherwise.
+     */
+    public boolean hasTokens()
+    {
+        return !peek(TokenType.EOF);
+    }
+
     /*
      * Returns the nth token of lookahead or null
      * if there is no nth token of lookahead.
