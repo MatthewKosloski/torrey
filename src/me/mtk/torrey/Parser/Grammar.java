@@ -7,6 +7,7 @@ import me.mtk.torrey.Lexer.TokenType;
 import me.mtk.torrey.AST.ExprNode;
 import me.mtk.torrey.AST.IntegerExprNode;
 import me.mtk.torrey.AST.PrintExprNode;
+import me.mtk.torrey.AST.UnaryExprNode;
 import me.mtk.torrey.AST.BinaryExprNode;
 
 /**
@@ -51,14 +52,15 @@ public class Grammar extends Parser
             TokenType.STAR, TokenType.SLASH))
             {
                 // expression -> binary | unary ;
-                return binary();
+                return binaryOrUnary();
             }
             else if (peekNext(TokenType.PRINT, TokenType.PRINTLN))
             {
                 // expression -> print ;
                 return print();
             }
-        } else if (peek(TokenType.INTEGER))
+        } 
+        else if (peek(TokenType.INTEGER))
         {
             // expression -> integer ;
             return integer();
@@ -70,22 +72,40 @@ public class Grammar extends Parser
     }
 
     // binary -> "(" binOp expression expression ")" ;
-    public BinaryExprNode binary()
+    public ExprNode binaryOrUnary()
     {
         // consume "(".
         match(TokenType.LPAREN);
         
         // binOp -> "+" | "-" | "*" | "/" ;
-        final Token binOp = nextToken();
+        final Token operator = nextToken();
 
-        // build the operand subtrees.
+        // Either the operand to a unary expression
+        // or the first operand to a binary expression
         final ExprNode first = expression();
-        final ExprNode second = expression();
 
-        // consume ")".
-        match(TokenType.RPAREN);
+        ExprNode second;
 
-        return new BinaryExprNode(binOp, first, second);
+        ExprNode result;
+        
+        try
+        {
+            second = expression();
+            result = new BinaryExprNode(operator, first, second);
+        }
+        catch (Error e)
+        {
+            // Could not parse a second expression,
+            // so we will try to make unary expression.
+            result = new UnaryExprNode(operator, first);
+        }
+        finally
+        {
+            // consume ")".
+            match(TokenType.RPAREN);
+        }
+
+        return result;
     }
 
     // print -> "(" printOp exprlist ")" ;
