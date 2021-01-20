@@ -48,9 +48,16 @@ public class Grammar extends Parser
         {
             // Predicted the beginning of a fully parenthesized expression.
 
-            if (peekNext(TokenType.PLUS, TokenType.MINUS, 
-            TokenType.STAR, TokenType.SLASH))
+            if (peekNext(TokenType.PLUS, TokenType.STAR, TokenType.SLASH))
             {
+                // expression -> binary ;
+                return binary();
+            }
+            else if (peekNext(TokenType.MINUS))
+            {
+                // Predicted a binary subtraction or 
+                // a unary negation expression.
+
                 // expression -> binary | unary ;
                 return binaryOrUnary();
             }
@@ -72,12 +79,30 @@ public class Grammar extends Parser
     }
 
     // binary -> "(" binOp expression expression ")" ;
+    public BinaryExprNode binary()
+    {
+        // consume "(".
+        match(TokenType.LPAREN);
+
+        // binOp -> "+" | "*" | "/" ;
+        final Token binOp = nextToken();
+        
+        // parse the two operands
+        final ExprNode first = expression();
+        final ExprNode second = expression();
+
+        // consume ")".
+        match(TokenType.RPAREN);
+
+        return new BinaryExprNode(binOp, first, second);
+    }
+
     public ExprNode binaryOrUnary()
     {
         // consume "(".
         match(TokenType.LPAREN);
         
-        // binOp -> "+" | "-" | "*" | "/" ;
+        // "-"
         final Token operator = nextToken();
 
         // Either the operand to a unary expression
@@ -85,7 +110,6 @@ public class Grammar extends Parser
         final ExprNode first = expression();
 
         ExprNode second;
-
         ExprNode result;
         
         try
@@ -95,8 +119,8 @@ public class Grammar extends Parser
         }
         catch (Error e)
         {
-            // Could not parse a second expression,
-            // so we will try to make unary expression.
+            // Could not parse a second operand, so
+            // we must have a unary expression.
             result = new UnaryExprNode(operator, first);
         }
         finally
