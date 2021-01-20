@@ -3,7 +3,7 @@ package me.mtk.torrey.AST;
 import me.mtk.torrey.Lexer.Token;
 
 /**
- * All nodes in the AST are expressions.
+ * Represents an expression in the AST.
  */
 public class ExprNode extends ASTNode 
 {
