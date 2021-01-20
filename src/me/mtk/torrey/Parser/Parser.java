@@ -186,7 +186,10 @@ public abstract class Parser
 
         try
         {
-            tok = tokens.get(cursor + n + 1);
+            // conform to the convention that
+            // the first lookahead token is the
+            // one under the cursor
+            tok = tokens.get(cursor + (n - 1));
         }
         catch (IndexOutOfBoundsException e)
         {
