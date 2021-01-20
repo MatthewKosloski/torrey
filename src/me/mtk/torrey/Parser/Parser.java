@@ -1,5 +1,6 @@
 package me.mtk.torrey.Parser;
 
+import java.util.Collection;
 import java.util.List;
 import me.mtk.torrey.Lexer.*;
 
@@ -30,7 +31,7 @@ public abstract class Parser
     /**
      * The top-level rule of the grammar.
      */
-    public abstract void program();
+    public abstract Collection<?> program();
 
     /**
      * Consumes a token and moves the cursor forward
@@ -60,7 +61,7 @@ public abstract class Parser
      * @return The second token of lookahead or null
      * if there are no more tokens to peek.
      */
-    protected Token peek()
+    public Token peek()
     {
         return lookahead(1);
     }
@@ -71,7 +72,7 @@ public abstract class Parser
      * @return The second token of lookahead or null
      * if there are no more tokens to peek.
      */
-    protected Token peekNext()
+    public Token peekNext()
     {
         return lookahead(2);
     }
@@ -83,7 +84,7 @@ public abstract class Parser
      * @return The next token in the buffer or null
      * if there are no more tokens in the buffer.
      */
-    protected Token nextToken()
+    public Token nextToken()
     {
         Token tok;
 
