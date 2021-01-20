@@ -108,6 +108,36 @@ public abstract class Parser
     }
 
     /**
+     * Indicates whether the second token of lookahead
+     * is of the specified type.
+     * 
+     * @param type A token type.
+     * @return True if the TokenType of the second token
+     * of lookahead is the specified type; False otherwise.
+     */
+    public boolean peekNext(TokenType type)
+    {
+        return peekNext().type() == type;
+    }
+
+    /**
+     * Indicates whether the type of the second token of
+     * lookahead is one of the specified token types.
+     * 
+     * @param types One or more token types.
+     * @return True if at least one of the specified token
+     * types is equal to the token type of the second token
+     * of lookahead; False otherwise.
+     */
+    public boolean peekNext(TokenType... types)
+    {
+        for (TokenType type : types)
+            if (peekNext(type)) return true;
+        
+        return false;
+    }
+
+    /**
      * Returns the next token in the buffer and
      * moves the cursor forward.
      * 
