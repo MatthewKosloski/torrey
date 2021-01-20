@@ -26,7 +26,10 @@ public class Torrey
         {
             final String input = read(args[0]);
             final TorreyLexer lexer = new TorreyLexer(input);
-            List<Token> tokens = lexer.start();
+            final List<Token> tokens = lexer.start();
+            final Grammar grammar = new Grammar(tokens);
+            final List<ExprNode> exprs = grammar.program();
+            System.out.println(exprs);
 
             // (+ 2 3)
             // IntegerExprNode first = new IntegerExprNode(tokens.get(2));
@@ -46,13 +49,6 @@ public class Torrey
             //         new IntegerExprNode(tokens.get(12))),
             //     new IntegerExprNode(tokens.get(14))));
             // PrintExprNode root = new PrintExprNode(tokens.get(1), exprList);
-
-            System.out.println(root);
-
-
-
-            // Grammar grammar = new Grammar(tokens);
-            // grammar.program();
         }
         catch (IOException e)
         {
