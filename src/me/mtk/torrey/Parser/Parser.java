@@ -45,8 +45,7 @@ public abstract class Parser
     public void error(String template, Object... args) throws SyntaxError
     {   
         final StringBuilder sb = new StringBuilder();
-        sb.append("\n")
-            .append(String.format(template, args))
+        sb.append(String.format(template, args))
             .append(" ")
             .append(peek().startPos());
 
