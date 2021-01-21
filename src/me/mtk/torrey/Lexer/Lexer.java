@@ -60,7 +60,7 @@ public final class Lexer extends BaseLexer
                 {
                     hasLexicalError = true;
                     addToken(TokenType.UNIDENTIFIED);
-                    error(ErrorMessages.InvalidOrUnexpectedToken, 
+                    error(ErrorMessages.UnexpectedCharacter, 
                         getLastToken().rawText());
                 }
 
