@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import me.mtk.torrey.Lexer.*;
 
 /**
- * A homogeneous AST node type that is to be extended
- * to create nodes for a normalized heterogenous AST.
+ * A homogeneous abstract syntax tree (AST) node type 
+ * that is to be extended to create nodes for a normalized 
+ * heterogenous AST. The token (interior node) stores the 
+ * operation and the children represent the arguments to 
+ * the operation.
  */
 public abstract class ASTNode
 {
