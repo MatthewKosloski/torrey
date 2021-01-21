@@ -84,10 +84,10 @@ public abstract class BaseLexer
      * @param args The strings that replace the format specifies
      * within the format string.
      */
-    public void error(String template, String... args)
+    public void error(String template, Object... args)
     {   
         stderr.append("\n")
-            .append(String.format(template, (Object[])args))
+            .append(String.format(template, args))
             .append(" ")
             .append(getLastToken().startPos());
     }
