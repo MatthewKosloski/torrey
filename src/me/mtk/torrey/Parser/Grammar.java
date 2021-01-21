@@ -27,7 +27,7 @@ public class Grammar extends Parser
     }
    
     // program -> expression* ;
-    public List<ExprNode> program()
+    public List<ExprNode> program() throws SyntaxError
     {
         final List<ExprNode> exprs = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class Grammar extends Parser
     //              | unary
     //              | binary
     //              | print ;
-    public ExprNode expression()
+    public ExprNode expression() throws SyntaxError
     {
 
         if (peek(TokenType.LPAREN))
@@ -73,13 +73,13 @@ public class Grammar extends Parser
             return integer();
         }
 
-        final String err = String.format("Expected an integer, unary, binary, "
-            + "or print expression but found %s instead.", peek().type());
-        throw new Error(err);
+        error(ErrorMessages.ExpectedExpressionButFound, peek().rawText());
+
+        return null;
     }
 
     // binary -> "(" binOp expression expression ")" ;
-    public BinaryExprNode binary()
+    public BinaryExprNode binary() throws SyntaxError
     {
         // consume "(".
         match(TokenType.LPAREN);
@@ -97,7 +97,7 @@ public class Grammar extends Parser
         return new BinaryExprNode(binOp, first, second);
     }
 
-    public ExprNode binaryOrUnary()
+    public ExprNode binaryOrUnary() throws SyntaxError
     {
         // consume "(".
         match(TokenType.LPAREN);
@@ -133,7 +133,7 @@ public class Grammar extends Parser
     }
 
     // print -> "(" printOp exprlist ")" ;
-    public PrintExprNode print()
+    public PrintExprNode print() throws SyntaxError
     {
         // consume "(".
         match(TokenType.LPAREN);

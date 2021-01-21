@@ -33,7 +33,25 @@ public abstract class Parser
     /**
      * The top-level rule of the grammar.
      */
-    public abstract Collection<?> program();
+    public abstract Collection<?> program() throws SyntaxError;
+
+    /**
+     * Handles errors.
+     * 
+     * @param template An error message in the form of a format string.
+     * @param args The strings that replace the format specifies
+     * within the format string.
+     */
+    public void error(String template, Object... args) throws SyntaxError
+    {   
+        final StringBuilder sb = new StringBuilder();
+        sb.append("\n")
+            .append(String.format(template, args))
+            .append(" ")
+            .append(peek().startPos());
+
+        throw new SyntaxError(sb.toString());
+    }
 
     /**
      * Consumes a token and moves the cursor forward
@@ -42,19 +60,15 @@ public abstract class Parser
      *  
      * @param type The type of the token that we expect
      * the currently selected token in the buffer to be.
+     * @param errMsg The format string to be appended to
      */
-    public void match(TokenType type)
+    public void match(TokenType type) 
+    throws SyntaxError
     {
         if (peek().type().equals(type))
-        {
             nextToken();
-        }
         else
-        {
-            String err = String.format("Expected token %s but found %s", 
-                type, peek().type());
-            throw new Error(err);
-        }
+            error(ErrorMessages.ExpectedButFound, type, peek().rawText());
     }
 
     /**
