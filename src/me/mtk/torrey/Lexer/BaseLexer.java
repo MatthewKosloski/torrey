@@ -155,7 +155,7 @@ public abstract class BaseLexer
             tokenEndCol);
             
         tokens.add(new Token(type, text, tokenIndexStart, tokenIndexEnd, 
-            startPos, endPos));
+            curLineStart, startPos, endPos));
     }
 
     /**

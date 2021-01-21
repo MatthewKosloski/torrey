@@ -20,6 +20,11 @@ public final class Token
     // in the input program string, exclusive.
     private final int endIndex;
 
+    // The index into the input program at which
+    // the first character of the token's start 
+    // line is located.
+    private final int beginLineIndex;
+
     // The line number and column number
     // at which the raw text starts in 
     // the input program.
@@ -31,12 +36,13 @@ public final class Token
     private final Position endPos;
 
     Token(TokenType type, String rawText, int beginIndex, int endIndex, 
-        Position startPos, Position endPos)
+        int beginLineIndex, Position startPos, Position endPos)
     {
         this.type = type;
         this.rawText = rawText;
         this.beginIndex = beginIndex;
         this.endIndex = endIndex;
+        this.beginLineIndex = beginLineIndex;
         this.startPos = startPos;
         this.endPos = endPos;
     }
@@ -59,6 +65,11 @@ public final class Token
     public int endIndex()
     {
         return endIndex;
+    }
+
+    public int beginLineIndex()
+    {
+        return beginLineIndex;
     }
 
     public Position startPos()
