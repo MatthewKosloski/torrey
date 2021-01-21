@@ -2,7 +2,9 @@ package me.mtk.torrey.Parser;
 
 import java.util.Collection;
 import java.util.List;
-import me.mtk.torrey.Lexer.*;
+
+import me.mtk.torrey.Lexer.Token;
+import me.mtk.torrey.Lexer.TokenType;
 
 /**
  * Implements a LL(k) recursive-descent parser. Holds the
