@@ -1,5 +1,7 @@
 package me.mtk.torrey.Lexer;
 
+import me.mtk.torrey.Parser.ErrorMessages;
+
 /**
  * An implementation of a LL(1) recursive-descent
  * lexer that derives a stream of tokens from a
@@ -57,7 +59,9 @@ public final class TorreyLexer extends BaseLexer
                 else
                 {
                     hasLexicalError = true;
-                    addToken(TokenType.UNIDENTIFIED); 
+                    addToken(TokenType.UNIDENTIFIED);
+                    error(ErrorMessages.InvalidOrUnexpectedToken, 
+                        getLastToken().rawText());
                 }
 
                 break;

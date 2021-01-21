@@ -2,6 +2,7 @@ package me.mtk.torrey.Lexer;
 
 import java.util.List;
 import java.util.ArrayList;
+import me.mtk.torrey.Parser.SyntaxError;
 
 /**
  * This base class keeps track of the lexer's state
@@ -48,6 +49,8 @@ public abstract class BaseLexer
     // token; False otherwise.
     protected boolean hasLexicalError;
 
+    protected StringBuilder stderr;
+
     // The input program from which we will extract tokens.
     protected final String input;
 
@@ -61,6 +64,7 @@ public abstract class BaseLexer
     {
         this.input = input;
         tokens = new ArrayList<>();
+        stderr = new StringBuilder();
         curLine = 1;
         curCol = 1;
     }
@@ -74,13 +78,28 @@ public abstract class BaseLexer
     public abstract void nextToken();
 
     /**
+     * Handles errors.
+     * 
+     * @param template An error message in the form of a format string.
+     * @param args The strings that replace the format specifies
+     * within the format string.
+     */
+    public void error(String template, String... args)
+    {   
+        stderr.append("\n")
+            .append(String.format(template, (Object[])args))
+            .append(" ")
+            .append(getLastToken().startPos());
+    }
+
+    /**
      * Starts the lexical analysis process, returning
      * the stream of tokens that have been extracted
      * from the input program.
      * 
      * @return The token stream.
      */
-    public List<Token> start()
+    public List<Token> start() throws SyntaxError
     {
         while (!isEOF())
         {
@@ -94,6 +113,14 @@ public abstract class BaseLexer
         tokenStartCol++;
         curCol++;
         addToken(TokenType.EOF);
+
+        if (stderr.length() > 0)
+        {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("Encountered one or more syntax errors:");
+            sb.append(stderr);
+            throw new SyntaxError(sb.toString());
+        }
 
         return tokens;
     }
@@ -132,12 +159,22 @@ public abstract class BaseLexer
     }
 
     /**
+     * Returns the most recently created token.
+     * 
+     * @return The most recently created token.
+     */
+    public Token getLastToken()
+    {
+        return tokens.get(tokens.size() - 1);
+    }
+
+    /**
      * Moves the cursor over the next character, returning
      * the next character and updating relevant state properties.
      * 
      * @return The next character in the input buffer.
      */
-    protected char nextChar()
+    public char nextChar()
     {
         final char nextChar = input.charAt(cursor++);
 
@@ -161,7 +198,7 @@ public abstract class BaseLexer
      * 
      * @return The first character of lookahead. 
      */
-    protected char peek()
+    public char peek()
     {
         // There is no next character, so return 
         // the null character.
@@ -179,7 +216,7 @@ public abstract class BaseLexer
      * @param c A character
      * @return True if c is a digit; False otherwise.
      */
-    protected boolean isDigit(char c)
+    public boolean isDigit(char c)
     {
         return c >= '0' && c <= '9';
     }
@@ -191,7 +228,7 @@ public abstract class BaseLexer
      * @param c A character.
      * @return True if c is a whitespace character; false otherwise.
      */
-    protected boolean isWhitespace(char c)
+    public boolean isWhitespace(char c)
     {
         return c == ' ' || c == '\t' || c == '\n' || c == '\r';
     }
@@ -202,7 +239,7 @@ public abstract class BaseLexer
      * 
      * @return True if we're at EOF; False otherwise.
      */
-    protected boolean isEOF()
+    public boolean isEOF()
     {
         return cursor >= input.length();
     }

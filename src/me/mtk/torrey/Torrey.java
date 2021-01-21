@@ -6,8 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import java.util.ArrayList;
-
 import me.mtk.torrey.Lexer.*;
 import me.mtk.torrey.Parser.*;
 import me.mtk.torrey.AST.*;
@@ -53,6 +51,10 @@ public class Torrey
         catch (IOException e)
         {
             System.err.println("Encountered an I/O error.");
+        }
+        catch (SyntaxError e)
+        {
+            System.err.println(e);
         }
     }
 
