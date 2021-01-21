@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * Stores the keywords of the language.
  */
-public class Keywords 
+public final class Keywords 
 {
     private static final Map<String, TokenType> store;
 
