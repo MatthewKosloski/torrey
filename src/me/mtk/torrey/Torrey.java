@@ -23,7 +23,7 @@ public class Torrey
         try
         {
             final String input = read(args[0]);
-            final TorreyLexer lexer = new TorreyLexer(input);
+            final Lexer lexer = new Lexer(input);
             final List<Token> tokens = lexer.start();
             final Grammar grammar = new Grammar(tokens);
             final List<ExprNode> exprs = grammar.program();

@@ -11,7 +11,7 @@ import me.mtk.torrey.Parser.ErrorMessages;
  * to produce an abstract syntax tree (AST) to represent
  * the syntactic structure of the input program in memory.
  */
-public final class TorreyLexer extends BaseLexer
+public final class Lexer extends BaseLexer
 {
 
     /**
@@ -19,7 +19,7 @@ public final class TorreyLexer extends BaseLexer
      * 
      * @param input An input program.
      */
-    public TorreyLexer(final String input)
+    public Lexer(final String input)
     {
         super(input);
     }
