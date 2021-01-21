@@ -39,4 +39,14 @@ public final class Position
     {
         return this.col;
     }
+
+    /**
+     * Returns a string representation of a Position object.
+     * 
+     * @return The toString representation of this Position.
+     */
+    public String toString()
+    {
+        return String.format("(%d:%d)", line, col);
+    }
 }
