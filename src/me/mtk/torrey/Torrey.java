@@ -25,7 +25,7 @@ public class Torrey
             final String input = read(args[0]);
             final Lexer lexer = new Lexer(input);
             final List<Token> tokens = lexer.start();
-            final Grammar grammar = new Grammar(tokens);
+            final Grammar grammar = new Grammar(tokens, input);
             final List<ExprNode> exprs = grammar.program();
             System.out.println(exprs);
 

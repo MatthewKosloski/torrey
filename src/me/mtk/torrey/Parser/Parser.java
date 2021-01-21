@@ -19,15 +19,19 @@ public abstract class Parser
     // The current position in the token collection.
     private int cursor;
 
+    // The input program.
+    private String input;
+
     /**
      * Constructs a new Parser object, initializing
      * it with a list of tokens.
      * 
      * @param tokens A list of tokens.
      */
-    public Parser(List<Token> tokens)
+    public Parser(List<Token> tokens, String input)
     {
         this.tokens = tokens;
+        this.input = input;
     }
 
     /**
@@ -47,7 +51,16 @@ public abstract class Parser
         final StringBuilder sb = new StringBuilder();
         sb.append(String.format(template, args))
             .append(" ")
-            .append(peek().startPos());
+            .append(peek().startPos())
+            .append("\n\n")
+            .append(input.substring(peek().beginLineIndex(), 
+                peek().endIndex()))
+            .append("\n");
+
+        for (int i = 1; i < peek().endIndex() - peek().beginLineIndex(); i++)
+            sb.append(" ");
+
+        sb.append("^");
 
         throw new SyntaxError(sb.toString());
     }
@@ -61,11 +74,13 @@ public abstract class Parser
      * the currently selected token in the buffer to be.
      * @param errMsg The format string to be appended to
      */
-    public void match(TokenType type) 
+    public void match(TokenType type, String errMsg, Object... errMsgArgs) 
     throws SyntaxError
     {
         if (peek().type().equals(type))
             nextToken();
+        else if (errMsg != null)
+            error(errMsg, errMsgArgs);
         else
             error(ErrorMessages.ExpectedButFound, type, peek().rawText());
     }

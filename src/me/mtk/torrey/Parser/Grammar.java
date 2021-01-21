@@ -21,9 +21,9 @@ import me.mtk.torrey.AST.BinaryExprNode;
  */
 public class Grammar extends Parser
 {
-    public Grammar(List<Token> tokens)
+    public Grammar(List<Token> tokens, String input)
     {
-        super(tokens);
+        super(tokens, input);
     }
    
     // program -> expression* ;
@@ -82,7 +82,7 @@ public class Grammar extends Parser
     public BinaryExprNode binary() throws SyntaxError
     {
         // consume "(".
-        match(TokenType.LPAREN);
+        match(TokenType.LPAREN, ErrorMessages.ExpectedOpeningParen);
 
         // binOp -> "+" | "*" | "/" ;
         final Token binOp = nextToken();
@@ -92,7 +92,7 @@ public class Grammar extends Parser
         final ExprNode second = expression();
 
         // consume ")".
-        match(TokenType.RPAREN);
+        match(TokenType.RPAREN, ErrorMessages.ExpectedClosingParen);
 
         return new BinaryExprNode(binOp, first, second);
     }
@@ -100,7 +100,7 @@ public class Grammar extends Parser
     public ExprNode binaryOrUnary() throws SyntaxError
     {
         // consume "(".
-        match(TokenType.LPAREN);
+        match(TokenType.LPAREN, ErrorMessages.ExpectedOpeningParen);
         
         // "-"
         final Token operator = nextToken();
@@ -126,7 +126,7 @@ public class Grammar extends Parser
         finally
         {
             // consume ")".
-            match(TokenType.RPAREN);
+            match(TokenType.RPAREN, ErrorMessages.ExpectedClosingParen);
         }
 
         return result;
@@ -136,7 +136,7 @@ public class Grammar extends Parser
     public PrintExprNode print() throws SyntaxError
     {
         // consume "(".
-        match(TokenType.LPAREN);
+        match(TokenType.LPAREN, ErrorMessages.ExpectedOpeningParen);
  
         // printOp -> "print" | "println" ;
         final Token printOp = nextToken();
@@ -149,7 +149,7 @@ public class Grammar extends Parser
         } while (!peek(TokenType.RPAREN, TokenType.EOF));
 
         // consume ")".
-        match(TokenType.RPAREN);
+        match(TokenType.RPAREN, ErrorMessages.ExpectedClosingParen);
 
         return new PrintExprNode(printOp, exprList);
     }
