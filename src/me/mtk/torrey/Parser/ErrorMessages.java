@@ -11,6 +11,11 @@ package me.mtk.torrey.Parser;
  */
 public final class ErrorMessages 
 {
-    public static final String InvalidOrUnexpectedToken = "Unexpected character '%s'";
+    public static final String UnexpectedCharacter = "Unexpected character '%s'";
+    public static final String ExpectedButFound = "Expected '%s' but found '%s'.";
+    public static final String ExpectedExpressionButFound = "Expected an integer, unary, binary, "
+    + "or print expression but found '%s' instead.";
+
+
 }
 
