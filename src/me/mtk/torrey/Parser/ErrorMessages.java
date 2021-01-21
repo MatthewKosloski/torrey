@@ -12,10 +12,9 @@ package me.mtk.torrey.Parser;
 public final class ErrorMessages 
 {
     public static final String UnexpectedCharacter = "Unexpected character '%s'";
-    public static final String ExpectedButFound = "Expected '%s' but found '%s'.";
+    public static final String ExpectedButFound = "Expected '%s' but found '%s'";
     public static final String ExpectedExpressionButFound = "Expected an integer, unary, binary, "
-    + "or print expression but found '%s' instead.";
-
-
+    + "or print expression but found '%s' instead";
+    public static final String ExpectedOpeningParen = "Expected an opening parenthesis '('";
+    public static final String ExpectedClosingParen = "Expected a closing parenthesis ')'";
 }
-
