@@ -28,25 +28,6 @@ public class Torrey
             final Grammar grammar = new Grammar(tokens, input);
             final List<ExprNode> exprs = grammar.program();
             System.out.println(exprs);
-
-            // (+ 2 3)
-            // IntegerExprNode first = new IntegerExprNode(tokens.get(2));
-            // IntegerExprNode second = new IntegerExprNode(tokens.get(3));
-            // BinaryExprNode root = new BinaryExprNode(tokens.get(1), first, second);
-
-            // (println
-            //    (+ 25 5)
-            //    (/ (* 6 2) 3))
-            // List<ExprNode> exprList = new ArrayList<>();
-            // exprList.add(new BinaryExprNode(tokens.get(3), 
-            //     new IntegerExprNode(tokens.get(4)),
-            //     new IntegerExprNode(tokens.get(5))));
-            // exprList.add(new BinaryExprNode(tokens.get(8), 
-            //     new BinaryExprNode(tokens.get(10),
-            //         new IntegerExprNode(tokens.get(11)),
-            //         new IntegerExprNode(tokens.get(12))),
-            //     new IntegerExprNode(tokens.get(14))));
-            // PrintExprNode root = new PrintExprNode(tokens.get(1), exprList);
         }
         catch (IOException e)
         {
