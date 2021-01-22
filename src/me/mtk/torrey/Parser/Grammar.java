@@ -66,6 +66,11 @@ public class Grammar extends Parser
                 // expression -> print ;
                 return print();
             }
+            else
+            {
+                error(ErrorMessages.ExpectedUnaryBinaryPrint, 
+                    peek().rawText());
+            }
         } 
         else if (peek(TokenType.INTEGER))
         {
