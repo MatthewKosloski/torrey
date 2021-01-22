@@ -2,9 +2,9 @@ package me.mtk.torrey.AST;
 
 import me.mtk.torrey.Lexer.Token;
 
-public class UnaryExprNode extends ExprNode
+public class UnaryExpr extends Expr
 {
-    public UnaryExprNode(Token unaryOp, ExprNode operand) 
+    public UnaryExpr(Token unaryOp, Expr operand) 
     { 
         // "-"
         super(unaryOp); 

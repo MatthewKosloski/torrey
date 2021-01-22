@@ -2,9 +2,9 @@ package me.mtk.torrey.AST;
 
 import me.mtk.torrey.Lexer.Token;
 
-public class BinaryExprNode extends ExprNode
+public class BinaryExpr extends Expr
 {
-    public BinaryExprNode(Token binOp, ExprNode first, ExprNode second)
+    public BinaryExpr(Token binOp, Expr first, Expr second)
     {
         // "+" | "-" | "*" | "/"
         super(binOp);

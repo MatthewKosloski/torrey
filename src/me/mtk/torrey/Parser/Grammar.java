@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.ArrayList;
 import me.mtk.torrey.Lexer.Token;
 import me.mtk.torrey.Lexer.TokenType;
-import me.mtk.torrey.AST.ExprNode;
-import me.mtk.torrey.AST.IntegerExprNode;
-import me.mtk.torrey.AST.PrintExprNode;
-import me.mtk.torrey.AST.UnaryExprNode;
-import me.mtk.torrey.AST.BinaryExprNode;
+import me.mtk.torrey.AST.Expr;
+import me.mtk.torrey.AST.IntegerExpr;
+import me.mtk.torrey.AST.PrintExpr;
+import me.mtk.torrey.AST.UnaryExpr;
+import me.mtk.torrey.AST.BinaryExpr;
 
 /**
  * Translates the context-free grammar to a 
@@ -27,9 +27,9 @@ public class Grammar extends Parser
     }
    
     // program -> expression* ;
-    public List<ExprNode> program() throws SyntaxError
+    public List<Expr> program() throws SyntaxError
     {
-        final List<ExprNode> exprs = new ArrayList<>();
+        final List<Expr> exprs = new ArrayList<>();
 
         while (hasTokens())
             exprs.add(expression());
@@ -41,7 +41,7 @@ public class Grammar extends Parser
     //              | unary
     //              | binary
     //              | print ;
-    public ExprNode expression() throws SyntaxError
+    public Expr expression() throws SyntaxError
     {
 
         if (peek(TokenType.LPAREN))
@@ -84,7 +84,7 @@ public class Grammar extends Parser
     }
 
     // binary -> "(" binOp expression expression ")" ;
-    public BinaryExprNode binary() throws SyntaxError
+    public BinaryExpr binary() throws SyntaxError
     {
         consumeLeftParen();
 
@@ -92,15 +92,15 @@ public class Grammar extends Parser
         final Token binOp = nextToken();
         
         // parse the two operands
-        final ExprNode first = expression();
-        final ExprNode second = expression();
+        final Expr first = expression();
+        final Expr second = expression();
 
         consumeRightParen();
 
-        return new BinaryExprNode(binOp, first, second);
+        return new BinaryExpr(binOp, first, second);
     }
 
-    public ExprNode binaryOrUnary() throws SyntaxError
+    public Expr binaryOrUnary() throws SyntaxError
     {
         consumeLeftParen();
         
@@ -109,21 +109,21 @@ public class Grammar extends Parser
 
         // Either the operand to a unary expression
         // or the first operand to a binary expression
-        final ExprNode first = expression();
+        final Expr first = expression();
 
-        ExprNode second;
-        ExprNode result;
+        Expr second;
+        Expr result;
         
         try
         {
             second = expression();
-            result = new BinaryExprNode(operator, first, second);
+            result = new BinaryExpr(operator, first, second);
         }
         catch (SyntaxError e)
         {
             // Could not parse a second operand, so
             // we must have a unary expression.
-            result = new UnaryExprNode(operator, first);
+            result = new UnaryExpr(operator, first);
         }
         finally
         {
@@ -134,14 +134,14 @@ public class Grammar extends Parser
     }
 
     // print -> "(" printOp exprlist ")" ;
-    public PrintExprNode print() throws SyntaxError
+    public PrintExpr print() throws SyntaxError
     {
         consumeLeftParen();
  
         // printOp -> "print" | "println" ;
         final Token printOp = nextToken();
 
-        final List<ExprNode> exprList = new ArrayList<>();
+        final List<Expr> exprList = new ArrayList<>();
 
         // exprlist -> expression+ ;
         do
@@ -151,13 +151,13 @@ public class Grammar extends Parser
 
         consumeRightParen();
 
-        return new PrintExprNode(printOp, exprList);
+        return new PrintExpr(printOp, exprList);
     }
 
     // integer -> [0-9]+ ;
-    public IntegerExprNode integer()
+    public IntegerExpr integer()
     {
-        return new IntegerExprNode(nextToken());
+        return new IntegerExpr(nextToken());
     }
 
     private void consumeLeftParen() throws SyntaxError

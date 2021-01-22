@@ -3,14 +3,14 @@ package me.mtk.torrey.AST;
 import java.util.List;
 import me.mtk.torrey.Lexer.Token;
 
-public class PrintExprNode extends ExprNode
+public class PrintExpr extends Expr
 {
-    public PrintExprNode(Token printOp, List<ExprNode> exprList)
+    public PrintExpr(Token printOp, List<Expr> exprList)
     {
         // "print" | "println"
         super(printOp);
 
-        for (ExprNode expr : exprList)
+        for (Expr expr : exprList)
             addChild(expr);
     }
 }
