@@ -43,25 +43,33 @@ public abstract class Parser
     /**
      * Handles errors.
      * 
+     * @param tok The offending token. Includes location information where
+     * the error occurred.
      * @param template An error message in the form of a format string.
      * @param args The strings that replace the format specifies
      * within the format string.
      */
-    public void error(String template, Object... args) throws SyntaxError
+    public void error(Token tok, String template, Object... args) throws SyntaxError
     {   
+
+        // Find the index (into input) of the last token on this line
+        int endIndex = tok.beginLineIndex();
+        while (endIndex < input.length() && input.charAt(endIndex) != '\n')
+            endIndex++;
+
+        final String offendingLine = input.substring(tok.beginLineIndex(), endIndex);
+
         final StringBuilder sb = new StringBuilder();
         sb.append(String.format(template, args))
             .append(" ")
             // Print the line number and column number of the offending token
-            .append(peek().startPos())
+            .append(tok.startPos())
             .append("\n\n")
-            // Print the start of the line up to the offending token
-            .append(input.substring(peek().beginLineIndex(), 
-                peek().endIndex()))
+            .append(offendingLine)
             .append("\n");
 
         // Print a "^" character, pointing to the offending token.
-        for (int i = 1; i < peek().endIndex() - peek().beginLineIndex(); i++)
+        for (int i = 1; i < tok.endIndex() - tok.beginLineIndex(); i++)
             sb.append(" ");
         sb.append("^");
 
