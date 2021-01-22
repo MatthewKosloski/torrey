@@ -86,8 +86,7 @@ public class Grammar extends Parser
     // binary -> "(" binOp expression expression ")" ;
     public BinaryExprNode binary() throws SyntaxError
     {
-        // consume "(".
-        match(TokenType.LPAREN, ErrorMessages.ExpectedOpeningParen);
+        consumeLeftParen();
 
         // binOp -> "+" | "*" | "/" ;
         final Token binOp = nextToken();
@@ -96,16 +95,14 @@ public class Grammar extends Parser
         final ExprNode first = expression();
         final ExprNode second = expression();
 
-        // consume ")".
-        match(TokenType.RPAREN, ErrorMessages.ExpectedClosingParen);
+        consumeRightParen();
 
         return new BinaryExprNode(binOp, first, second);
     }
 
     public ExprNode binaryOrUnary() throws SyntaxError
     {
-        // consume "(".
-        match(TokenType.LPAREN, ErrorMessages.ExpectedOpeningParen);
+        consumeLeftParen();
         
         // "-"
         final Token operator = nextToken();
@@ -130,8 +127,7 @@ public class Grammar extends Parser
         }
         finally
         {
-            // consume ")".
-            match(TokenType.RPAREN, ErrorMessages.ExpectedClosingParen);
+            consumeRightParen();
         }
 
         return result;
@@ -140,8 +136,7 @@ public class Grammar extends Parser
     // print -> "(" printOp exprlist ")" ;
     public PrintExprNode print() throws SyntaxError
     {
-        // consume "(".
-        match(TokenType.LPAREN, ErrorMessages.ExpectedOpeningParen);
+        consumeLeftParen();
  
         // printOp -> "print" | "println" ;
         final Token printOp = nextToken();
@@ -154,8 +149,7 @@ public class Grammar extends Parser
             exprList.add(expression());
         } while (!peek(TokenType.RPAREN, TokenType.EOF));
 
-        // consume ")".
-        match(TokenType.RPAREN, ErrorMessages.ExpectedClosingParen);
+        consumeRightParen();
 
         return new PrintExprNode(printOp, exprList);
     }
@@ -164,5 +158,17 @@ public class Grammar extends Parser
     public IntegerExprNode integer()
     {
         return new IntegerExprNode(nextToken());
+    }
+
+    private void consumeLeftParen() throws SyntaxError
+    {
+        if (!match(TokenType.LPAREN))
+            error(peek(), ErrorMessages.ExpectedOpeningParen);
+    }
+
+    private void consumeRightParen() throws SyntaxError
+    {
+        if (!match(TokenType.RPAREN))
+            error(lookahead(0), ErrorMessages.ExpectedClosingParen);
     }
 }
