@@ -148,6 +148,7 @@ public class Grammar extends Parser
 
         final List<ExprNode> exprList = new ArrayList<>();
 
+        // exprlist -> expression+ ;
         do
         {
             exprList.add(expression());
