@@ -122,7 +122,7 @@ public class Grammar extends Parser
             second = expression();
             result = new BinaryExprNode(operator, first, second);
         }
-        catch (Error e)
+        catch (SyntaxError e)
         {
             // Could not parse a second operand, so
             // we must have a unary expression.
