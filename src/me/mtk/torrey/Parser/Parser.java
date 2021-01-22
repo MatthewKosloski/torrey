@@ -93,22 +93,19 @@ public abstract class Parser
      * as the specified token type, then consume the
      * token and return true. Otherwise, return false.
      *  
-     * @param type The type of the token that we expect
-     * the currently selected token in the buffer to be.
-     * @param errMsg A format string to be used as an error
-     * message if the match fails.
-     * @param errMsgArgs Zero or more arguments that map to 
-     * the format specifiers in the specified format string.
+     * @param type A TokenType.
+     * @return True if the type of the token under the 
+     * cursor is the specified token type; False otherwise.
      */
-    public void match(TokenType type, String errMsg, Object... errMsgArgs) 
-    throws SyntaxError
-    {
+    public boolean match(TokenType type)
+    {        
         if (peek().type().equals(type))
+        {
             nextToken();
-        else if (errMsg != null)
-            error(errMsg, errMsgArgs);
-        else
-            error(ErrorMessages.ExpectedButFound, type, peek().rawText());
+            return true;
+        }
+        
+        return false;
     }
 
     /**
