@@ -215,7 +215,7 @@ public abstract class Parser
      * @return The nth token of lookahead or null
      * if there is no nth token of lookahead.
      */
-    private Token lookahead(int n)
+    public Token lookahead(int n)
     {
         Token tok;
 
