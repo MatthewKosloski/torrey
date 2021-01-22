@@ -211,7 +211,7 @@ public abstract class Parser
      * Returns the nth token of lookahead or null
      * if there is no nth token of lookahead.
      * 
-     * @param n A non-negative integer less than the number
+     * @param n An integer less than the number
      * of tokens in the buffer.
      * @return The nth token of lookahead or null
      * if there is no nth token of lookahead.
