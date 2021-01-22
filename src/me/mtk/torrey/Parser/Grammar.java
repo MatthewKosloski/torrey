@@ -78,7 +78,7 @@ public class Grammar extends Parser
             return integer();
         }
 
-        error(ErrorMessages.ExpectedExpressionButFound, peek().rawText());
+        error(ErrorMessages.ExpectedIntUnaryBinaryPrint, peek().rawText());
 
         return null;
     }
