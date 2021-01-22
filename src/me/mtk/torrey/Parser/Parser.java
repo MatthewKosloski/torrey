@@ -77,9 +77,21 @@ public abstract class Parser
     }
 
     /**
-     * Consumes a token and moves the cursor forward
-     * if the token under the cursor is of the specified
-     * type. If it is not, an exception is thrown.
+     * Handles errors.
+     * 
+     * @param template An error message in the form of a format string.
+     * @param args The strings that replace the format specifies
+     * within the format string.
+     */
+    public void error(String template, Object... args) throws SyntaxError
+    {   
+        error(peek(), template, args);
+    }
+
+    /**
+     * If the token under the cursor has the same type
+     * as the specified token type, then consume the
+     * token and return true. Otherwise, return false.
      *  
      * @param type The type of the token that we expect
      * the currently selected token in the buffer to be.
