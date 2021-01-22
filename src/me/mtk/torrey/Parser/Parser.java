@@ -59,10 +59,9 @@ public abstract class Parser
                 peek().endIndex()))
             .append("\n");
 
-        // Point to the offending token
+        // Print a "^" character, pointing to the offending token.
         for (int i = 1; i < peek().endIndex() - peek().beginLineIndex(); i++)
             sb.append(" ");
-
         sb.append("^");
 
         throw new SyntaxError(sb.toString());
