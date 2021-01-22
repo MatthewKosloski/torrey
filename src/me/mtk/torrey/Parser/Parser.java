@@ -182,17 +182,8 @@ public abstract class Parser
      */
     public Token nextToken()
     {
-        Token tok;
-
-        try
-        {
-            tok = tokens.get(cursor++);
-        }
-        catch (IndexOutOfBoundsException e)
-        {
-            tok = null;
-        }
-
+        final Token tok = lookahead(1);
+        cursor++;
         return tok;
     }
 
