@@ -72,7 +72,10 @@ public abstract class Parser
      *  
      * @param type The type of the token that we expect
      * the currently selected token in the buffer to be.
-     * @param errMsg The format string to be appended to
+     * @param errMsg A format string to be used as an error
+     * message if the match fails.
+     * @param errMsgArgs Zero or more arguments that map to 
+     * the format specifiers in the specified format string.
      */
     public void match(TokenType type, String errMsg, Object... errMsgArgs) 
     throws SyntaxError
