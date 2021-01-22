@@ -51,12 +51,15 @@ public abstract class Parser
         final StringBuilder sb = new StringBuilder();
         sb.append(String.format(template, args))
             .append(" ")
+            // Print the line number and column number of the offending token
             .append(peek().startPos())
             .append("\n\n")
+            // Print the start of the line up to the offending token
             .append(input.substring(peek().beginLineIndex(), 
                 peek().endIndex()))
             .append("\n");
 
+        // Point to the offending token
         for (int i = 1; i < peek().endIndex() - peek().beginLineIndex(); i++)
             sb.append(" ");
 
