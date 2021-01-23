@@ -9,6 +9,7 @@ import java.util.List;
 import me.mtk.torrey.Lexer.*;
 import me.mtk.torrey.Parser.*;
 import me.mtk.torrey.AST.*;
+import me.mtk.torrey.Analysis.TypeChecker;
 
 public class Torrey 
 {
@@ -26,8 +27,10 @@ public class Torrey
             final Lexer lexer = new Lexer(input);
             final List<Token> tokens = lexer.start();
             final Grammar grammar = new Grammar(tokens, input);
-            final List<Expr> exprs = grammar.program();
-            System.out.println(exprs);
+            final Program program = grammar.program();
+            final TypeChecker typeChecker = new TypeChecker(program);
+            typeChecker.check();
+            System.out.println(program);
         }
         catch (IOException e)
         {
