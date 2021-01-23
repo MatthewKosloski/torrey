@@ -49,17 +49,21 @@ public final class TypeCheckerVisitor implements
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
         final String opRawText = expr.token().rawText();
+        final DataType firstDataType = first.accept(this);
+        final DataType secondDataType = second.accept(this);
 
-        if (first.accept(this) != DataType.INTEGER)
+        if (firstDataType != DataType.INTEGER)
         {
-            final String err = String.format("First operand to binary operator '%s' must be of type integer",
-                opRawText);
+            final String err = String.format("Expected operand to operator '%s' to be " + 
+                "type '%s' but found type '%s'", opRawText, 
+                DataType.INTEGER, firstDataType);
             throw new Error(err);
         } 
-        if (second.accept(this) != DataType.INTEGER)
+        if (secondDataType != DataType.INTEGER)
         {
-            final String err = String.format("Second operand to binary operator '%s' must be of type integer",
-                opRawText);
+            final String err = String.format("Expected operand to operator '%s' to be " + 
+                "type '%s' but found type '%s'", opRawText, 
+                DataType.INTEGER, secondDataType);
             throw new Error(err);
         }
         return DataType.INTEGER;
