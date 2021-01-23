@@ -2,18 +2,19 @@ package me.mtk.torrey.Analysis;
 
 import me.mtk.torrey.AST.Program;
 
-public class TypeChecker {
+public class TypeChecker 
+{
     
-    private Program unchecked;
+    private Program program;
 
-    public TypeChecker(Program unchecked)
+    public TypeChecker(Program program)
     {
-        this.unchecked = unchecked;
+        this.program = program;
     }
 
     public void check()
     {
         final TypeCheckerVisitor visitor = new TypeCheckerVisitor();
-        unchecked.accept(visitor);
+        program.accept(visitor);
     }
 }
