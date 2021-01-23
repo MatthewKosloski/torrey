@@ -9,6 +9,7 @@ import me.mtk.torrey.AST.IntegerExpr;
 import me.mtk.torrey.AST.PrintExpr;
 import me.mtk.torrey.AST.UnaryExpr;
 import me.mtk.torrey.AST.BinaryExpr;
+import me.mtk.torrey.AST.Program;
 
 /**
  * Translates the context-free grammar to a 
@@ -27,14 +28,14 @@ public class Grammar extends Parser
     }
    
     // program -> expression* ;
-    public List<Expr> program() throws SyntaxError
+    public Program program() throws SyntaxError
     {
         final List<Expr> exprs = new ArrayList<>();
 
         while (hasTokens())
             exprs.add(expression());
 
-        return exprs;
+        return new Program(exprs);
     }
 
     // expression   -> integer

@@ -1,9 +1,7 @@
 package me.mtk.torrey.Parser;
 
-import java.util.Collection;
 import java.util.List;
-
-import me.mtk.torrey.AST.ASTNode;
+import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Lexer.Token;
 import me.mtk.torrey.Lexer.TokenType;
 
@@ -38,7 +36,7 @@ public abstract class Parser
     /**
      * The top-level rule of the grammar.
      */
-    public abstract Collection<? extends ASTNode> program() throws SyntaxError;
+    public abstract Program program() throws SyntaxError;
 
     /**
      * Handles errors.
