@@ -1,9 +1,6 @@
 package me.mtk.torrey.Analysis;
 
-import java.util.List;
 import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.AST.ASTNode;
-import me.mtk.torrey.AST.Expr;
 
 public class TypeChecker {
     
