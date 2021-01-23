@@ -83,6 +83,16 @@ public abstract class ASTNode
         return children.get(1);
     }
 
+    /**
+     * Retuns the token from which this AST node was created.
+     * 
+     * @return A token.
+     */
+    public Token token()
+    {
+        return token;
+    }
+
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
