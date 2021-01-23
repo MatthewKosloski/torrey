@@ -12,4 +12,10 @@ public class BinaryExpr extends Expr
         addChild(first);
         addChild(second);
     }
+
+    @Override
+    public <T> T accept(ExprVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

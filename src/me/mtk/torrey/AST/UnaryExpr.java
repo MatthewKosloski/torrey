@@ -11,4 +11,10 @@ public class UnaryExpr extends Expr
 
         addChild(operand);
     }
+
+    @Override
+    public <T> T accept(ExprVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

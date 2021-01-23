@@ -13,4 +13,10 @@ public class PrintExpr extends Expr
         for (Expr expr : exprList)
             addChild(expr);
     }
+
+    @Override
+    public <T> T accept(ExprVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
 }
