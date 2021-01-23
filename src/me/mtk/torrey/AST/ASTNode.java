@@ -58,7 +58,7 @@ public abstract class ASTNode
      * 
      * @return The children of this node.
      */
-    public List<ASTNode> getChildren()
+    public List<ASTNode> children()
     {
         return children;
     }
