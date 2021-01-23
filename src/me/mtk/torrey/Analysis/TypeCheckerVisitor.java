@@ -14,6 +14,14 @@ import me.mtk.torrey.AST.ProgramVisitor;
 public final class TypeCheckerVisitor implements 
     ExprVisitor<DataType>, ProgramVisitor<DataType>
 {
+
+    /**
+     * Type checks the entire program, visiting every
+     * child node.
+     * 
+     * @param program The program to be type checked.
+     * @return The DataType of the program.
+     */
     public DataType visit(Program program)
     {
         final List<ASTNode> children = program.children();
@@ -23,9 +31,19 @@ public final class TypeCheckerVisitor implements
             expr.accept(this);
         }
 
+        // A Program doesn't have a data type,
+        // but we must return one so we will
+        // return UNDEFINED.
         return DataType.UNDEFINED;
     }
 
+    /**
+     * Type checks a binary expression, ensuring that the operands
+     * are of type integer.
+     * 
+     * @param expr The binary expression to be type checked.
+     * @return DataType INTEGER.
+     */
     public DataType visit(BinaryExpr expr)
     {
         final Expr first = (Expr) expr.first();
@@ -47,11 +65,25 @@ public final class TypeCheckerVisitor implements
         return DataType.INTEGER;
     }
 
+    /**
+     * Type checks an integer literal expression by simply returning
+     * the integer data type.
+     * 
+     * @param expr The integer literal expression to be type checked.
+     * @return DataType INTEGER.
+     */
     public DataType visit(IntegerExpr expr)
     {
         return DataType.INTEGER;
     }
 
+    /**
+     * Type checks an integer literal expression by simply returning
+     * the integer data type.
+     * 
+     * @param expr The integer literal expression to be type checked.
+     * @return DataType INTEGER.
+     */
     public DataType visit(PrintExpr expr)
     {
         final List<ASTNode> children = expr.children();
@@ -68,6 +100,13 @@ public final class TypeCheckerVisitor implements
         return DataType.PRINT;
     }
 
+    /**
+     * Type checks a unary expression, ensuring that the 
+     * operand is of type integer.
+     * 
+     * @param expr The unary expression to be type checked.
+     * @return DataType INTEGER.
+     */
     public DataType visit(UnaryExpr expr)
     {
         final Expr operand = (Expr) expr.first();
