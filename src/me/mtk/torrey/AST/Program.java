@@ -19,6 +19,11 @@ public class Program extends ASTNode
             addChild(expr);
     }
 
+    public <T> T accept(ProgramVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
+
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();

@@ -17,6 +17,6 @@ public class TypeChecker {
     public void check()
     {
         final TypeCheckerVisitor visitor = new TypeCheckerVisitor();
-        visitor.visit(unchecked);
+        unchecked.accept(visitor);
     }
 }

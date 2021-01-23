@@ -9,8 +9,10 @@ import me.mtk.torrey.AST.PrintExpr;
 import me.mtk.torrey.AST.UnaryExpr;
 import me.mtk.torrey.AST.Expr;
 import me.mtk.torrey.AST.Program;
+import me.mtk.torrey.AST.ProgramVisitor;
 
-public final class TypeCheckerVisitor implements ExprVisitor<DataType>
+public final class TypeCheckerVisitor implements 
+    ExprVisitor<DataType>, ProgramVisitor<DataType>
 {
     public DataType visit(Program program)
     {
