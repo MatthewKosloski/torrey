@@ -35,7 +35,7 @@ public final class Token
     // the input program.
     private final Position endPos;
 
-    Token(TokenType type, String rawText, int beginIndex, int endIndex, 
+    public Token(TokenType type, String rawText, int beginIndex, int endIndex, 
         int beginLineIndex, Position startPos, Position endPos)
     {
         this.type = type;
