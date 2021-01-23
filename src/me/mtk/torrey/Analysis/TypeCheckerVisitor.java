@@ -38,7 +38,7 @@ public final class TypeCheckerVisitor implements
     }
 
     /**
-     * Type checks a binary expression, ensuring that the operands
+     * Type checks a binary expression, ensuring that both operands
      * are of type integer.
      * 
      * @param expr The binary expression to be type checked.
@@ -78,11 +78,11 @@ public final class TypeCheckerVisitor implements
     }
 
     /**
-     * Type checks an integer literal expression by simply returning
-     * the integer data type.
+     * Type checks a print expression, ensuring that each
+     * operand is of type integer.
      * 
-     * @param expr The integer literal expression to be type checked.
-     * @return DataType INTEGER.
+     * @param expr The print expression to be type checked.
+     * @return DataType PRINT.
      */
     public DataType visit(PrintExpr expr)
     {
