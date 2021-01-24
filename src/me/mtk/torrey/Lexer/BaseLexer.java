@@ -88,7 +88,7 @@ public abstract class BaseLexer
      * 
      * @return The token stream.
      */
-    public List<Token> start() throws SyntaxError
+    public List<Token> lex() throws SyntaxError
     {
         while (!isEOF())
         {

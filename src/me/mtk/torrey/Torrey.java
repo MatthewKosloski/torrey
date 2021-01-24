@@ -24,7 +24,7 @@ public class Torrey
         {
             final String input = read(args[0]);
             final Lexer lexer = new Lexer(new ErrorReporter(input), input);
-            final List<Token> tokens = lexer.start();
+            final List<Token> tokens = lexer.lex();
             // final Grammar grammar = new Grammar(new ErrorReporter(input), tokens);
             // final Program program = grammar.parse();
 
