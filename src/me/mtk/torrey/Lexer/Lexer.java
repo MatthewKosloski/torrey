@@ -1,6 +1,8 @@
 package me.mtk.torrey.Lexer;
 
-import me.mtk.torrey.Parser.ErrorMessages;
+import me.mtk.torrey.ErrorReporter.ErrorMessages;
+import me.mtk.torrey.ErrorReporter.ErrorReporter;
+import me.mtk.torrey.ErrorReporter.SyntaxError;
 
 /**
  * An implementation of a LL(1) recursive-descent
@@ -19,9 +21,9 @@ public final class Lexer extends BaseLexer
      * 
      * @param input An input program.
      */
-    public Lexer(final String input)
+    public Lexer(final ErrorReporter reporter, final String input)
     {
-        super(input);
+        super(reporter, input);
     }
 
     /**
@@ -30,7 +32,7 @@ public final class Lexer extends BaseLexer
      * that subsequently produces a token based on a 
      * pattern match.
      */
-    public void nextToken()
+    public void nextToken() throws SyntaxError
     {
         final char currentChar = nextChar();
         switch (currentChar)
@@ -60,7 +62,7 @@ public final class Lexer extends BaseLexer
                 {
                     hasLexicalError = true;
                     addToken(TokenType.UNIDENTIFIED);
-                    error(ErrorMessages.UnexpectedCharacter, 
+                    reporter.error(getLastToken(), ErrorMessages.UnexpectedCharacter, 
                         getLastToken().rawText());
                 }
 

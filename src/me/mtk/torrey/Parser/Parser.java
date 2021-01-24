@@ -2,24 +2,31 @@ package me.mtk.torrey.Parser;
 
 import java.util.List;
 import me.mtk.torrey.AST.Program;
+import me.mtk.torrey.ErrorReporter.ErrorReporter;
+import me.mtk.torrey.ErrorReporter.SyntaxError;
 import me.mtk.torrey.Lexer.Token;
 import me.mtk.torrey.Lexer.TokenType;
 
 /**
  * Implements a LL(k) recursive-descent parser. Holds the
  * collection of tokens retrieved from the lexer and provides
- * an API for lookahead and matching against tokens.
+ * an API for lookahead and matching against tokens. Any 
+ * general-purpose (non-grammar-specific) data and methods
+ * should go in here.
  */
 public abstract class Parser 
 {
+
+    // Accumulates the error messages encountered
+    // during the parse, which can then be accessed
+    // after parsing.
+    protected final ErrorReporter reporter;
+
     // Holds the collection of tokens produced by a lexer.
     private final List<Token> tokens;
 
     // The current position in the token collection.
     private int cursor;
-
-    // The input program.
-    private String input;
 
     /**
      * Constructs a new Parser object, initializing
@@ -27,64 +34,29 @@ public abstract class Parser
      * 
      * @param tokens A list of tokens.
      */
-    public Parser(List<Token> tokens, String input)
+    public Parser(ErrorReporter reporter, List<Token> tokens)
     {
+        this.reporter = reporter;
         this.tokens = tokens;
-        this.input = input;
     }
 
     /**
-     * The top-level rule of the grammar.
-     */
-    public abstract Program program() throws SyntaxError;
-
-    /**
-     * Handles errors.
+     * Initiates the parsing of the tokens. 
      * 
-     * @param tok The offending token. Includes location information where
-     * the error occurred.
-     * @param template An error message in the form of a format string.
-     * @param args The strings that replace the format specifies
-     * within the format string.
+     * @return A Program ASTNode, which holds the entire
+     * parsed AST.
+     * @throws SyntaxError If the error reporter has errors to report.
      */
-    public void error(Token tok, String template, Object... args) throws SyntaxError
-    {   
-
-        // Find the index (into input) of the last token on this line
-        int endIndex = tok.beginLineIndex();
-        while (endIndex < input.length() && input.charAt(endIndex) != '\n')
-            endIndex++;
-
-        final String offendingLine = input.substring(tok.beginLineIndex(), endIndex);
-
-        final StringBuilder sb = new StringBuilder();
-        sb.append(String.format(template, args))
-            .append(" ")
-            // Print the line number and column number of the offending token
-            .append(tok.startPos())
-            .append("\n\n")
-            .append(offendingLine)
-            .append("\n");
-
-        // Print a "^" character, pointing to the offending token.
-        for (int i = 1; i < tok.endIndex() - tok.beginLineIndex(); i++)
-            sb.append(" ");
-        sb.append("^");
-
-        throw new SyntaxError(sb.toString());
+    public Program parse() throws SyntaxError
+    {
+        final Program p = program();
+        reporter.report("Encountered one or more syntax errors during parse:");
+        return p;
     }
 
-    /**
-     * Handles errors.
-     * 
-     * @param template An error message in the form of a format string.
-     * @param args The strings that replace the format specifies
-     * within the format string.
-     */
-    public void error(String template, Object... args) throws SyntaxError
-    {   
-        error(peek(), template, args);
-    }
+    // Any class that extends from us must implement
+    // this method, which returns the root ASTNode, Program.
+    public abstract Program program();
 
     /**
      * If the token under the cursor has the same type
@@ -240,4 +212,23 @@ public abstract class Parser
 
         return tok;
     }
+
+    /**
+     * Implements panic-mode error recovery. Until there
+     * are no more tokens to parse, keep discarding tokens
+     * until the next token of lookahead is the start of
+     * an expression. This enables the parser to continue
+     * parsing, even if it encounters a syntax error.
+     */
+    public void synchronize()
+    {
+        while (hasTokens())
+        {
+            nextToken();
+
+            if (peek().type() == TokenType.LPAREN)
+                break;
+        }
+    }
+
 }

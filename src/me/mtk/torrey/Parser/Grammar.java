@@ -10,6 +10,9 @@ import me.mtk.torrey.AST.PrintExpr;
 import me.mtk.torrey.AST.UnaryExpr;
 import me.mtk.torrey.AST.BinaryExpr;
 import me.mtk.torrey.AST.Program;
+import me.mtk.torrey.ErrorReporter.ErrorReporter;
+import me.mtk.torrey.ErrorReporter.SyntaxError;
+import me.mtk.torrey.ErrorReporter.ErrorMessages;
 
 /**
  * Translates the context-free grammar to a 
@@ -22,18 +25,27 @@ import me.mtk.torrey.AST.Program;
  */
 public class Grammar extends Parser
 {
-    public Grammar(List<Token> tokens, String input)
+    public Grammar(ErrorReporter reporter,  List<Token> tokens)
     {
-        super(tokens, input);
+        super(reporter, tokens);
     }
    
     // program -> expression* ;
-    public Program program() throws SyntaxError
+    public Program program()
     {
         final List<Expr> exprs = new ArrayList<>();
 
         while (hasTokens())
-            exprs.add(expression());
+        {
+            try
+            {
+                exprs.add(expression());
+            }
+            catch (SyntaxError e)
+            {
+                synchronize();
+            }
+        }
 
         return new Program(exprs);
     }
@@ -69,8 +81,9 @@ public class Grammar extends Parser
             }
             else
             {
-                error(ErrorMessages.ExpectedUnaryBinaryPrint, 
-                    peek().rawText());
+                reporter.throwError(peekNext(), 
+                    ErrorMessages.ExpectedUnaryBinaryPrint,
+                    peekNext().rawText());
             }
         } 
         else if (peek(TokenType.INTEGER))
@@ -79,8 +92,9 @@ public class Grammar extends Parser
             return integer();
         }
 
-        error(ErrorMessages.ExpectedIntUnaryBinaryPrint, peek().rawText());
-
+        reporter.throwError(peek(), ErrorMessages.ExpectedIntUnaryBinaryPrint,
+            peek().rawText());
+        
         return null;
     }
 
@@ -164,12 +178,13 @@ public class Grammar extends Parser
     private void consumeLeftParen() throws SyntaxError
     {
         if (!match(TokenType.LPAREN))
-            error(peek(), ErrorMessages.ExpectedOpeningParen);
+            reporter.throwError(peek(), ErrorMessages.ExpectedOpeningParen);
     }
 
     private void consumeRightParen() throws SyntaxError
     {
         if (!match(TokenType.RPAREN))
-            error(lookahead(0), ErrorMessages.ExpectedClosingParen);
+            reporter.throwError(lookahead(0), 
+                ErrorMessages.ExpectedClosingParen);
     }
 }

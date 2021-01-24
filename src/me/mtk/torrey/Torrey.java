@@ -5,11 +5,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-
-import me.mtk.torrey.Lexer.*;
-import me.mtk.torrey.Parser.*;
-import me.mtk.torrey.AST.*;
+import me.mtk.torrey.Lexer.Lexer;
+import me.mtk.torrey.Lexer.Token;
+import me.mtk.torrey.Parser.Grammar;
+import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
+import me.mtk.torrey.ErrorReporter.ErrorReporter;
+import me.mtk.torrey.ErrorReporter.SyntaxError;
 
 public class Torrey 
 {
@@ -24,13 +26,14 @@ public class Torrey
         try
         {
             final String input = read(args[0]);
-            final Lexer lexer = new Lexer(input);
+            final Lexer lexer = new Lexer(new ErrorReporter(input), input);
             final List<Token> tokens = lexer.start();
-            final Grammar grammar = new Grammar(tokens, input);
-            final Program program = grammar.program();
-            final TypeChecker typeChecker = new TypeChecker(program);
-            typeChecker.check();
-            System.out.println(program);
+            // final Grammar grammar = new Grammar(new ErrorReporter(input), tokens);
+            // final Program program = grammar.parse();
+
+            // final TypeChecker typeChecker = new TypeChecker(program);
+            // typeChecker.check();
+            System.out.println(tokens);
         }
         catch (IOException e)
         {
@@ -38,7 +41,7 @@ public class Torrey
         }
         catch (SyntaxError e)
         {
-            System.err.println(e);
+            System.err.println(e.getMessage());
         }
     }
 

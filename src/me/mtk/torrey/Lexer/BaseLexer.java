@@ -2,7 +2,8 @@ package me.mtk.torrey.Lexer;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.Parser.SyntaxError;
+import me.mtk.torrey.ErrorReporter.SyntaxError;
+import me.mtk.torrey.ErrorReporter.ErrorReporter;
 
 /**
  * This base class keeps track of the lexer's state
@@ -13,6 +14,9 @@ import me.mtk.torrey.Parser.SyntaxError;
  */
 public abstract class BaseLexer
 {
+
+    protected final ErrorReporter reporter;
+
     // Stores the tokens that are to be emitted.
     protected final List<Token> tokens;
 
@@ -49,8 +53,6 @@ public abstract class BaseLexer
     // token; False otherwise.
     protected boolean hasLexicalError;
 
-    protected StringBuilder stderr;
-
     // The input program from which we will extract tokens.
     protected final String input;
 
@@ -60,11 +62,11 @@ public abstract class BaseLexer
      * 
      * @param input The input program that is to be lex'd.
      */
-    public BaseLexer(final String input)
+    public BaseLexer(ErrorReporter reporter, final String input)
     {
         this.input = input;
+        this.reporter = reporter;
         tokens = new ArrayList<>();
-        stderr = new StringBuilder();
         curLine = 1;
         curCol = 1;
     }
@@ -75,22 +77,9 @@ public abstract class BaseLexer
      * that subsequently produces a token based on a 
      * pattern match.
      */
-    public abstract void nextToken();
+    public abstract void nextToken() throws SyntaxError;
 
-    /**
-     * Handles errors.
-     * 
-     * @param template An error message in the form of a format string.
-     * @param args The strings that replace the format specifies
-     * within the format string.
-     */
-    public void error(String template, Object... args)
-    {   
-        stderr.append("\n")
-            .append(String.format(template, args))
-            .append(" ")
-            .append(getLastToken().startPos());
-    }
+
 
     /**
      * Starts the lexical analysis process, returning
@@ -114,13 +103,8 @@ public abstract class BaseLexer
         curCol++;
         addToken(TokenType.EOF);
 
-        if (stderr.length() > 0)
-        {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("Encountered one or more syntax errors:");
-            sb.append(stderr);
-            throw new SyntaxError(sb.toString());
-        }
+        reporter.report("Encountered one or more syntax "
+            + "errors during lexing:");
 
         return tokens;
     }
