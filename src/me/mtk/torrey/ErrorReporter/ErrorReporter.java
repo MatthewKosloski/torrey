@@ -44,6 +44,16 @@ public class ErrorReporter
         }
     }
 
+    public void reportSemanticError(String message) throws SemanticError
+    {
+        if (errorBuilder.length() > 0)
+        {
+            // We have errors to report.
+            System.err.println(message);
+            throw new SemanticError(this.toString());
+        }
+    }
+
     /**
      * Constructs an error message, appending it to the stderr buffer.
      * 
@@ -87,7 +97,8 @@ public class ErrorReporter
      * within the format string.
      * @throws SyntaxError
      */
-    public void throwError(Token tok, String template, Object... args) throws SyntaxError
+    public void throwError(Token tok, String template, Object... args) 
+    throws SyntaxError
     {
         error(tok, template, args);
         throw new SyntaxError("");

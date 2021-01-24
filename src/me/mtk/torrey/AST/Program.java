@@ -3,6 +3,7 @@ package me.mtk.torrey.AST;
 import java.util.List;
 
 import me.mtk.torrey.Lexer.TokenType;
+import me.mtk.torrey.ErrorReporter.SemanticError;
 import me.mtk.torrey.Lexer.Token;
 
 /**
@@ -19,7 +20,7 @@ public class Program extends ASTNode
             addChild(expr);
     }
 
-    public <T> T accept(ProgramVisitor<T> visitor)
+    public <T> T accept(ProgramVisitor<T> visitor) throws SemanticError
     {
         return visitor.visit(this);
     }

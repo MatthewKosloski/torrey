@@ -1,6 +1,9 @@
 package me.mtk.torrey.Analysis;
 
 import java.util.List;
+import me.mtk.torrey.ErrorReporter.ErrorMessages;
+import me.mtk.torrey.ErrorReporter.ErrorReporter;
+import me.mtk.torrey.ErrorReporter.SemanticError;
 import me.mtk.torrey.AST.ExprVisitor;
 import me.mtk.torrey.AST.ASTNode;
 import me.mtk.torrey.AST.BinaryExpr;
@@ -10,10 +13,18 @@ import me.mtk.torrey.AST.UnaryExpr;
 import me.mtk.torrey.AST.Expr;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.AST.ProgramVisitor;
+import me.mtk.torrey.Lexer.Token;
 
 public final class TypeCheckerVisitor implements 
     ExprVisitor<DataType>, ProgramVisitor<DataType>
 {
+
+    private ErrorReporter reporter;
+
+    public TypeCheckerVisitor(ErrorReporter reporter)
+    {
+        this.reporter = reporter;
+    }
 
     /**
      * Type checks the entire program, visiting every
@@ -22,7 +33,7 @@ public final class TypeCheckerVisitor implements
      * @param program The program to be type checked.
      * @return The DataType of the program.
      */
-    public DataType visit(Program program)
+    public DataType visit(Program program) throws SemanticError
     {
         final List<ASTNode> children = program.children();
         for (ASTNode child : children)
@@ -30,6 +41,9 @@ public final class TypeCheckerVisitor implements
             final Expr expr = (Expr) child;
             expr.accept(this);
         }
+
+        reporter.reportSemanticError("Encountered one or more semantic"
+            + " errors during type checking:");
 
         // A Program doesn't have a data type,
         // but we must return one so we will
@@ -48,24 +62,26 @@ public final class TypeCheckerVisitor implements
     {
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
-        final String opRawText = expr.token().rawText();
+
         final DataType firstDataType = first.accept(this);
         final DataType secondDataType = second.accept(this);
 
+        final Token operator = expr.token();
+
         if (firstDataType != DataType.INTEGER)
         {
-            final String err = String.format("Expected operand to operator '%s' to be " + 
-                "type '%s' but found type '%s'", opRawText, 
-                DataType.INTEGER, firstDataType);
-            throw new Error(err);
+            // expected type DataType.INTEGER but got firstDataType
+            reporter.error(first.token(), ErrorMessages.UnexpectedOperand, 
+                operator.rawText(), DataType.INTEGER, firstDataType);
         } 
+
         if (secondDataType != DataType.INTEGER)
         {
-            final String err = String.format("Expected operand to operator '%s' to be " + 
-                "type '%s' but found type '%s'", opRawText, 
-                DataType.INTEGER, secondDataType);
-            throw new Error(err);
+            // expected type DataType.INTEGER but got secondDataType
+            reporter.error(second.token(), ErrorMessages.UnexpectedOperand, 
+                operator.rawText(), DataType.INTEGER, secondDataType);
         }
+
         return DataType.INTEGER;
     }
 
@@ -90,17 +106,21 @@ public final class TypeCheckerVisitor implements
      */
     public DataType visit(PrintExpr expr)
     {
-        final List<ASTNode> children = expr.children();
-        for (ASTNode child : children)
+        final Token operator = expr.token();
+
+        for (ASTNode child : expr.children())
         {
             final Expr childExpr = (Expr) child;
-            if (childExpr.accept(this) != DataType.INTEGER)
-            {
-                final String err = "Operand to print expression must be of type integer";
-                throw new Error(err);
-            } 
+            final DataType operandDataType = childExpr.accept(this);
 
+            if (operandDataType != DataType.INTEGER)
+            {
+                // expected type DataType.INTEGER but got operandDataType
+                reporter.error(childExpr.token(), ErrorMessages.UnexpectedOperand,
+                    operator.rawText(), DataType.INTEGER, operandDataType);
+            } 
         }
+        
         return DataType.PRINT;
     }
 
@@ -113,13 +133,15 @@ public final class TypeCheckerVisitor implements
      */
     public DataType visit(UnaryExpr expr)
     {
+        final Token operator = expr.token();
         final Expr operand = (Expr) expr.first();
-        final String opRawText = expr.token().rawText();
-        if (operand.accept(this) != DataType.INTEGER)
+        final DataType operandDataType = operand.accept(this);
+
+        if (operandDataType != DataType.INTEGER)
         {
-            final String err = String.format("Operand to unary operator '%s' must be of type integer",
-                opRawText);
-            throw new Error(err);
+            // expected type DataType.INTEGER but got operandDataType
+            reporter.error(operand.token(), ErrorMessages.UnexpectedOperand, 
+                operator.rawText(), DataType.INTEGER, operandDataType);
         } 
 
         return DataType.INTEGER;
