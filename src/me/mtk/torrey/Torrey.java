@@ -7,9 +7,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import me.mtk.torrey.Lexer.Lexer;
 import me.mtk.torrey.Lexer.Token;
-import me.mtk.torrey.Parser.Grammar;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.ErrorReporter.ErrorReporter;
 import me.mtk.torrey.ErrorReporter.SyntaxError;
 
