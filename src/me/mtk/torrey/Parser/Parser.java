@@ -56,7 +56,7 @@ public abstract class Parser
 
     // Any class that extends from us must implement
     // this method, which returns the root ASTNode, Program.
-    public abstract Program program();
+    protected abstract Program program();
 
     /**
      * If the token under the cursor has the same type

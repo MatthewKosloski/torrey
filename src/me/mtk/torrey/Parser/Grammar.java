@@ -31,7 +31,7 @@ public class Grammar extends Parser
     }
    
     // program -> expression* ;
-    public Program program()
+    protected Program program()
     {
         final List<Expr> exprs = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class Grammar extends Parser
     //              | unary
     //              | binary
     //              | print ;
-    public Expr expression() throws SyntaxError
+    private Expr expression() throws SyntaxError
     {
 
         if (peek(TokenType.LPAREN))
@@ -99,7 +99,7 @@ public class Grammar extends Parser
     }
 
     // binary -> "(" binOp expression expression ")" ;
-    public BinaryExpr binary() throws SyntaxError
+    private BinaryExpr binary() throws SyntaxError
     {
         consumeLeftParen();
 
@@ -115,7 +115,7 @@ public class Grammar extends Parser
         return new BinaryExpr(binOp, first, second);
     }
 
-    public Expr binaryOrUnary() throws SyntaxError
+    private Expr binaryOrUnary() throws SyntaxError
     {
         consumeLeftParen();
         
@@ -149,7 +149,7 @@ public class Grammar extends Parser
     }
 
     // print -> "(" printOp exprlist ")" ;
-    public PrintExpr print() throws SyntaxError
+    private PrintExpr print() throws SyntaxError
     {
         consumeLeftParen();
  
@@ -170,7 +170,7 @@ public class Grammar extends Parser
     }
 
     // integer -> [0-9]+ ;
-    public IntegerExpr integer()
+    private IntegerExpr integer()
     {
         return new IntegerExpr(nextToken());
     }
