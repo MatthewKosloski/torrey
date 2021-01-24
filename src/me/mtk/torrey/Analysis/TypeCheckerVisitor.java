@@ -1,6 +1,5 @@
 package me.mtk.torrey.Analysis;
 
-import java.util.List;
 import me.mtk.torrey.ErrorReporter.ErrorMessages;
 import me.mtk.torrey.ErrorReporter.ErrorReporter;
 import me.mtk.torrey.ErrorReporter.SemanticError;
