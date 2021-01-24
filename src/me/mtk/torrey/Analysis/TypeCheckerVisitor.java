@@ -35,12 +35,8 @@ public final class TypeCheckerVisitor implements
      */
     public DataType visit(Program program) throws SemanticError
     {
-        final List<ASTNode> children = program.children();
-        for (ASTNode child : children)
-        {
-            final Expr expr = (Expr) child;
-            expr.accept(this);
-        }
+        for (ASTNode child : program.children())
+            ((Expr) child).accept(this);
 
         reporter.reportSemanticError("Encountered one or more semantic"
             + " errors during type checking:");
