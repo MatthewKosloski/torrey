@@ -20,6 +20,14 @@ public final class TypeCheckerVisitor implements
 
     private ErrorReporter reporter;
 
+    /**
+     * Constructs a new TypeCheckerVisitor that walks an
+     * AST starting at the Program node checking for type
+     * errors.
+     * 
+     * @param reporter The reporter reponsible for accumulating
+     * and throwing SemanticErrors.
+     */
     public TypeCheckerVisitor(ErrorReporter reporter)
     {
         this.reporter = reporter;
