@@ -45,7 +45,7 @@ public final class TypeCheckerVisitor implements
         for (ASTNode child : program.children())
             ((Expr) child).accept(this);
 
-        reporter.reportSemanticError("Encountered one or more semantic"
+        reporter.reportSemanticErrors("Encountered one or more semantic"
             + " errors during type checking:");
 
         // A Program doesn't have a data type,

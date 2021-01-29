@@ -50,7 +50,7 @@ public abstract class Parser
     public Program parse() throws SyntaxError
     {
         final Program p = program();
-        reporter.reportSyntaxError("Encountered one or more "
+        reporter.reportSyntaxErrors("Encountered one or more "
             + "syntax errors during parse:");
         return p;
     }

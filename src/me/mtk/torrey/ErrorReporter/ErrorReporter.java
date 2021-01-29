@@ -36,7 +36,7 @@ public class ErrorReporter
      * that are being reported.
      * @throws SyntaxError
      */
-    public void reportSyntaxError(String message) throws SyntaxError
+    public void reportSyntaxErrors(String message) throws SyntaxError
     {
         if (errMsgStack.size() > 0)
         {
@@ -46,7 +46,7 @@ public class ErrorReporter
         }
     }
 
-    public void reportSemanticError(String message) throws SemanticError
+    public void reportSemanticErrors(String message) throws SemanticError
     {
         if (errMsgStack.size() > 0)
         {
