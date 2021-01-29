@@ -46,6 +46,15 @@ public class ErrorReporter
         }
     }
 
+    /**
+     * Reports any accumulated errors by displaying the provided
+     * message to the standard errors stream and throwing a 
+     * SemanticError exception.
+     * 
+     * @param message The message to preface the error messages
+     * that are being reported.
+     * @throws SemanticError
+     */
     public void reportSemanticErrors(String message) throws SemanticError
     {
         if (errMsgStack.size() > 0)
