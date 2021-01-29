@@ -141,6 +141,11 @@ public class ErrorReporter
                 result.append("\n").append(str);
         }
 
+        result.append("\n")
+            .append(errMsgStack.size())
+            .append(" ")
+            .append("Errors");
+
         return result.toString();
     }
     
