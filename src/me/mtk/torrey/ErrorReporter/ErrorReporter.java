@@ -146,10 +146,15 @@ public class ErrorReporter
                 result.append("\n").append(str);
         }
 
+        final int numErrors = errMsgStack.size();
+
+        // print number of errors after error messages
         result.append("\n")
-            .append(errMsgStack.size())
+            .append("\n")
+            .append(numErrors)
             .append(" ")
-            .append("Errors");
+            .append("Error")
+            .append(numErrors == 1 ? "" : "s");
 
         return result.toString();
     }
