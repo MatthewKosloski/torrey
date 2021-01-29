@@ -98,9 +98,18 @@ public abstract class BaseLexer
             nextToken();
         }
 
-        tokenIndexStart++;
-        tokenStartCol++;
-        curCol++;
+        if (tokens.size() != 0)
+        {
+            tokenIndexStart++;
+            tokenStartCol++;
+            curCol++;
+        }
+        else
+        {
+            // empty file
+            tokenStartCol = curCol;
+            tokenStartLine = curLine;
+        }
         addToken(TokenType.EOF);
 
         reporter.reportSyntaxErrors("Encountered one or more syntax "
