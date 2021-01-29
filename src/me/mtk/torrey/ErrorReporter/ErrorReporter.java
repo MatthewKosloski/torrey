@@ -94,10 +94,15 @@ public class ErrorReporter
             .append(offendingLine)
             .append("\n");
 
-        // Print a "^" character, pointing to the offending token.
-        for (int i = 1; i < tok.endIndex() - tok.beginLineIndex(); i++)
+        // Print "^^^...", pointing to the offending token.
+
+        // move the pointer under the token
+        for (int i = 0; i < tok.beginIndex() - tok.beginLineIndex(); i++)
             str.append(" ");
-        str.append("^");
+        
+        // print the pointer across the token
+        for (int i = 0; i < tok.rawText().length(); i++)
+            str.append("^");
 
         // add string to error message stack
         errMsgStack.push(str.toString());
