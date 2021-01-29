@@ -1,5 +1,6 @@
 package me.mtk.torrey.ErrorReporter;
 
+import java.util.Stack;
 import me.mtk.torrey.Lexer.Token;
 
 public class ErrorReporter 
@@ -8,8 +9,9 @@ public class ErrorReporter
     // The input program.
     private String input;
 
-    // Accumulates the error messages.
-    private StringBuilder errorBuilder;
+    // Accumulate the error messages in a stack.
+    private Stack<String> errMsgStack;
+
 
     /**
      * Constructs a new ErrorReporter object, initializing
@@ -21,7 +23,7 @@ public class ErrorReporter
     public ErrorReporter(final String input)
     {
         this.input = input;
-        this.errorBuilder = new StringBuilder();
+        errMsgStack = new Stack<>();
     }
     
 
@@ -36,7 +38,7 @@ public class ErrorReporter
      */
     public void reportSyntaxError(String message) throws SyntaxError
     {
-        if (errorBuilder.length() > 0)
+        if (errMsgStack.size() > 0)
         {
             // We have errors to report.
             System.err.println(message);
@@ -46,7 +48,7 @@ public class ErrorReporter
 
     public void reportSemanticError(String message) throws SemanticError
     {
-        if (errorBuilder.length() > 0)
+        if (errMsgStack.size() > 0)
         {
             // We have errors to report.
             System.err.println(message);
@@ -72,7 +74,9 @@ public class ErrorReporter
 
         final String offendingLine = input.substring(tok.beginLineIndex(), endIndex);
 
-        errorBuilder.append("\n")
+        final StringBuilder str = new StringBuilder();
+
+        str.append("\n")
             .append(String.format(template, args))
             .append(" ")
             // Print the line number and column number of the offending token
@@ -83,8 +87,11 @@ public class ErrorReporter
 
         // Print a "^" character, pointing to the offending token.
         for (int i = 1; i < tok.endIndex() - tok.beginLineIndex(); i++)
-            errorBuilder.append(" ");
-        errorBuilder.append("^");
+            str.append(" ");
+        str.append("^");
+
+        // add string to error message stack
+        errMsgStack.push(str.toString());
     }
 
     /**
@@ -105,11 +112,27 @@ public class ErrorReporter
     }
 
     /**
+     * Pops an error message off the stack.
+     */
+    public void pop()
+    {
+        errMsgStack.pop();
+    }
+
+    /**
      * Returns the error messages that have been reported.
      */
     public String toString()
     {
-        return errorBuilder.toString();
+        final StringBuilder result = new StringBuilder();
+        
+        if (errMsgStack.size() > 0)
+        {
+            for (String str : errMsgStack)
+                result.append("\n").append(str);
+        }
+
+        return result.toString();
     }
     
 }
