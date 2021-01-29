@@ -103,7 +103,7 @@ public abstract class BaseLexer
         curCol++;
         addToken(TokenType.EOF);
 
-        reporter.report("Encountered one or more syntax "
+        reporter.reportSyntaxError("Encountered one or more syntax "
             + "errors during lexing:");
 
         return tokens;

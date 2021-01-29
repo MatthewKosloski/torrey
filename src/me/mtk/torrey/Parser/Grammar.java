@@ -81,7 +81,7 @@ public class Grammar extends Parser
             }
             else
             {
-                reporter.throwError(peekNext(), 
+                reporter.throwSyntaxError(peekNext(), 
                     ErrorMessages.ExpectedUnaryBinaryPrint,
                     peekNext().rawText());
             }
@@ -92,7 +92,8 @@ public class Grammar extends Parser
             return integer();
         }
 
-        reporter.throwError(peek(), ErrorMessages.ExpectedIntUnaryBinaryPrint,
+        reporter.throwSyntaxError(peek(), 
+            ErrorMessages.ExpectedIntUnaryBinaryPrint,
             peek().rawText());
         
         return null;
@@ -178,13 +179,14 @@ public class Grammar extends Parser
     private void consumeLeftParen() throws SyntaxError
     {
         if (!match(TokenType.LPAREN))
-            reporter.throwError(peek(), ErrorMessages.ExpectedOpeningParen);
+            reporter.throwSyntaxError(peek(), 
+                ErrorMessages.ExpectedOpeningParen);
     }
 
     private void consumeRightParen() throws SyntaxError
     {
         if (!match(TokenType.RPAREN))
-            reporter.throwError(lookahead(0), 
+            reporter.throwSyntaxError(lookahead(0), 
                 ErrorMessages.ExpectedClosingParen);
     }
 }

@@ -34,7 +34,7 @@ public class ErrorReporter
      * that are being reported.
      * @throws SyntaxError
      */
-    public void report(String message) throws SyntaxError
+    public void reportSyntaxError(String message) throws SyntaxError
     {
         if (errorBuilder.length() > 0)
         {
@@ -97,7 +97,7 @@ public class ErrorReporter
      * within the format string.
      * @throws SyntaxError
      */
-    public void throwError(Token tok, String template, Object... args) 
+    public void throwSyntaxError(Token tok, String template, Object... args) 
     throws SyntaxError
     {
         error(tok, template, args);
