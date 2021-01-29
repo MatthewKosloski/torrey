@@ -140,6 +140,9 @@ public class Grammar extends Parser
             // Could not parse a second operand, so
             // we must have a unary expression.
             result = new UnaryExpr(operator, first);
+
+            // don't report this syntax error
+            reporter.pop();
         }
         finally
         {
