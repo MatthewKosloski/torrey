@@ -18,6 +18,4 @@ integer       -> [0-9]+ ;
 unary         -> "(" - expression ")" ;
 binary        -> "(" ("+" | "-" | "*" | "/") expression expression ")" ;
 print         -> "(" ("print" | "println") expression+ ")" ;
-
-exprlist      -> expression+ ;
 ```
