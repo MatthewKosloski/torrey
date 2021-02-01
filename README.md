@@ -15,7 +15,7 @@ expression    -> integer
                | print ;
 
 integer       -> [0-9]+ ;
-unary         -> "(" - expression ")" ;
+unary         -> "(" "-" expression ")" ;
 binary        -> "(" ("+" | "-" | "*" | "/") expression expression ")" ;
 print         -> "(" ("print" | "println") expression+ ")" ;
 ```
