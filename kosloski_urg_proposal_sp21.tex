@@ -73,33 +73,40 @@ There are several approaches to building compilers.  The typical and ``old schoo
 
 \section*{{\large Project Objectives}}
 \begin{itemize}
-	\item Using the Extended Backus-Naur Form meta language, write an unambiguous context-free grammar for a high-level, statically-typed, Lisp-like programming language
-	\item Apply finite automata theory to implement an LL(1) lexical analyzer to: (1) read in a character stream and output tokens and (2) reject programs with illegal tokens
-	\item Apply pushdown automata theory to implement an LL(k) syntax analyzer to: (1) construct an abstract syntax tree and (2) reject programs with invalid syntax
-	\item Employ one or more software engineering design patterns (e.g., Visitor) 
-	\item Peform semantic analysis (e.g., type checking) by traversing the parsed AST
-	\item Implement a panic-mode error recovery system with helpful error messages
-	\item Design a static and implicit type system
-	\item Devise a linear intermediate representation (IR) to promote modularity and translation
-	\item Translate ASTs to linear IRs
-	\item Become less dependent upon the stack through the use of CPU register allocation
-	\item Generate either LLVM IR or efficient assembly code for a modern computer architecture
-	\item Using the C programming language, write a small runtime system
-	\item Perform one or more compiler optimizations (e.g., constant folding)
+ 	\item Perform lexical analysis, syntax analysis, semantic analysis, and other compiler passes
+ 	\item Apply tree traversals to convert an abstract syntax tree to an intermediate representation
+	\item Perform standard compiler optimizations
+	\item Allocate CPU registers using an algorithm
+	\item Generate either LLVM IR or efficient x86-64 assembly code
 \end{itemize}
 
-\section*{{\large Personal Outcomes}}
-\begin{itemize}
-	\item Become acquainted with the main phases of a compiler
-	\item Develop a working knowledge of an assembly language and its calling conventions
-	\item Acquire a deeper understanding of the memory organization of a running program
-	\item Acquire a deeper understanding of the capabilities and limitations of modern compilers
-	\item Be able to compare and contrast program interpretation and compilation
-	\item Bridge the gap between theory and practical application
-\end{itemize}
+\section*{{\large Preliminary Work}}
+In the Spring 2020 semester, I took CS 316 Programming Languages.  The course was theoretical, and I never had an opportunity to build my own programming language.  However, after taking the course, I decided to apply my knowledge to construct a simple interpreter for a tiny Lisp-like programming language (an \textit{interpreter} is another way of implementing a programming language, an alternative to compilation).\footnote{\href{https://github.com/MatthewKosloski/truncated-tarantula}{The source code for my interpreter, codenamed ``Truncated Tarantula''}}  During the development of the interpreter, I consulted \textit{Crafting Interpreters}, which is a textbook that instructs the reader on how to built a tree-walk interpreter for a programming language.  Although I did not ``finish'' the programming language, I was able to implement the following: binary arithmetic, lexically-scoped variables, booleans, strings, signed integers, signed real numbers, and control flow.
 
 \section*{{\large Research Design, Methodology, and Activities}}
-Conforming to the Agile software development methodology, I propose an incremental approach to the development of my compiler.  That is, I intend to build not one compiler, but \textit{several}, each of which building upon the previous by adding more features to the language.  Thus, at any given time after the development of the first compiler, I will have a fully-working compiler. The first compiler will implement integer, unary, and binary expressions as well as standard output.  The second compiler will add lexically-scoped variables via a \lstinline{let} expression.  The third compiler will add booleans and control flow.  The fourth compiler will add global functions via a \lstinline{fun} expression.  Lastly, the final compiler will add loops. I anticipate that each compiler will take about three weeks to implement, but a little longer for the first one as it sets the ground work.
+Conforming to the Agile software development methodology, I propose an incremental approach to the development of my compiler.  That is, I intend to build not one compiler, but \textit{five}, each of which building upon the previous by adding more features:
+
+\begin{enumerate}
+	\item \textbf{[Jan 11-Feb 08]:} integer, unary, and binary expressions and standard output
+	\item \textbf{[Feb 08-Mar 01]:} lexically-scoped variables via a \lstinline{let} expression
+	\item \textbf{[Mar 01-Mar 22]:} booleans, logical and relational operators, and control flow
+	\item \textbf{[Mar 22-Apr 12]:} globally-scoped functions via a \lstinline{fun} expression
+	\item \textbf{[Apr 12-May 03]:} loops
+\end{enumerate}
+For illustrative purposes, here is the context-free grammar that will be implemented by the first compiler's parser:
+\begin{lstlisting}
+program       -> expression* ;
+expression    -> integer
+               | unary
+               | binary
+               | print ;
+integer       -> [0-9]+ ;
+unary         -> "(" "-" expression ")" ;
+binary        -> "(" ("+" | "-" | "*" | "/") expression expression ")" ;
+print         -> "(" ("print" | "println") expression+ ")" ;
+\end{lstlisting}
+
+\clearpage
 
 \section*{{\large References}}
 \begin{enumerate}
