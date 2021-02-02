@@ -1,0 +1,112 @@
+\documentclass[12pt]{report}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{subfig}
+\usepackage{fontspec}
+\usepackage{setspace}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = black, %Colour of internal links
+}
+
+\usepackage[a4paper,
+ 	left=1in,
+ 	right=1in,
+ 	bottom=1in,
+ 	top=1in]{geometry}
+ 	 	
+\graphicspath{ {./img/} }
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\setmainfont{Times New Roman}
+
+\singlespacing
+
+\begin{document}
+\begin{center}
+	\textbf{{\LARGE Undergraduate Research Grant Proposal}}
+\end{center}
+
+\section*{{\large Project Title}}
+A Compiler for a Lisp-like Programming Language
+
+\section*{{\large Introduction}}
+Algorithms that are employed to solve computational problems must be implemented in some \textit{high-level programming language}.  That is, a language that abstracts away the many low-level details of the computer (e.g., registers, memory addresses, the stack, calling conventions, etc.), thereby making it loosely coupled to the hardware. These high-level languages contrast greatly to low-level languages (e.g., assembly languages), which are very tightly coupled to a computer and its architecture.  While this abstraction has facilitated accessibility and the speed at which programming can take place, it has simultaneously (by design) ``shielded'' programmers, many of whom take the abstraction for granted.
+There are several different ways of implementing a high-level programming language, one of which is \textit{compilation}.  A \textit{compiler} is a computer program that translates a program written in a source language to an equivalent program in a target language.
+In an attempt to better my understanding of the low-level details that high-level languages abstract away, I am proposing that I implement my own novel programming language.  I propose that the language be ``Lisp-like'', meaning its \textit{syntax} (form) and \textit{semantics} (meaning) will be inspired by a Lisp language.  Moreover, I propose that the language be implemented by constructing a compiler to translate the Lisp-like high-level language to an equivalent program in either LLVM IR or x86-64 assembly code.
+
+\section*{{\large Significance}}
+As stated in [1], ``compiler writing touches upon programming languages, machine architecture, language theory, algorithms, and software engineering''.  Clearly, building a compiler is no small feat and there are many lessons to be learned.  Additionally, because the university does not offer an undergraduate course in compilers, I firmly believe this project would be a great opportunity to broaden my computer science education.
+
+\section*{{\large Literature Review}}
+There are several approaches to building compilers.  The typical and ``old school'' approach, as articulated in [1], is to decompose the compiler into a number of small passes. Alternatively, as proposed by [2], a compiler can be decomposed into many small, fine-grained ``nano passes'', each of which performs a single task.  I intend to adopt a mixture of these two approaches.
+
+\section*{{\large Project Objectives}}
+\begin{itemize}
+	\item Using the Extended Backus-Naur Form meta language, write an unambiguous context-free grammar for a high-level, statically-typed, Lisp-like programming language
+	\item Apply finite automata theory to implement an LL(1) lexical analyzer to: (1) read in a character stream and output tokens and (2) reject programs with illegal tokens
+	\item Apply pushdown automata theory to implement an LL(k) syntax analyzer to: (1) construct an abstract syntax tree and (2) reject programs with invalid syntax
+	\item Employ one or more software engineering design patterns (e.g., Visitor) 
+	\item Peform semantic analysis (e.g., type checking) by traversing the parsed AST
+	\item Implement a panic-mode error recovery system with helpful error messages
+	\item Design a static and implicit type system
+	\item Devise a linear intermediate representation (IR) to promote modularity and translation
+	\item Translate ASTs to linear IRs
+	\item Become less dependent upon the stack through the use of CPU register allocation
+	\item Generate either LLVM IR or efficient assembly code for a modern computer architecture
+	\item Using the C programming language, write a small runtime system
+	\item Perform one or more compiler optimizations (e.g., constant folding)
+\end{itemize}
+
+\section*{{\large Personal Outcomes}}
+\begin{itemize}
+	\item Become acquainted with the main phases of a compiler
+	\item Develop a working knowledge of an assembly language and its calling conventions
+	\item Acquire a deeper understanding of the memory organization of a running program
+	\item Acquire a deeper understanding of the capabilities and limitations of modern compilers
+	\item Be able to compare and contrast program interpretation and compilation
+	\item Bridge the gap between theory and practical application
+\end{itemize}
+
+\section*{{\large Research Design, Methodology, and Activities}}
+Conforming to the Agile software development methodology, I propose an incremental approach to the development of my compiler.  That is, I intend to build not one compiler, but \textit{several}, each of which building upon the previous by adding more features to the language.  Thus, at any given time after the development of the first compiler, I will have a fully-working compiler. The first compiler will implement integer, unary, and binary expressions as well as standard output.  The second compiler will add lexically-scoped variables via a \lstinline{let} expression.  The third compiler will add booleans and control flow.  The fourth compiler will add global functions via a \lstinline{fun} expression.  Lastly, the final compiler will add loops. I anticipate that each compiler will take about three weeks to implement, but a little longer for the first one as it sets the ground work.
+
+\section*{{\large References}}
+\begin{enumerate}
+	\item[\text{[1]}] Aho, Alfred V., et al. "Introduction." \textit{Compilers: Principles, Techniques, and Tools}, 2nd ed., Pearson Higher Ed, 2011
+	\item[\text{[2]}] SARKAR, DIPANWITA, OSCAR WADDELL, and R. K. DYBVIG. \textit{"EDUCATIONAL PEARL: A Nanopass framework for compiler education."} Journal of Functional Programming 15, no. 05 (2005), 653
+\end{enumerate}
+
+
+
+\end{document}
