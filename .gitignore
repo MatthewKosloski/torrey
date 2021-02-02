@@ -1,2 +1,7 @@
 *.class
 *.exe.stackdump
+*.aux
+*.log
+*.out
+*.pdf
+*.synctex.gz
