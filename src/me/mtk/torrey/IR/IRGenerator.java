@@ -72,16 +72,29 @@ public class IRGenerator
         else if (expr instanceof PrintExpr)
             gen((PrintExpr)expr);
         else
-            // TODO: better error message here
             throw new Error("ERROR: Cannot generate expression.");
     }
 
+    /**
+     * Generates one or more IR instructions for the given integer AST node.
+     * 
+     * @param expr An integer AST node.
+     * @param lval The address at which the value of the integer
+     * is to be stored.
+     */
     private void gen(IntegerExpr expr, Address lval)
     {
         instrs.add(new IntegerInst(lval, 
             Integer.parseInt(expr.token().rawText())));
     }
 
+    /**
+     * Generates one or more IR instructions for the given unary AST node.
+     * 
+     * @param expr An unary AST node.
+     * @param lval The address at which the result of the unary operation
+     * is to be stored.
+     */
     private void gen(UnaryExpr expr, Address lval)
     {
         final UnaryOpType op = transUnaryOp(expr.token().rawText());
@@ -93,6 +106,13 @@ public class IRGenerator
         instrs.add(new UnaryInst(lval, op, operandLval));
     }
 
+    /**
+     * Generates one or more IR instructions for the given binary AST node.
+     * 
+     * @param expr An binary AST node.
+     * @param lval The address at which the result of the binary operation
+     * is to be stored.
+     */
     private void gen(BinaryExpr expr, Address lval)
     {
         final BinaryOpType op = transBinaryOP(expr.token().rawText());
@@ -108,6 +128,11 @@ public class IRGenerator
         instrs.add(new BinaryInst(lval, op, firstOpLval, secondOpLval));
     }
 
+    /**
+     * Generates one or more IR instructions for the given print AST node.
+     * 
+     * @param expr A print AST node.
+     */
     private void gen(PrintExpr expr)
     {
         final List<Address> paramTemps = new ArrayList<>();
@@ -128,6 +153,12 @@ public class IRGenerator
             expr.children().size()));
     }
 
+    /**
+     * Generates a parameter instruction.
+     * 
+     * @param temp The temp address at which the value of 
+     * the parameter is stored.
+     */
     private void genParam(Address temp)
     {
         instrs.add(new ParamInst(temp));
@@ -137,8 +168,8 @@ public class IRGenerator
      * Maps the raw text of an AST token to the equivalent
      * operator for an IR unary instruction.
      *  
-     * @param rawText
-     * @return
+     * @param rawText The raw text of the AST node's token.
+     * @return The corresponding IR unary instruction operator type.
      */
     private UnaryOpType transUnaryOp(String rawText)
     {
@@ -151,6 +182,13 @@ public class IRGenerator
         }
     }
 
+    /*
+     * Maps the raw text of an AST token to the equivalent
+     * operator for an IR binary instruction.
+     *  
+     * @param rawText The raw text of the AST node's token.
+     * @return The corresponding IR binary instruction operator type.
+     */
     private BinaryOpType transBinaryOP(String rawText)
     {
         switch (rawText)
@@ -161,10 +199,15 @@ public class IRGenerator
             case "/": return BinaryOpType.DIV;
             default: 
                 throw new Error("Error: Cannot translate raw"
-                    + " text to an IR unary operator");
+                    + " text to an IR binary operator");
         }
     }
     
+    /**
+     * Generates a new temp address.
+     * 
+     * @return A temporary address.
+     */
     private Address newtemp()
     {
         return new Address(String.format("t%d", tempCounter++));
