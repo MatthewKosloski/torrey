@@ -21,8 +21,22 @@ public class IRInst
         // check so that the lval isn't something weird like a constant 
         // (e.g., 5 = t0).
         if (lval.mode() != AddressingMode.TEMP)
-            throw new Error("The addressing mode of the lval must be TEMP.");
+            throwIllegalAddressingModeException(AddressingMode.TEMP, lval.mode());
 
         this.lval = lval;
+    }
+
+    /**
+     * Should be thrown when we encounter an unexpected addressing mode.
+     * 
+     * @param expected The expected addressing mode.
+     * @param actual The actual addressing mode.
+     */
+    protected void throwIllegalAddressingModeException(AddressingMode expected,
+        AddressingMode actual)
+    {
+        final String msg = String.format("Expected addessing mode '%s' but" +
+            " got addessing mode '%s'", expected, actual);
+        throw new IllegalAddressingModeException(msg);
     }
 }
