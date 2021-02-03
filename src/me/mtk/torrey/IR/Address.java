@@ -1,39 +1,46 @@
 package me.mtk.torrey.IR;
 
 /**
- * An address can be a name, a constant, or a 
+ * Represents a virtual addressing mode. An addressing mode
+ * is an expression that calculates an address in memory
+ * to be read/written to. 
+ * 
+ * An address can be a constant, or a 
  * compiler-generated temporary.
  */
 public class Address 
 {
-    // The type of address name, temp, etc.
-    private AddressType type;
+    // The mode of this address.
+    private AddressingMode mode;
 
     // The value of the address.
     private String value;
 
-    public Address(AddressType type, String value)
+    /**
+     * Constructs a new temporary address.
+     * @param value The value stored at this address.
+     */
+    public Address(String value)
     {
-        this.type = type;
+        mode = AddressingMode.TEMP;
         this.value = value;
     }
 
+    /**
+     * Constructs a new constant address.
+     * @param constant A constant to be stored at this address.
+     */
     public Address(int contant)
     {
-        type = AddressType.CONSTANT;
+        mode = AddressingMode.CONSTANT;
         value = String.valueOf(contant);
     }
 
-    public AddressType type()
-    {
-        return type;
-    }
-
-    public String value()
-    {
-        return value;
-    }
-
+    /**
+     * The string representation of this address.
+     * 
+     * @return A string containing the value of this address.
+     */
     public String toString()
     {
         return String.format("%s", value);
