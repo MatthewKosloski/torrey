@@ -17,10 +17,10 @@ public class IRInst
      */
     public IRInst(Address lval)
     {
-        // Require the addressing mode to be a temporary. We make this
-        // check so that the lval isn't something weird like a constant 
-        // (e.g., 5 = t0).
-        if (lval.mode() != AddressingMode.TEMP)
+        // Require the addressing mode to be a temporary (or null). 
+        // We make this check so that the lval isn't something weird 
+        // like a constant (e.g., 5 = t0).
+        if (lval != null && lval.mode() != AddressingMode.TEMP)
             throwIllegalAddressingModeException(AddressingMode.TEMP, lval.mode());
 
         this.lval = lval;
