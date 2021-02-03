@@ -20,7 +20,9 @@ binary        -> "(" ("+" | "-" | "*" | "/") expression expression ")" ;
 print         -> "(" ("print" | "println") expression+ ")" ;
 ```
 
-## IR
+## Intermediate Representation (IR) Grammar
+
+This is the grammar of the intermediate language.
 
 ```
 program       -> irinst* ;
