@@ -14,14 +14,14 @@ public class BinaryInst extends IRInst
     /**
      * Instantiates a new binary arithmetic IR instruction.
      * 
-     * @param addr The address at which the result of the arithmetic is to be stored.
+     * @param lval The address at which the result of the arithmetic is to be stored.
      * @param op The binary operator of this instruction.
      * @param first The address at which the first operand is located.
      * @param second The address at which the second operand is located.
      */
-    public BinaryInst(Address addr, BinaryOpType op, Address first, Address second)
+    public BinaryInst(Address lval, BinaryOpType op, Address first, Address second)
     {
-        super(addr);
+        super(lval);
         operator = op;
         this.first = first;
         this.second = second;

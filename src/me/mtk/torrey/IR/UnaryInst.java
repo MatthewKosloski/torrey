@@ -14,14 +14,14 @@ public class UnaryInst extends IRInst
     /**
      * Instantiates a new unary IR instruction.
      * 
-     * @param addr The address at which the result of the unary 
+     * @param lval The address at which the result of the unary 
      * operation is to be stored.
      * @param op The unary operator of this instruction.
      * @param operand The address at which the value of the operand is located.
      */
-    public UnaryInst(Address addr, UnaryOpType op, Address operand)
+    public UnaryInst(Address lval, UnaryOpType op, Address operand)
     {
-        super(addr);
+        super(lval);
         operator = op;
         this.operand = operand;
 

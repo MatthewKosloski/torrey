@@ -11,12 +11,12 @@ public class IntegerInst extends IRInst
     /**
      * Instantiates a new integer IR instruction.
      * 
-     * @param addr The address at which the integer constant is to be stored.
+     * @param lval The address at which the integer constant is to be stored.
      * @param constant The actual integer constant value.
      */
-    public IntegerInst(Address addr, int constant)
+    public IntegerInst(Address lval, int constant)
     {
-        super(addr);
+        super(lval);
         this.constant = new Address(constant);
     }
 
