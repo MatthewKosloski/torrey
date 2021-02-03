@@ -27,6 +27,6 @@ public class IntegerInst extends IRInst
      */
     public String toString()
     {
-        return String.format("%s = %s", addr, constant);
+        return String.format("%s = %s", lval, constant);
     }
 }

@@ -22,6 +22,6 @@ public class ParamInst extends IRInst
      */
     public String toString()
     {
-        return String.format("param %s", addr);
+        return String.format("param %s", lval);
     }
 }

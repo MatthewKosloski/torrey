@@ -34,6 +34,6 @@ public class UnaryInst extends IRInst
      */
     public String toString()
     {
-        return String.format("%s = %s %s", addr, operator, operand);
+        return String.format("%s = %s %s", lval, operator, operand);
     }
 }

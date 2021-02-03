@@ -34,6 +34,6 @@ public class BinaryInst extends IRInst
      */
     public String toString()
     {
-        return String.format("%s = %s %s %s", addr, operator, first, second);
+        return String.format("%s = %s %s %s", lval, operator, first, second);
     }
 }
