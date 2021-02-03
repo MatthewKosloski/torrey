@@ -48,10 +48,14 @@ public class Torrey
             final IRGenerator irGenerator = new IRGenerator();
             List<IRInst> irInstrs = irGenerator.gen(program);
 
-            
+            final StringBuilder sb = new StringBuilder();
+            for (IRInst instr : irInstrs)
+                sb.append(instr).append("\n");
+
             System.out.println(tokens);
             System.out.println(program);
-            System.out.println(irInstrs);            
+            System.out.println();
+            System.out.println(sb.toString());      
         }
         catch (IOException e)
         {
