@@ -6,7 +6,7 @@ package me.mtk.torrey.IR;
 public class UnaryInst extends IRInst
 {
     // The type of unary operator.
-    private UnaryOpType operator;
+    private String operator;
 
     // The address at which the operand is located.
     private Address operand;
@@ -19,7 +19,7 @@ public class UnaryInst extends IRInst
      * @param op The unary operator of this instruction.
      * @param operand The address at which the value of the operand is located.
      */
-    public UnaryInst(Address lval, UnaryOpType op, Address operand)
+    public UnaryInst(Address lval, String op, Address operand)
     {
         super(lval);
         operator = op;

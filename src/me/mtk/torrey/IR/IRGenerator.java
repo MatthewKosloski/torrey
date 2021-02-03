@@ -97,7 +97,7 @@ public class IRGenerator
      */
     private void gen(UnaryExpr expr, Address lval)
     {
-        final UnaryOpType op = transUnaryOp(expr.token().rawText());
+        final String op = transUnaryOp(expr.token().rawText());
         final Address operandLval = newtemp();
 
         // generate the instructions for the operand
@@ -115,7 +115,7 @@ public class IRGenerator
      */
     private void gen(BinaryExpr expr, Address lval)
     {
-        final BinaryOpType op = transBinaryOP(expr.token().rawText());
+        final String op = transBinaryOP(expr.token().rawText());
 
         // The lvals of the operands.
         final Address firstOpLval = newtemp();
@@ -171,7 +171,7 @@ public class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR unary instruction operator type.
      */
-    private UnaryOpType transUnaryOp(String rawText)
+    private String transUnaryOp(String rawText)
     {
         switch (rawText)
         {
@@ -189,7 +189,7 @@ public class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR binary instruction operator type.
      */
-    private BinaryOpType transBinaryOP(String rawText)
+    private String transBinaryOP(String rawText)
     {
         switch (rawText)
         {

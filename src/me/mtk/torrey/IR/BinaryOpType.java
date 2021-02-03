@@ -3,10 +3,10 @@ package me.mtk.torrey.IR;
 /**
  * The types of binary operators for IR instructions.
  */
-public enum BinaryOpType
+public final class BinaryOpType
 {
-    ADD,
-    SUB,
-    MULT,
-    DIV    
+    public static final String ADD = "+";
+    public static final String SUB = "-";
+    public static final String MULT = "*";
+    public static final String DIV = "/";
 }

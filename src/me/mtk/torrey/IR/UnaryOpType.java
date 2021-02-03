@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * The types of unary operators for IR instructions.
  */
-public enum UnaryOpType
+public final class UnaryOpType
 {
-    MINUS
+    public static final String MINUS = "-";
 }

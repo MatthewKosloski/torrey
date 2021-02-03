@@ -6,7 +6,7 @@ package me.mtk.torrey.IR;
 public class BinaryInst extends IRInst
 {
     // The type of binary operator.
-    BinaryOpType operator;
+    String operator;
 
     // The first and second operands.
     Address first, second;
@@ -19,7 +19,7 @@ public class BinaryInst extends IRInst
      * @param first The address at which the first operand is located.
      * @param second The address at which the second operand is located.
      */
-    public BinaryInst(Address lval, BinaryOpType op, Address first, Address second)
+    public BinaryInst(Address lval, String op, Address first, Address second)
     {
         super(lval);
         operator = op;
@@ -34,6 +34,6 @@ public class BinaryInst extends IRInst
      */
     public String toString()
     {
-        return String.format("%s = %s %s %s", lval, operator, first, second);
+        return String.format("%s = %s %s %s", lval, first, operator, second);
     }
 }
