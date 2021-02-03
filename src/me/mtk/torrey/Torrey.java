@@ -13,6 +13,8 @@ import me.mtk.torrey.ErrorReporter.SyntaxError;
 import me.mtk.torrey.Parser.Grammar;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
+import me.mtk.torrey.IR.IRGenerator;
+import me.mtk.torrey.IR.IRInst;
 
 public class Torrey 
 {
@@ -26,20 +28,30 @@ public class Torrey
 
         try
         {
+            // Lexical analysis (scanning)
             final String input = read(args[0]);
             final Lexer lexer = new Lexer(
                     new ErrorReporter(input), input);
             final List<Token> tokens = lexer.lex();
+
+            // Syntax analysis (parsing)
             final Grammar grammar = new Grammar(
                     new ErrorReporter(input), tokens);
             final Program program = grammar.parse();
 
+            // Semantic analysis (type checking)
             final TypeChecker typeChecker = new TypeChecker(
                 new ErrorReporter(input), program);
             typeChecker.check();
+
+            // Intermediate code generation
+            final IRGenerator irGenerator = new IRGenerator();
+            List<IRInst> irInstrs = irGenerator.gen(program);
+
             
             System.out.println(tokens);
             System.out.println(program);
+            System.out.println(irInstrs);            
         }
         catch (IOException e)
         {
