@@ -55,19 +55,20 @@ public class IRGenerator
      * Generates one or more IR instructions for the given AST node.
      * 
      * @param expr An AST node.
-     * @param temp 
+     * @param lval The address at which the value of the 
+     * instruction is to be stored.
      */
-    public void gen(Expr expr, Address temp)
+    public void gen(Expr expr, Address lval)
     {
         // A switch statement on token type would probably
         // be better, but we need a way to differentiate
         // binary subtraction from unary negation
         if (expr instanceof IntegerExpr)
-            gen((IntegerExpr)expr, temp);
+            gen((IntegerExpr)expr, lval);
         else if (expr instanceof UnaryExpr)
-            gen((UnaryExpr)expr, temp);
+            gen((UnaryExpr)expr, lval);
         else if (expr instanceof BinaryExpr)
-            gen((BinaryExpr)expr, temp);
+            gen((BinaryExpr)expr, lval);
         else if (expr instanceof PrintExpr)
             gen((PrintExpr)expr);
         else
@@ -75,34 +76,36 @@ public class IRGenerator
             throw new Error("ERROR: Cannot generate expression.");
     }
 
-    public void gen(IntegerExpr expr, Address temp)
+    public void gen(IntegerExpr expr, Address lval)
     {
-        instrs.add(new IntegerInst(temp, 
+        instrs.add(new IntegerInst(lval, 
             Integer.parseInt(expr.token().rawText())));
     }
 
-    public void gen(UnaryExpr expr, Address temp)
+    public void gen(UnaryExpr expr, Address lval)
     {
         final UnaryOpType op = transUnaryOp(expr.token().rawText());
-        final Address operandTemp = newtemp();
+        final Address operandLval = newtemp();
 
         // generate the instructions for the operand
-        gen((Expr)expr.first(), operandTemp);
+        gen((Expr)expr.first(), operandLval);
 
-        instrs.add(new UnaryInst(temp, op, operandTemp));
+        instrs.add(new UnaryInst(lval, op, operandLval));
     }
 
-    public void gen(BinaryExpr expr, Address temp)
+    public void gen(BinaryExpr expr, Address lval)
     {
         final BinaryOpType op = transBinaryOP(expr.token().rawText());
-        final Address firstOpTemp = newtemp();
-        final Address secondOpTemp = newtemp();
+
+        // The lvals of the operands.
+        final Address firstOpLval = newtemp();
+        final Address secondOpLval = newtemp();
 
         // generate the instructions for both operands
-        gen((Expr)expr.first(), firstOpTemp);
-        gen((Expr)expr.second(), secondOpTemp);
+        gen((Expr)expr.first(), firstOpLval);
+        gen((Expr)expr.second(), secondOpLval);
 
-        instrs.add(new BinaryInst(temp, op, firstOpTemp, secondOpTemp));
+        instrs.add(new BinaryInst(lval, op, firstOpLval, secondOpLval));
     }
 
     public void gen(PrintExpr expr)
