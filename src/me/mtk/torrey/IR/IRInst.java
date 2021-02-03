@@ -5,11 +5,12 @@ package me.mtk.torrey.IR;
  */
 public class IRInst 
 {
-    // symbolizes a temporary/virtual CPU register.
-    protected Address addr;
+    // The address on the left-hand side of the instruction. That is,
+    // the address at which the value of the instruction is to be stored.
+    protected Address lval;
 
-    public IRInst(Address addr)
+    public IRInst(Address lval)
     {
-        this.addr = addr;
+        this.lval = lval;
     }
 }
