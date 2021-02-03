@@ -17,6 +17,16 @@ public final class Address
     private String value;
 
     /**
+     * Constructs a new address.
+     * @param value The value stored at this address.
+     */
+    public Address(AddressingMode mode, String value)
+    {
+        this.mode = mode;
+        this.value = value;
+    }
+
+    /**
      * Constructs a new temporary address.
      * @param value The value stored at this address.
      */

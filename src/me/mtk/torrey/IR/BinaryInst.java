@@ -1,39 +1,43 @@
 package me.mtk.torrey.IR;
 
 /**
- * Represents a binary arithmetic IR instruction.
+ * Represents a binary IR instruction.
  */
-public final class BinaryInst extends IRInst
+public class BinaryInst extends Quadruple
 {
-    // The type of binary operator.
-    String operator;
-
-    // The first and second operands.
-    Address first, second;
-
     /**
-     * Instantiates a new binary arithmetic IR instruction.
+     * Instantiates a new binary IR instruction.
      * 
-     * @param lval The address at which the result of the arithmetic is to be stored.
      * @param op The binary operator of this instruction.
-     * @param first The address at which the first operand is located.
-     * @param second The address at which the second operand is located.
+     * @param arg1 The address at which the first operand is located.
+     * @param arg2 The address at which the second operand is located.
+     * @param result The address at which the result of the operation is to be stored.
      */
-    public BinaryInst(Address lval, String op, Address first, Address second)
+    public BinaryInst(BinaryOperator op, Address arg1, Address arg2, Address result)
     {
-        super(lval);
-        operator = op;
-        this.first = first;
-        this.second = second;
+        super(op, arg1, arg2, result);
     }
 
     /**
-     * The string representation of this binary arithmetic instruction.
+     * Instantiates a new binary IR instruction 
+     * with no result address.
+     * 
+     * @param op The binary operator of this instruction.
+     * @param arg1 The address at which the first operand is located.
+     * @param arg2 The address at which the second operand is located.
+     */
+    public BinaryInst(BinaryOperator op, Address arg1, Address arg2)
+    {
+        this(op, arg1, arg2, null);
+    }
+
+    /**
+     * The string representation of this binary instruction.
      * 
      * @return The string of this instruction.
      */
     public String toString()
     {
-        return String.format("%s = %s %s %s", lval, first, operator, second);
+        return String.format("%s = %s %s %s", result, arg1, op.opText(), arg2);
     }
 }

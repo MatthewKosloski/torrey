@@ -1,39 +1,42 @@
 package me.mtk.torrey.IR;
 
 /**
- * Represents an unary IR instruction.
+ * Represents a unary IR instruction.
  */
-public final class UnaryInst extends IRInst
+public class UnaryInst extends Quadruple
 {
-    // The type of unary operator.
-    private String operator;
-
-    // The address at which the operand is located.
-    private Address operand;
-
     /**
      * Instantiates a new unary IR instruction.
      * 
-     * @param lval The address at which the result of the unary 
-     * operation is to be stored.
      * @param op The unary operator of this instruction.
-     * @param operand The address at which the value of the operand is located.
+     * @param arg The address at which the operand is located.
+     * @param result The address at which the result of the operation 
+     * is to be stored.
      */
-    public UnaryInst(Address lval, String op, Address operand)
+    public UnaryInst(UnaryOperator op, Address arg, Address result)
     {
-        super(lval);
-        operator = op;
-        this.operand = operand;
-
+        super(op, arg, null, result);
     }
 
     /**
-     * The string representation of this binary arithmetic instruction.
+     * Instantiates a new unary IR instruction
+     * with no result address.
+     * 
+     * @param op The unary operator of this instruction.
+     * @param arg The address at which the operand is located.
+     */
+    public UnaryInst(UnaryOperator op, Address arg)
+    {
+        this(op, arg, null);
+    }
+
+    /**
+     * The string representation of this unary instruction.
      * 
      * @return The string of this instruction.
      */
     public String toString()
     {
-        return String.format("%s = %s %s", lval, operator, operand);
+        return String.format("%s = %s %s", result, op.opText(), arg1);
     }
 }

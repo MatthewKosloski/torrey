@@ -14,7 +14,7 @@ import me.mtk.torrey.Parser.Grammar;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.IR.IRGenerator;
-import me.mtk.torrey.IR.IRInst;
+import me.mtk.torrey.IR.Quadruple;
 
 public class Torrey 
 {
@@ -46,13 +46,13 @@ public class Torrey
 
             // Intermediate code generation
             final IRGenerator irGenerator = new IRGenerator();
-            List<IRInst> irInstrs = irGenerator.gen(program);
+            List<Quadruple> irInstrs = irGenerator.gen(program);
 
             final StringBuilder sb = new StringBuilder();
-            for (IRInst instr : irInstrs)
-                sb.append(instr).append("\n");
+            for (Quadruple quad : irInstrs)
+                sb.append(quad).append("\n");
 
-            System.out.println(tokens);
+            // System.out.println(tokens);
             System.out.println(program);
             System.out.println();
             System.out.println(sb.toString());      

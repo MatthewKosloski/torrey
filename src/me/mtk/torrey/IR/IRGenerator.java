@@ -25,7 +25,7 @@ public final class IRGenerator
     // current temp var number
     private int tempCounter;
     // accumulated list of instructions
-    private List<IRInst> instrs;
+    private List<Quadruple> instrs;
 
     /**
      * Instantiates a new instance of IRGenerator
@@ -43,10 +43,10 @@ public final class IRGenerator
      * @param program The root node of an AST.
      * @return The list of intermediate language instructions. 
      */
-    public List<IRInst> gen(Program program)
+    public List<Quadruple> gen(Program program)
     {
         for (ASTNode child : program.children())
-            gen((Expr)child, newtemp());
+            gen((Expr) child, newtemp());
         
         return instrs;
     }
@@ -64,13 +64,13 @@ public final class IRGenerator
         // be better, but we need a way to differentiate
         // binary subtraction from unary negation
         if (expr instanceof IntegerExpr)
-            gen((IntegerExpr)expr, lval);
+            gen((IntegerExpr) expr, lval);
         else if (expr instanceof UnaryExpr)
-            gen((UnaryExpr)expr, lval);
+            gen((UnaryExpr) expr, lval);
         else if (expr instanceof BinaryExpr)
-            gen((BinaryExpr)expr, lval);
+            gen((BinaryExpr) expr, lval);
         else if (expr instanceof PrintExpr)
-            gen((PrintExpr)expr);
+            gen((PrintExpr) expr);
         else
             throw new Error("ERROR: Cannot generate expression.");
     }
@@ -79,12 +79,12 @@ public final class IRGenerator
      * Generates one or more IR instructions for the given integer AST node.
      * 
      * @param expr An integer AST node.
-     * @param lval The address at which the value of the integer
+     * @param result The address at which the value of the integer
      * is to be stored.
      */
-    private void gen(IntegerExpr expr, Address lval)
+    private void gen(IntegerExpr expr, Address result)
     {
-        instrs.add(new IntegerInst(lval, 
+        instrs.add(new CopyInst(result,
             Integer.parseInt(expr.token().rawText())));
     }
 
@@ -92,40 +92,40 @@ public final class IRGenerator
      * Generates one or more IR instructions for the given unary AST node.
      * 
      * @param expr An unary AST node.
-     * @param lval The address at which the result of the unary operation
+     * @param result The address at which the result of the unary operation
      * is to be stored.
      */
-    private void gen(UnaryExpr expr, Address lval)
+    private void gen(UnaryExpr expr, Address result)
     {
-        final String op = transUnaryOp(expr.token().rawText());
-        final Address operandLval = newtemp();
+        final UnaryOperator op = transUnaryOp(expr.token().rawText());
+        final Address arg = newtemp();
 
         // generate the instructions for the operand
-        gen((Expr)expr.first(), operandLval);
+        gen((Expr) expr.first(), arg);
 
-        instrs.add(new UnaryInst(lval, op, operandLval));
+        instrs.add(new UnaryInst(op, arg, result));
     }
 
     /**
      * Generates one or more IR instructions for the given binary AST node.
      * 
      * @param expr An binary AST node.
-     * @param lval The address at which the result of the binary operation
+     * @param result The address at which the result of the binary operation
      * is to be stored.
      */
-    private void gen(BinaryExpr expr, Address lval)
+    private void gen(BinaryExpr expr, Address result)
     {
-        final String op = transBinaryOP(expr.token().rawText());
+        final BinaryOperator op = transBinaryOP(expr.token().rawText());
 
-        // The lvals of the operands.
-        final Address firstOpLval = newtemp();
-        final Address secondOpLval = newtemp();
+        // The results of the operands.
+        final Address arg1 = newtemp();
+        final Address arg2 = newtemp();
 
         // generate the instructions for both operands
-        gen((Expr)expr.first(), firstOpLval);
-        gen((Expr)expr.second(), secondOpLval);
+        gen((Expr) expr.first(), arg1);
+        gen((Expr) expr.second(), arg2);
 
-        instrs.add(new BinaryInst(lval, op, firstOpLval, secondOpLval));
+        instrs.add(new BinaryInst(op, arg1, arg2, result));
     }
 
     /**
@@ -137,31 +137,24 @@ public final class IRGenerator
     {
         final List<Address> paramTemps = new ArrayList<>();
         
-        // generate the instructions for the parameters
+        // Generate the instructions for the parameters
         for (ASTNode child : expr.children())
         {
             final Address paramTemp = newtemp();
-            gen((Expr)child, paramTemp);
+            gen((Expr) child, paramTemp);
             paramTemps.add(paramTemp);
         }
 
-        // create parameters for this print instruction
+        // Generate the parameter instructions that
+        // preceed the call instruction
         for (Address paramTemp : paramTemps)
-            genParam(paramTemp);
+            instrs.add(new ParamInst(paramTemp));
     
-        instrs.add(new CallInst(expr.token().rawText(), 
-            expr.children().size()));
-    }
+        final Address procName = new Address(AddressingMode.NAME, 
+            expr.token().rawText());
+        final Address numArgs = new Address(expr.children().size());
 
-    /**
-     * Generates a parameter instruction.
-     * 
-     * @param temp The temp address at which the value of 
-     * the parameter is stored.
-     */
-    private void genParam(Address temp)
-    {
-        instrs.add(new ParamInst(temp));
+        instrs.add(new CallInst(procName, numArgs));
     }
 
     /*
@@ -171,11 +164,11 @@ public final class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR unary instruction operator type.
      */
-    private String transUnaryOp(String rawText)
+    private UnaryOperator transUnaryOp(String rawText)
     {
         switch (rawText)
         {
-            case "-": return UnaryOpType.MINUS;
+            case "-": return UnaryOperator.MINUS;
             default: 
                 throw new Error("Error: Cannot translate raw"
                     + " text to an IR unary operator");
@@ -189,14 +182,17 @@ public final class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR binary instruction operator type.
      */
-    private String transBinaryOP(String rawText)
+    private BinaryOperator transBinaryOP(String rawText)
     {
         switch (rawText)
         {
-            case "+": return BinaryOpType.ADD;
-            case "-": return BinaryOpType.SUB;
-            case "*": return BinaryOpType.MULT;
-            case "/": return BinaryOpType.DIV;
+            case "+": return BinaryOperator.ADD;
+            case "-": return BinaryOperator.SUB;
+            case "*": return BinaryOperator.MULT;
+            case "/": return BinaryOperator.DIV;
+            case "print":
+            case "println":
+                return BinaryOperator.CALL;
             default: 
                 throw new Error("Error: Cannot translate raw"
                     + " text to an IR binary operator");

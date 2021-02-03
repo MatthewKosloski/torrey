@@ -6,5 +6,6 @@ package me.mtk.torrey.IR;
 public enum AddressingMode 
 {
     CONSTANT,
-    TEMP    
+    TEMP,
+    NAME 
 }

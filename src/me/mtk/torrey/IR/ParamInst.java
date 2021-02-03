@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * Represents a parameter IR instruction.
  */
-public final class ParamInst extends IRInst
+public final class ParamInst extends UnaryInst
 {
     /**
      * Instantiates a new parameter instruction.
@@ -12,7 +12,7 @@ public final class ParamInst extends IRInst
      */
     public ParamInst(Address addr)
     {
-        super(addr);
+        super(UnaryOperator.PARAM, addr);
     }
 
     /**
@@ -22,6 +22,6 @@ public final class ParamInst extends IRInst
      */
     public String toString()
     {
-        return String.format("param %s", lval);
+        return String.format("param %s", arg1);
     }
 }
