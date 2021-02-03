@@ -58,7 +58,7 @@ public class IRGenerator
      * @param lval The address at which the value of the 
      * instruction is to be stored.
      */
-    public void gen(Expr expr, Address lval)
+    private void gen(Expr expr, Address lval)
     {
         // A switch statement on token type would probably
         // be better, but we need a way to differentiate
@@ -76,13 +76,13 @@ public class IRGenerator
             throw new Error("ERROR: Cannot generate expression.");
     }
 
-    public void gen(IntegerExpr expr, Address lval)
+    private void gen(IntegerExpr expr, Address lval)
     {
         instrs.add(new IntegerInst(lval, 
             Integer.parseInt(expr.token().rawText())));
     }
 
-    public void gen(UnaryExpr expr, Address lval)
+    private void gen(UnaryExpr expr, Address lval)
     {
         final UnaryOpType op = transUnaryOp(expr.token().rawText());
         final Address operandLval = newtemp();
@@ -93,7 +93,7 @@ public class IRGenerator
         instrs.add(new UnaryInst(lval, op, operandLval));
     }
 
-    public void gen(BinaryExpr expr, Address lval)
+    private void gen(BinaryExpr expr, Address lval)
     {
         final BinaryOpType op = transBinaryOP(expr.token().rawText());
 
@@ -108,7 +108,7 @@ public class IRGenerator
         instrs.add(new BinaryInst(lval, op, firstOpLval, secondOpLval));
     }
 
-    public void gen(PrintExpr expr)
+    private void gen(PrintExpr expr)
     {
         final List<Address> paramTemps = new ArrayList<>();
         
