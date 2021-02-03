@@ -1,5 +1,8 @@
 package me.mtk.torrey.IR;
 
+/**
+ * The base class of all intermediate language instructions.
+ */
 public class IRInst 
 {
     // symbolizes a temporary/virtual CPU register.
@@ -8,10 +11,5 @@ public class IRInst
     public IRInst(Address addr)
     {
         this.addr = addr;
-    }
-
-    public Address addr()
-    {
-        return addr;
     }
 }
