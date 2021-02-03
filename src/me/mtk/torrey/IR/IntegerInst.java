@@ -2,17 +2,16 @@ package me.mtk.torrey.IR;
 
 public class IntegerInst extends IRInst
 {
-    // The literal value of the integer.
-    private int value;
+    private Address constant;
 
-    public IntegerInst(Address addr, int value)
+    public IntegerInst(Address addr, int constant)
     {
         super(addr);
-        this.value = value;
+        this.constant = new Address(constant);
     }
 
     public String toString()
     {
-        return String.format("%s = %d", addr, value);
+        return String.format("%s = %s", addr, constant);
     }
 }
