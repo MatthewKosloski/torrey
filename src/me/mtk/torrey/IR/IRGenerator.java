@@ -20,7 +20,7 @@ import me.mtk.torrey.AST.UnaryExpr;
  * The README of this compiler contains the grammar of
  * this intermediate language.
  */
-public class IRGenerator
+public final class IRGenerator
 {
     // current temp var number
     private int tempCounter;

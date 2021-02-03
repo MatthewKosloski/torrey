@@ -4,7 +4,7 @@ package me.mtk.torrey.IR;
  * Represents a call IR instruction. This should come
  * after 0 or more parameter IR instructions.
  */
-public class CallInst extends IRInst
+public final class CallInst extends IRInst
 {
     // The name of the procedure that is to be called.
     private String name;

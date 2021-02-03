@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * Represents an integer IR instruction.
  */
-public class IntegerInst extends IRInst
+public final class IntegerInst extends IRInst
 {
     // A constant address to hold the integer.
     private Address constant;

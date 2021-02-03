@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * Represents a binary arithmetic IR instruction.
  */
-public class BinaryInst extends IRInst
+public final class BinaryInst extends IRInst
 {
     // The type of binary operator.
     String operator;

@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * Represents an unary IR instruction.
  */
-public class UnaryInst extends IRInst
+public final class UnaryInst extends IRInst
 {
     // The type of unary operator.
     private String operator;

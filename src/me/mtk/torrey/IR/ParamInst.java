@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * Represents a parameter IR instruction.
  */
-public class ParamInst extends IRInst
+public final class ParamInst extends IRInst
 {
     /**
      * Instantiates a new parameter instruction.
