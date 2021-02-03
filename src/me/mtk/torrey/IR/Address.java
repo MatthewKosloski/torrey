@@ -37,6 +37,16 @@ public class Address
     }
 
     /**
+     * Returns the addressing mode of this instruction.
+     * 
+     * @return An addressing mode.
+     */
+    public AddressingMode mode()
+    {
+        return mode;
+    }
+
+    /**
      * The string representation of this address.
      * 
      * @return A string containing the value of this address.
