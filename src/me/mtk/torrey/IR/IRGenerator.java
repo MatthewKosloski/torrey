@@ -10,6 +10,16 @@ import me.mtk.torrey.AST.PrintExpr;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.AST.UnaryExpr;
 
+/**
+ * Translates an AST to an equivalent program in a 
+ * linear intermediate language. This is an important
+ * step of the compiler because it transforms the AST,
+ * which is a non-linear data structure, to a linear
+ * data structure that better resembles assembly code.
+ * 
+ * The README of this compiler contains the grammar of
+ * this intermediate language.
+ */
 public class IRGenerator
 {
     // current temp var number
@@ -17,12 +27,22 @@ public class IRGenerator
     // accumulated list of instructions
     private List<IRInst> instrs;
 
-
+    /**
+     * Instantiates a new instance of IRGenerator
+     * with an empty list of instructions.
+     */
     public IRGenerator()
     {
         instrs = new ArrayList<>();
     }
 
+    /**
+     * Translates the given AST to an equivalent program
+     * in the linear intermediate language.
+     * 
+     * @param program The root node of an AST.
+     * @return The list of intermediate language instructions. 
+     */
     public List<IRInst> gen(Program program)
     {
         for (ASTNode child : program.children())
@@ -31,6 +51,12 @@ public class IRGenerator
         return instrs;
     }
 
+    /**
+     * Generates one or more IR instructions for the given AST node.
+     * 
+     * @param expr An AST node.
+     * @param temp 
+     */
     public void gen(Expr expr, Address temp)
     {
         // A switch statement on token type would probably
