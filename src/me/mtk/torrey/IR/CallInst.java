@@ -1,20 +1,37 @@
 package me.mtk.torrey.IR;
 
-public class CallInst extends IRInst 
+/**
+ * Represents a call IR instruction. This should come
+ * after 0 or more parameter IR instructions.
+ */
+public class CallInst extends IRInst
 {
-    // the name of the procedure that is to be called
+    // The name of the procedure that is to be called.
     private String name;
 
-    // number or parameters supplied to this call
+    // The number of parameters supplied to this call.
     private int params;
 
-    public CallInst(Address addr, String procName, int numParams)
+    /**
+     * Instantiates a new call IR instruction.
+     * 
+     * @param procName The name of the procedure that is to
+     * be called.
+     * @param numParams The number of parameters that are
+     * supplied to this call.
+     */
+    public CallInst(String procName, int numParams)
     {
-        super(addr);
+        super(null);
         name = procName;
         params = numParams;
     }
 
+    /**
+     * The string representation of this call instruction.
+     * 
+     * @return The string of this instruction.
+     */
     public String toString()
     {
         return String.format("call %s, %d", name, params);
