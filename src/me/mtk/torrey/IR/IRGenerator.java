@@ -69,7 +69,7 @@ public class IRGenerator
         else if (expr instanceof BinaryExpr)
             gen((BinaryExpr)expr, temp);
         else if (expr instanceof PrintExpr)
-            gen((PrintExpr)expr, temp);
+            gen((PrintExpr)expr);
         else
             // TODO: better error message here
             throw new Error("ERROR: Cannot generate expression.");
@@ -105,7 +105,7 @@ public class IRGenerator
         instrs.add(new BinaryInst(temp, op, firstOpTemp, secondOpTemp));
     }
 
-    public void gen(PrintExpr expr, Address temp)
+    public void gen(PrintExpr expr)
     {
         final List<Address> paramTemps = new ArrayList<>();
         
@@ -121,7 +121,7 @@ public class IRGenerator
         for (Address paramTemp : paramTemps)
             genParam(paramTemp);
     
-        instrs.add(new CallInst(temp, expr.token().rawText(), 
+        instrs.add(new CallInst(expr.token().rawText(), 
             expr.children().size()));
     }
 
@@ -164,7 +164,6 @@ public class IRGenerator
     
     private Address newtemp()
     {
-        return new Address(AddressType.TEMP, 
-            String.format("t%d", tempCounter++));
+        return new Address(String.format("t%d", tempCounter++));
     }
 }
