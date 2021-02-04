@@ -27,26 +27,6 @@ public class Address
     }
 
     /**
-     * Constructs a new temporary address.
-     * @param value The value stored at this address.
-     */
-    public Address(String value)
-    {
-        mode = AddressingMode.TEMP;
-        this.value = value;
-    }
-
-    /**
-     * Constructs a new constant address.
-     * @param constant A constant to be stored at this address.
-     */
-    public Address(int contant)
-    {
-        mode = AddressingMode.CONSTANT;
-        value = String.valueOf(contant);
-    }
-
-    /**
      * Returns the addressing mode of this instruction.
      * 
      * @return An addressing mode.
