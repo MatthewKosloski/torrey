@@ -73,7 +73,7 @@ public final class IRGenVisitor extends IRGenerator implements
      */
     public Void visit(BinaryExpr expr, TempAddress result)
     {
-        final BinaryOperator op = transBinaryOP(expr.token().rawText());
+        final BinaryOperator op = transBinaryOp(expr.token().rawText());
 
         // The results of the operands.
         final TempAddress arg1 = newTemp();

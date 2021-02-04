@@ -60,7 +60,7 @@ public abstract class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR binary instruction operator type.
      */
-    protected BinaryOperator transBinaryOP(String rawText)
+    protected BinaryOperator transBinaryOp(String rawText)
     {
         switch (rawText)
         {
