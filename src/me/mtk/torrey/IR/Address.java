@@ -8,13 +8,13 @@ package me.mtk.torrey.IR;
  * An address can be a constant, or a 
  * compiler-generated temporary.
  */
-public final class Address 
+public class Address
 {
     // The mode of this address.
-    private AddressingMode mode;
+    protected AddressingMode mode;
 
     // The value of the address.
-    private String value;
+    protected String value;
 
     /**
      * Constructs a new address.
