@@ -2,30 +2,18 @@ package me.mtk.torrey.IR;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.AST.ASTNode;
-import me.mtk.torrey.AST.BinaryExpr;
-import me.mtk.torrey.AST.Expr;
-import me.mtk.torrey.AST.IntegerExpr;
-import me.mtk.torrey.AST.PrintExpr;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.AST.UnaryExpr;
 
 /**
- * Translates an AST to an equivalent program in a 
- * linear intermediate language. This is an important
- * step of the compiler because it transforms the AST,
- * which is a non-linear data structure, to a linear
- * data structure that better resembles assembly code.
- * 
- * The README of this compiler contains the grammar of
- * this intermediate language.
+ * The base class for the IR generator
+ * containing state and helper methods.
  */
-public final class IRGenerator
+public abstract class IRGenerator
 {
-    // current temp var number
+    // The accumulated list of intermediate instructions.
+    protected List<Quadruple> quads;
+
+    // The current temp variable number.
     private int tempCounter;
-    // accumulated list of instructions
-    private List<Quadruple> instrs;
 
     /**
      * Instantiates a new instance of IRGenerator
@@ -33,128 +21,18 @@ public final class IRGenerator
      */
     public IRGenerator()
     {
-        instrs = new ArrayList<>();
+        quads = new ArrayList<>();
     }
 
     /**
-     * Translates the given AST to an equivalent program
-     * in the linear intermediate language.
+     * Returns the generated intermediate instructions,
+     * represented by a collection of quadruples.
      * 
-     * @param program The root node of an AST.
-     * @return The list of intermediate language instructions. 
+     * @return The intermediate instructions.
      */
-    public List<Quadruple> gen(Program program)
+    public List<Quadruple> quads()
     {
-        for (ASTNode child : program.children())
-            gen((Expr) child, newtemp());
-        
-        return instrs;
-    }
-
-    /**
-     * Generates one or more IR instructions for the given AST node.
-     * 
-     * @param expr An AST node.
-     * @param result The temp address at which the value of the 
-     * instruction is to be stored.
-     */
-    private void gen(Expr expr, TempAddress result)
-    {
-        // A switch statement on token type would probably
-        // be better, but we need a way to differentiate
-        // binary subtraction from unary negation
-        if (expr instanceof IntegerExpr)
-            gen((IntegerExpr) expr, result);
-        else if (expr instanceof UnaryExpr)
-            gen((UnaryExpr) expr, result);
-        else if (expr instanceof BinaryExpr)
-            gen((BinaryExpr) expr, result);
-        else if (expr instanceof PrintExpr)
-            gen((PrintExpr) expr);
-        else
-            throw new Error("ERROR: Cannot generate expression.");
-    }
-
-    /**
-     * Generates one or more IR instructions for the given integer AST node.
-     * 
-     * @param expr An integer AST node.
-     * @param result The address at which the value of the integer
-     * is to be stored.
-     */
-    private void gen(IntegerExpr expr, TempAddress result)
-    {
-        final ConstAddress constant = new ConstAddress(
-            Integer.parseInt(expr.token().rawText()));
-        instrs.add(new CopyInst(result, constant));
-    }
-
-    /**
-     * Generates one or more IR instructions for the given unary AST node.
-     * 
-     * @param expr An unary AST node.
-     * @param result The address at which the result of the unary operation
-     * is to be stored.
-     */
-    private void gen(UnaryExpr expr, TempAddress result)
-    {
-        final UnaryOperator op = transUnaryOp(expr.token().rawText());
-        final TempAddress arg = newtemp();
-
-        // generate the instructions for the operand
-        gen((Expr) expr.first(), arg);
-
-        instrs.add(new UnaryInst(op, arg, result));
-    }
-
-    /**
-     * Generates one or more IR instructions for the given binary AST node.
-     * 
-     * @param expr An binary AST node.
-     * @param result The address at which the result of the binary operation
-     * is to be stored.
-     */
-    private void gen(BinaryExpr expr, TempAddress result)
-    {
-        final BinaryOperator op = transBinaryOP(expr.token().rawText());
-
-        // The results of the operands.
-        final TempAddress arg1 = newtemp();
-        final TempAddress arg2 = newtemp();
-
-        // generate the instructions for both operands
-        gen((Expr) expr.first(), arg1);
-        gen((Expr) expr.second(), arg2);
-
-        instrs.add(new BinaryInst(op, arg1, arg2, result));
-    }
-
-    /**
-     * Generates one or more IR instructions for the given print AST node.
-     * 
-     * @param expr A print AST node.
-     */
-    private void gen(PrintExpr expr)
-    {
-        final List<Address> paramTemps = new ArrayList<>();
-        
-        // Generate the instructions for the parameters
-        for (ASTNode child : expr.children())
-        {
-            final TempAddress paramTemp = newtemp();
-            gen((Expr) child, paramTemp);
-            paramTemps.add(paramTemp);
-        }
-
-        // Generate the parameter instructions that
-        // preceed the call instruction
-        for (Address paramTemp : paramTemps)
-            instrs.add(new ParamInst(paramTemp));
-    
-        final NameAddress procName = new NameAddress(expr.token().rawText());
-        final ConstAddress numParams = new ConstAddress(expr.children().size());
-
-        instrs.add(new CallInst(procName, numParams));
+        return quads;
     }
 
     /*
@@ -164,7 +42,7 @@ public final class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR unary instruction operator type.
      */
-    private UnaryOperator transUnaryOp(String rawText)
+    protected UnaryOperator transUnaryOp(String rawText)
     {
         switch (rawText)
         {
@@ -182,7 +60,7 @@ public final class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR binary instruction operator type.
      */
-    private BinaryOperator transBinaryOP(String rawText)
+    protected BinaryOperator transBinaryOP(String rawText)
     {
         switch (rawText)
         {
@@ -198,13 +76,13 @@ public final class IRGenerator
                     + " text to an IR binary operator");
         }
     }
-    
+
     /**
      * Generates a new temp address.
      * 
      * @return A temporary address.
      */
-    private TempAddress newtemp()
+    protected TempAddress newTemp()
     {
         return new TempAddress(String.format("t%d", tempCounter++));
     }

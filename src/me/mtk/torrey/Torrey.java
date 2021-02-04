@@ -13,6 +13,7 @@ import me.mtk.torrey.ErrorReporter.SyntaxError;
 import me.mtk.torrey.Parser.Grammar;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
+import me.mtk.torrey.IR.IRGenVisitor;
 import me.mtk.torrey.IR.IRGenerator;
 import me.mtk.torrey.IR.Quadruple;
 
@@ -45,8 +46,9 @@ public class Torrey
             typeChecker.check();
 
             // Intermediate code generation
-            final IRGenerator irGenerator = new IRGenerator();
-            List<Quadruple> irInstrs = irGenerator.gen(program);
+            final IRGenVisitor irGen = new IRGenVisitor();
+            irGen.visit(program);
+            List<Quadruple> irInstrs = irGen.quads();
 
             final StringBuilder sb = new StringBuilder();
             for (Quadruple quad : irInstrs)
