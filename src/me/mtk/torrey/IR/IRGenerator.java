@@ -55,10 +55,10 @@ public final class IRGenerator
      * Generates one or more IR instructions for the given AST node.
      * 
      * @param expr An AST node.
-     * @param lval The address at which the value of the 
+     * @param lval The temp address at which the value of the 
      * instruction is to be stored.
      */
-    private void gen(Expr expr, Address lval)
+    private void gen(Expr expr, TempAddress lval)
     {
         // A switch statement on token type would probably
         // be better, but we need a way to differentiate
@@ -82,10 +82,11 @@ public final class IRGenerator
      * @param result The address at which the value of the integer
      * is to be stored.
      */
-    private void gen(IntegerExpr expr, Address result)
+    private void gen(IntegerExpr expr, TempAddress result)
     {
-        instrs.add(new CopyInst(result,
-            Integer.parseInt(expr.token().rawText())));
+        final ConstAddress constant = new ConstAddress(
+            Integer.parseInt(expr.token().rawText()));
+        instrs.add(new CopyInst(result, constant));
     }
 
     /**
@@ -95,10 +96,10 @@ public final class IRGenerator
      * @param result The address at which the result of the unary operation
      * is to be stored.
      */
-    private void gen(UnaryExpr expr, Address result)
+    private void gen(UnaryExpr expr, TempAddress result)
     {
         final UnaryOperator op = transUnaryOp(expr.token().rawText());
-        final Address arg = newtemp();
+        final TempAddress arg = newtemp();
 
         // generate the instructions for the operand
         gen((Expr) expr.first(), arg);
@@ -113,13 +114,13 @@ public final class IRGenerator
      * @param result The address at which the result of the binary operation
      * is to be stored.
      */
-    private void gen(BinaryExpr expr, Address result)
+    private void gen(BinaryExpr expr, TempAddress result)
     {
         final BinaryOperator op = transBinaryOP(expr.token().rawText());
 
         // The results of the operands.
-        final Address arg1 = newtemp();
-        final Address arg2 = newtemp();
+        final TempAddress arg1 = newtemp();
+        final TempAddress arg2 = newtemp();
 
         // generate the instructions for both operands
         gen((Expr) expr.first(), arg1);
@@ -140,7 +141,7 @@ public final class IRGenerator
         // Generate the instructions for the parameters
         for (ASTNode child : expr.children())
         {
-            final Address paramTemp = newtemp();
+            final TempAddress paramTemp = newtemp();
             gen((Expr) child, paramTemp);
             paramTemps.add(paramTemp);
         }
@@ -150,11 +151,10 @@ public final class IRGenerator
         for (Address paramTemp : paramTemps)
             instrs.add(new ParamInst(paramTemp));
     
-        final Address procName = new Address(AddressingMode.NAME, 
-            expr.token().rawText());
-        final Address numArgs = new Address(expr.children().size());
+        final NameAddress procName = new NameAddress(expr.token().rawText());
+        final ConstAddress numParams = new ConstAddress(expr.children().size());
 
-        instrs.add(new CallInst(procName, numArgs));
+        instrs.add(new CallInst(procName, numParams));
     }
 
     /*
@@ -204,8 +204,8 @@ public final class IRGenerator
      * 
      * @return A temporary address.
      */
-    private Address newtemp()
+    private TempAddress newtemp()
     {
-        return new Address(String.format("t%d", tempCounter++));
+        return new TempAddress(String.format("t%d", tempCounter++));
     }
 }

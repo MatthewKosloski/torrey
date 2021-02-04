@@ -7,14 +7,15 @@ public final class CallInst extends BinaryInst
      * storing the result of the procedure in the 
      * specified result address.
      *
-     * @param result The address at which the result of the
+     * @param result The temp address at which the result of the
      * procedure is to be stored.
-     * @param procName An name address containing the name of
+     * @param procName A name address containing the name of
      * the procedure.
      * @param numParams A constant address indicating the number
      * of parameters to the procedure.
      */
-    public CallInst(Address result, Address procName, Address numParams)
+    public CallInst(TempAddress result, NameAddress procName, 
+        ConstAddress numParams)
     {
         super(BinaryOperator.CALL, procName, numParams, result);
     }
@@ -28,7 +29,7 @@ public final class CallInst extends BinaryInst
      * @param numParams A constant address indicating the number
      * of parameters to the procedure.
      */
-    public CallInst(Address procName, Address numParams)
+    public CallInst(NameAddress procName, ConstAddress numParams)
     {
         super(BinaryOperator.CALL, procName, numParams);
     }

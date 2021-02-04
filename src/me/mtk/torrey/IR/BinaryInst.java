@@ -11,9 +11,11 @@ public class BinaryInst extends Quadruple
      * @param op The binary operator of this instruction.
      * @param arg1 The address at which the first operand is located.
      * @param arg2 The address at which the second operand is located.
-     * @param result The address at which the result of the operation is to be stored.
+     * @param result The temp address at which the result of the operation 
+     * is to be stored. 
      */
-    public BinaryInst(BinaryOperator op, Address arg1, Address arg2, Address result)
+    public BinaryInst(BinaryOperator op, Address arg1, Address arg2, 
+        TempAddress result)
     {
         super(op, arg1, arg2, result);
     }

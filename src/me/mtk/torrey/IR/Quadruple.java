@@ -16,7 +16,7 @@ public class Quadruple
     
     // The address at which the result of the instruction 
     // is to be stored.
-    protected Address result;
+    protected TempAddress result;
     
     /**
      * Instantiates a new quadruple to hold the properties
@@ -26,13 +26,10 @@ public class Quadruple
      * @param arg1 The address at which the first argument is located.
      * @param arg2 The address at which the second argument is located.
      * @param result A temporary address to store the result of the
-     * instruction. The addressing mode must be TEMP.
+     * instruction.
      */
-    public Quadruple(Operator op, Address arg1, Address arg2, Address result)
+    public Quadruple(Operator op, Address arg1, Address arg2, TempAddress result)
     {
-        if (result != null && result.mode() != AddressingMode.TEMP)
-            throw new Error("The result must be a temporary register.");
-
         this.op = op;
         this.arg1 = arg1;
         this.arg2 = arg2;

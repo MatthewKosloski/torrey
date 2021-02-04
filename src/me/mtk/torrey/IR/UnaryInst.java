@@ -10,10 +10,10 @@ public class UnaryInst extends Quadruple
      * 
      * @param op The unary operator of this instruction.
      * @param arg The address at which the operand is located.
-     * @param result The address at which the result of the operation 
+     * @param result The temp address at which the result of the operation
      * is to be stored.
      */
-    public UnaryInst(UnaryOperator op, Address arg, Address result)
+    public UnaryInst(UnaryOperator op, Address arg, TempAddress result)
     {
         super(op, arg, null, result);
     }
