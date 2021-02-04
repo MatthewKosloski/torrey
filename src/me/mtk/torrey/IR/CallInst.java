@@ -39,6 +39,6 @@ public final class CallInst extends BinaryInst
      */
     public String toString()
     {
-        return String.format("call %s, %s", arg1, arg2);
+        return String.format("%s %s, %s", op.opText(), arg1, arg2);
     }
 }

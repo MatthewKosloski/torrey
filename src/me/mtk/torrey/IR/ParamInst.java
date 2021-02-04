@@ -22,6 +22,6 @@ public final class ParamInst extends UnaryInst
      */
     public String toString()
     {
-        return String.format("param %s", arg1);
+        return String.format("%s %s", op.opText(), arg1);
     }
 }

@@ -22,6 +22,6 @@ public final class CopyInst extends UnaryInst
 
     public String toString()
     {
-        return String.format("%s = %s", result, arg1);
+        return String.format("%s %s %s", result, op.opText(), arg1);
     }
 }
