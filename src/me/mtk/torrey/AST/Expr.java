@@ -1,5 +1,6 @@
 package me.mtk.torrey.AST;
 
+import me.mtk.torrey.IR.TempAddress;
 import me.mtk.torrey.Lexer.Token;
 
 /**
@@ -9,4 +10,5 @@ public abstract class Expr extends ASTNode
 {
     public Expr(Token t) { super(t); }
     public abstract <T> T accept(ExprVisitor<T> visitor);
+    public abstract <T> T accept(ExprIRVisitor<T> visitor, TempAddress result);
 }
