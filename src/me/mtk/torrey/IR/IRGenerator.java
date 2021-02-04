@@ -55,20 +55,20 @@ public final class IRGenerator
      * Generates one or more IR instructions for the given AST node.
      * 
      * @param expr An AST node.
-     * @param lval The temp address at which the value of the 
+     * @param result The temp address at which the value of the 
      * instruction is to be stored.
      */
-    private void gen(Expr expr, TempAddress lval)
+    private void gen(Expr expr, TempAddress result)
     {
         // A switch statement on token type would probably
         // be better, but we need a way to differentiate
         // binary subtraction from unary negation
         if (expr instanceof IntegerExpr)
-            gen((IntegerExpr) expr, lval);
+            gen((IntegerExpr) expr, result);
         else if (expr instanceof UnaryExpr)
-            gen((UnaryExpr) expr, lval);
+            gen((UnaryExpr) expr, result);
         else if (expr instanceof BinaryExpr)
-            gen((BinaryExpr) expr, lval);
+            gen((BinaryExpr) expr, result);
         else if (expr instanceof PrintExpr)
             gen((PrintExpr) expr);
         else
