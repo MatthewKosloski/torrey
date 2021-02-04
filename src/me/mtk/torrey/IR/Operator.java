@@ -6,5 +6,11 @@ package me.mtk.torrey.IR;
  */
 public interface Operator
 {
+    /**
+     * Returns the operator text that will appear in the 
+     * intermediate instruction.
+     * 
+     * @return The operator text.
+     */
     public String opText();
 }
