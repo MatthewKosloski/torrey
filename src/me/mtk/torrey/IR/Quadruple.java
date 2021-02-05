@@ -3,7 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * Represents an intermediate language instruction.
  */
-public class Quadruple 
+public abstract class Quadruple 
 {
     // The operator of the instruction.
     protected Operator op;
