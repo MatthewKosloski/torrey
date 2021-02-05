@@ -8,8 +8,7 @@ public enum BinaryOperator implements Operator
     ADD ("+"),
     SUB ("-"),
     MULT ("*"),
-    DIV ("/"),
-    CALL ("call");
+    DIV ("/");
 
     private final String opText;
 

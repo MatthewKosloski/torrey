@@ -1,15 +1,15 @@
 package me.mtk.torrey.IR;
 
 /**
- * The types of unary operators for IR instructions.
+ * The copy operator for IR instructions.
  */
-public enum UnaryOperator implements Operator
+public enum CopyOperator implements Operator
 {
-    MINUS ("-");
+    ASSIGN ("=");
         
     private final String opText;
 
-    UnaryOperator(String opText)
+    CopyOperator(String opText)
     {
         this.opText = opText;
     }

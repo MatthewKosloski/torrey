@@ -5,7 +5,7 @@ package me.mtk.torrey.IR;
  * where the contents at address y are stored in
  * the temp address x.
  */
-public final class CopyInst extends UnaryInst
+public final class CopyInst extends Quadruple
 {
     /**
      * Instantiates a new copy IR instruction.
@@ -17,7 +17,7 @@ public final class CopyInst extends UnaryInst
      */
     public CopyInst(TempAddress lhs, Address rhs)
     {
-        super(UnaryOperator.ASSIGN, rhs, lhs);
+        super(CopyOperator.ASSIGN, rhs, null, lhs);
     }
 
     public String toString()

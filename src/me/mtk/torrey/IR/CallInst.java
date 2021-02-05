@@ -1,6 +1,6 @@
 package me.mtk.torrey.IR;
 
-public final class CallInst extends BinaryInst
+public final class CallInst extends Quadruple
 {
     /**
      * Instantiates a procedure call IR instruction,
@@ -17,7 +17,7 @@ public final class CallInst extends BinaryInst
     public CallInst(TempAddress result, NameAddress procName, 
         ConstAddress numParams)
     {
-        super(BinaryOperator.CALL, procName, numParams, result);
+        super(CallOperator.CALL, procName, numParams, result);
     }
 
     /**
@@ -31,7 +31,7 @@ public final class CallInst extends BinaryInst
      */
     public CallInst(NameAddress procName, ConstAddress numParams)
     {
-        super(BinaryOperator.CALL, procName, numParams);
+        super(CallOperator.CALL, procName, numParams, null);
     }
 
     /**
