@@ -37,7 +37,7 @@ In the intermediate language, a program is a linear sequence of zero or more qua
 
 The operands, or args, of a quadruple are addresses.  In this intermediate language, there are three types of address: temp, name, and constant.  A *temp* is like a virtual CPU register.  A *name* can be an identifier that appears in the input program.  Finally, a *constant* is an integer.
 
-These types of addresses somewhat correspond to the different *addressing modes* of x86-64 assembly language.  For example, a *temp* corresponds to the *register* addressing mode, whereas a *constant* corresponds to the *intermediate* addressing mode.  The *name* address type does not correspond to an x86-64 addressing mode.  There will be a compiler pass that replaces all name addresses with register names or base-relative addresses on the stack.
+These types of addresses somewhat correspond to the different *addressing modes* of x86-64 assembly language.  For example, a *temp* corresponds to the *register* addressing mode, whereas a *constant* corresponds to the *immediate* addressing mode.  The *name* address type does not correspond to an x86-64 addressing mode.  There will be a compiler pass that replaces all name addresses with register names or base-relative addresses on the stack.
 
 ```
 program      -> quadruple* ;
