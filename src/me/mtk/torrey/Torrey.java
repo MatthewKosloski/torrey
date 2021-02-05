@@ -14,7 +14,6 @@ import me.mtk.torrey.Parser.Grammar;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.IR.IRGenVisitor;
-import me.mtk.torrey.IR.IRGenerator;
 import me.mtk.torrey.IR.Quadruple;
 
 public class Torrey 
