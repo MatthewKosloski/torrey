@@ -2,7 +2,6 @@ package me.mtk.torrey.IR;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.AST.ProgramIRVisitor;
 import me.mtk.torrey.AST.ASTNode;
 import me.mtk.torrey.AST.BinaryExpr;
 import me.mtk.torrey.AST.Expr;
@@ -13,19 +12,29 @@ import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.AST.UnaryExpr;
 
 public final class IRGenVisitor extends IRGenerator implements 
-    ExprIRVisitor<Void>, ProgramIRVisitor<Void>
+    ExprIRVisitor<Void>
 {
+
+    public IRGenVisitor(Program program)
+    {
+        super(program);
+    }
+
     /**
      * Traverses the given AST, generating intermediate code.
      * 
      * @param Program The root AST node.
+     * @return The list of generated intermediate instructions.
      */
-    public Void visit(Program program)
+    public List<Quadruple> gen()
     {
+        // For every AST node, call the appropriate
+        // visit() method to generate the IR instruction
+        // corresponding to that node.
         for (ASTNode child : program.children())
             ((Expr) child).accept(this, newTemp());
     
-        return null;
+        return quads;
     }
 
     /**
@@ -53,7 +62,7 @@ public final class IRGenVisitor extends IRGenerator implements
      */
     public Void visit(UnaryExpr expr, TempAddress result)
     {
-        final UnaryOperator op = transUnaryOp(expr.token().rawText());
+        final UnaryOpType op = transUnaryOp(expr.token().rawText());
         final TempAddress arg = newTemp();
 
         // generate the instructions for the operand
@@ -73,7 +82,7 @@ public final class IRGenVisitor extends IRGenerator implements
      */
     public Void visit(BinaryExpr expr, TempAddress result)
     {
-        final BinaryOperator op = transBinaryOp(expr.token().rawText());
+        final BinaryOpType op = transBinaryOp(expr.token().rawText());
 
         // The results of the operands.
         final TempAddress arg1 = newTemp();

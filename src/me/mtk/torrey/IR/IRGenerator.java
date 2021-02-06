@@ -2,6 +2,7 @@ package me.mtk.torrey.IR;
 
 import java.util.List;
 import java.util.ArrayList;
+import me.mtk.torrey.AST.Program;
 
 /**
  * The base class for the IR generator
@@ -12,6 +13,10 @@ public abstract class IRGenerator
     // The accumulated list of intermediate instructions.
     protected List<Quadruple> quads;
 
+    // The root of an AST from which we will generate
+    // intermediate code instructions.
+    protected Program program;
+
     // The current temp variable number.
     private int tempCounter;
 
@@ -19,20 +24,10 @@ public abstract class IRGenerator
      * Instantiates a new instance of IRGenerator
      * with an empty list of instructions.
      */
-    public IRGenerator()
+    public IRGenerator(Program program)
     {
+        this.program = program;
         quads = new ArrayList<>();
-    }
-
-    /**
-     * Returns the generated intermediate instructions,
-     * represented by a collection of quadruples.
-     * 
-     * @return The intermediate instructions.
-     */
-    public List<Quadruple> quads()
-    {
-        return quads;
     }
 
     /*
