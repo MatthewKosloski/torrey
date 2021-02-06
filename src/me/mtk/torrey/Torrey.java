@@ -11,6 +11,7 @@ import me.mtk.torrey.ErrorReporter.ErrorReporter;
 import me.mtk.torrey.ErrorReporter.SemanticError;
 import me.mtk.torrey.ErrorReporter.SyntaxError;
 import me.mtk.torrey.Parser.Grammar;
+import me.mtk.torrey.X86.X86Generator;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.IR.IRGenVisitor;
@@ -44,14 +45,30 @@ public class Torrey
                 new ErrorReporter(input), program);
             typeChecker.check();
 
+            // Optimizations on AST go here
+            // ...
+
             // Intermediate code generation
-            final IRGenVisitor irGen = new IRGenVisitor();
-            irGen.visit(program);
-            List<Quadruple> irInstrs = irGen.quads();
+            final IRGenVisitor irGen = new IRGenVisitor(program);
+            final List<Quadruple> quads = irGen.gen();
 
             final StringBuilder sb = new StringBuilder();
-            for (Quadruple quad : irInstrs)
+            for (Quadruple quad : quads)
                 sb.append(quad).append("\n");
+
+            // Optimizations on the IR go here
+            // ...
+
+            // x86-64 code generation
+            final X86Generator x86Gen = new X86Generator(quads);
+            x86Gen.gen();
+
+            // first convert the IR to assembly code, using the temporary names
+            // then do another pass ("assign homes" pass) to replace the temp 
+            // names (e.g., "t3") with a base-relative stack address, relative
+            // to the frame pointer.
+            // This first compiler will not implement register allocation and
+            // will simply store intermediate values and such in the stack.
 
             // System.out.println(tokens);
             System.out.println(program);
