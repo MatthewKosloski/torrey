@@ -80,6 +80,10 @@ public final class X86Generator
                 inst.arg2().value(), 
                 inst.result().value()));
         }
+        else if (inst.op().opText() == "*")
+        {
+            asm.add(new X86Inst(op, src, dest))
+        }
     }
 
     private void gen(ParamInst inst)
