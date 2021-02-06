@@ -37,6 +37,16 @@ public class Address
     }
 
     /**
+     * Return the value stored at this address.
+     * 
+     * @return A value.
+     */
+    public String value()
+    {
+        return value;
+    }
+
+    /**
      * The string representation of this address.
      * 
      * @return A string containing the value of this address.
