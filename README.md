@@ -40,7 +40,7 @@ The operands, or args, of a quadruple are addresses.  In this intermediate langu
 These types of addresses somewhat correspond to the different *addressing modes* of x86-64 assembly language.  For example, a *temp* corresponds to the *register* addressing mode, whereas a *constant* corresponds to the *immediate* addressing mode.  The *name* address type does not correspond to an x86-64 addressing mode.  There will be a compiler pass that replaces all name addresses with register names or base-relative addresses on the stack.
 
 ```
-program      -> quadruple* ;
+irprogram    -> quadruple* ;
 
 quadruple    -> copy 
               | unary 
