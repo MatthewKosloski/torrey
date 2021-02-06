@@ -15,7 +15,7 @@ import me.mtk.torrey.X86.X86Generator;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.IR.IRGenVisitor;
-import me.mtk.torrey.IR.Quadruple;
+import me.mtk.torrey.IR.IRProgram;
 
 public class Torrey 
 {
@@ -50,17 +50,13 @@ public class Torrey
 
             // Intermediate code generation
             final IRGenVisitor irGen = new IRGenVisitor(program);
-            final List<Quadruple> quads = irGen.gen();
-
-            final StringBuilder sb = new StringBuilder();
-            for (Quadruple quad : quads)
-                sb.append(quad).append("\n");
+            final IRProgram irProgram = irGen.gen();
 
             // Optimizations on the IR go here
             // ...
 
             // x86-64 code generation
-            final X86Generator x86Gen = new X86Generator(quads);
+            final X86Generator x86Gen = new X86Generator(irProgram.quads());
             x86Gen.gen();
 
             // first convert the IR to assembly code, using the temporary names
@@ -73,7 +69,8 @@ public class Torrey
             // System.out.println(tokens);
             System.out.println(program);
             System.out.println();
-            System.out.println(sb.toString());      
+            System.out.println(irProgram);   
+            System.out.println(irProgram.symtable()); 
         }
         catch (IOException e)
         {

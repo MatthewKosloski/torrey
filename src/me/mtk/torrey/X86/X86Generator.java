@@ -1,10 +1,12 @@
 package me.mtk.torrey.X86;
 
 import java.util.List;
+import java.util.ArrayList;
 import me.mtk.torrey.IR.Quadruple;
 import me.mtk.torrey.IR.CopyInst;
 import me.mtk.torrey.IR.UnaryInst;
 import me.mtk.torrey.IR.BinaryInst;
+import me.mtk.torrey.IR.BinaryOpType;
 import me.mtk.torrey.IR.ParamInst;
 import me.mtk.torrey.IR.CallInst;
 
@@ -23,6 +25,7 @@ public final class X86Generator
     public X86Generator(List<Quadruple> quads)
     {
         this.quads = quads;
+        this.asm = new ArrayList<>();
     }
 
     public void gen()
@@ -46,17 +49,37 @@ public final class X86Generator
 
     private void gen(CopyInst inst)
     {
-        // asm.add(new X86Inst("movq", inst., dest))
+        // asm.add(new X86Inst("movq", inst.arg1(), dest))
     }
 
     private void gen(UnaryInst inst)
     {
-    
+        asm.add(new X86Inst("negq", inst.arg1().value(), null));
     }
 
     private void gen(BinaryInst inst)
     {
-    
+        final X86Inst mov = new X86Inst(
+            "movq", 
+            inst.arg1().value(), 
+            inst.result().value());
+            
+        asm.add(mov);
+
+        if (inst.op().opText() == "+")
+        {
+            asm.add(new X86Inst(
+                "addq", 
+                inst.arg2().value(), 
+                inst.result().value()));
+        }
+        else if (inst.op().opText() == "-")
+        {
+            asm.add(new X86Inst(
+                "subq", 
+                inst.arg2().value(), 
+                inst.result().value()));
+        }
     }
 
     private void gen(ParamInst inst)

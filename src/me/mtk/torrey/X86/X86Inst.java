@@ -15,7 +15,7 @@ public class X86Inst
 
     public String toString()
     {
-        return String.format("%s %s, %s");
+        return String.format("%s %s, %s", op, src, dest);
     }
 
 }
