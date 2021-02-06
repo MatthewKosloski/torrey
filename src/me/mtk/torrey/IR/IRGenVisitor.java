@@ -148,9 +148,7 @@ public final class IRGenVisitor extends IRGenerator implements
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
         final List<Quadruple> params = new ArrayList<>();
-        
-        final List<Address> paramTemps = new ArrayList<>();
-        
+                
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())
         {
@@ -168,14 +166,9 @@ public final class IRGenVisitor extends IRGenerator implements
                 // the complex sub-expression.
                 final TempAddress paramTemp = newTemp();
                 childExpr.accept(this, paramTemp);
-                paramTemps.add(paramTemp);
+                params.add(new ParamInst(paramTemp));
             }
         }
-
-        // Generate the param instructions for the parameters
-        // that are stored in temporary addresses.
-        for (Address paramTemp : paramTemps)
-           params.add(new ParamInst(paramTemp));
     
         final NameAddress procName = new NameAddress(expr.token().rawText());
         final ConstAddress numParams = new ConstAddress(expr.children().size());
