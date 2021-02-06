@@ -11,7 +11,7 @@ import me.mtk.torrey.AST.Program;
 public abstract class IRGenerator
 {
     // The accumulated list of intermediate instructions.
-    protected List<Quadruple> quads;
+    protected IRProgram irProgram;
 
     // The root of an AST from which we will generate
     // intermediate code instructions.
@@ -27,7 +27,7 @@ public abstract class IRGenerator
     public IRGenerator(Program program)
     {
         this.program = program;
-        quads = new ArrayList<>();
+        irProgram = new IRProgram();
     }
 
     /*

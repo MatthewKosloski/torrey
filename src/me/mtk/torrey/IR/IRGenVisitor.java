@@ -26,7 +26,7 @@ public final class IRGenVisitor extends IRGenerator implements
      * @param Program The root AST node.
      * @return The list of generated intermediate instructions.
      */
-    public List<Quadruple> gen()
+    public IRProgram gen()
     {
         // For every AST node, call the appropriate
         // visit() method to generate the IR instruction
@@ -34,7 +34,7 @@ public final class IRGenVisitor extends IRGenerator implements
         for (ASTNode child : program.children())
             ((Expr) child).accept(this, newTemp());
     
-        return quads;
+        return irProgram;
     }
 
     /**
@@ -48,7 +48,8 @@ public final class IRGenVisitor extends IRGenerator implements
     {
         final ConstAddress constant = new ConstAddress(
             Integer.parseInt(expr.token().rawText()));
-        quads.add(new CopyInst(result, constant));
+        irProgram.addQuad(new CopyInst(result, constant));
+        irProgram.define(result.value(), constant.getConstant());
 
         return null;
     }
