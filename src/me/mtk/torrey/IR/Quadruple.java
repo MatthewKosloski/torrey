@@ -35,4 +35,24 @@ public abstract class Quadruple
         this.arg2 = arg2;
         this.result = result;
     }
+
+    public Operator op()
+    {
+        return op;
+    }
+
+    public Address arg1()
+    {
+        return arg1;
+    }
+
+    public Address arg2()
+    {
+        return arg2;
+    }
+
+    public TempAddress result()
+    {
+        return result;
+    }
 }
