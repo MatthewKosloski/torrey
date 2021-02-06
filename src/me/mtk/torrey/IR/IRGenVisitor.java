@@ -64,12 +64,26 @@ public final class IRGenVisitor extends IRGenerator implements
     public Void visit(UnaryExpr expr, TempAddress result)
     {
         final UnaryOpType op = transUnaryOp(expr.token().rawText());
-        final TempAddress arg = newTemp();
+        final Expr childExpr = (Expr) expr.first();
 
-        // generate the instructions for the operand
-        ((Expr) expr.first()).accept(this, arg);
+        // This will either be a constant or temporary.
+        Address arg;
 
-        quads.add(new UnaryInst(op, arg, result));
+        if (childExpr instanceof IntegerExpr)
+            // The argument is an integer,
+            // so rather than generating a temp address,
+            // just generate a constant address.
+            arg = new ConstAddress(childExpr.token().rawText());
+        else
+        {
+            // The argument is a more complex sub-expression,
+            // so generate a temp to store the result of
+            // the complex sub-expression.
+            arg = newTemp();
+            childExpr.accept(this, (TempAddress) arg);
+        }
+
+        irProgram.addQuad(new UnaryInst(op, arg, result));
 
         return null;
     }
@@ -85,15 +99,41 @@ public final class IRGenVisitor extends IRGenerator implements
     {
         final BinaryOpType op = transBinaryOp(expr.token().rawText());
 
-        // The results of the operands.
-        final TempAddress arg1 = newTemp();
-        final TempAddress arg2 = newTemp();
+        final Expr first = (Expr) expr.first();
+        final Expr second = (Expr) expr.second();
+        
+        // These will either be a constant or temporary.
+        Address arg1, arg2;
 
-        // generate the instructions for both operands
-        ((Expr) expr.first()).accept(this, arg1);
-        ((Expr) expr.second()).accept(this, arg2);
+        if (first instanceof IntegerExpr)
+            // The argument is an integer,
+            // so rather than generating a temp address,
+            // just generate a constant address.
+            arg1 = new ConstAddress(first.token().rawText());
+        else
+        {
+            // The argument is a more complex sub-expression,
+            // so generate a temp to store the result of
+            // the complex sub-expression.
+            arg1 = newTemp();
+            first.accept(this, (TempAddress) arg1);
+        }
 
-        quads.add(new BinaryInst(op, arg1, arg2, result));
+        if (second instanceof IntegerExpr)
+            // The argument is an integer,
+            // so rather than generating a temp address,
+            // just generate a constant address.
+            arg2 = new ConstAddress(second.token().rawText());
+        else
+        {
+            // The argument is a more complex sub-expression,
+            // so generate a temp to store the result of
+            // the complex sub-expression.
+            arg2 = newTemp();
+            second.accept(this, (TempAddress) arg2);
+        }
+
+        irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
 
         return null;
     }
@@ -105,25 +145,43 @@ public final class IRGenVisitor extends IRGenerator implements
      */
     public Void visit(PrintExpr expr)
     {
+        // Accumulate the param instructions to be
+        // inserted directly before the call instruction.
+        final List<Quadruple> params = new ArrayList<>();
+        
         final List<Address> paramTemps = new ArrayList<>();
         
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())
         {
-            final TempAddress paramTemp = newTemp();
-            ((Expr) child).accept(this, paramTemp);
-            paramTemps.add(paramTemp);
+            final Expr childExpr = (Expr) child;
+            if (childExpr instanceof IntegerExpr)
+                // The parameter is an integer,
+                // so rather than generating a temp address,
+                // just generate a constant address.
+                params.add(new ParamInst(
+                    new ConstAddress(childExpr.token().rawText())));
+            else
+            {
+                // The parameter is a more complex sub-expression,
+                // so generate a temp to store the result of
+                // the complex sub-expression.
+                final TempAddress paramTemp = newTemp();
+                childExpr.accept(this, paramTemp);
+                paramTemps.add(paramTemp);
+            }
         }
 
-        // Generate the parameter instructions that
-        // precede the call instruction.
+        // Generate the param instructions for the parameters
+        // that are stored in temporary addresses.
         for (Address paramTemp : paramTemps)
-            quads.add(new ParamInst(paramTemp));
+           params.add(new ParamInst(paramTemp));
     
         final NameAddress procName = new NameAddress(expr.token().rawText());
         final ConstAddress numParams = new ConstAddress(expr.children().size());
 
-        quads.add(new CallInst(procName, numParams));
+        irProgram.addQuads(params);
+        irProgram.addQuad(new CallInst(procName, numParams));
 
         return null;
     }
