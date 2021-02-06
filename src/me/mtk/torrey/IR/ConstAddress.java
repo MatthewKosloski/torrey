@@ -9,4 +9,20 @@ public final class ConstAddress extends Address
     {
         super(AddressingMode.CONSTANT, String.valueOf(constant));
     }
+
+    public ConstAddress(String constant)
+    {
+        super(AddressingMode.CONSTANT, constant);
+    }
+
+    /**
+     * Returns the value stored at this constant address
+     * as an integer.
+     * 
+     * @return The integer stored at this address.
+     */
+    public int getConstant()
+    {
+        return Integer.parseInt(value);
+    }
 }
