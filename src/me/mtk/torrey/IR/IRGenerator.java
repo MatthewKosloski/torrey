@@ -42,11 +42,11 @@ public abstract class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR unary instruction operator type.
      */
-    protected UnaryOperator transUnaryOp(String rawText)
+    protected UnaryOpType transUnaryOp(String rawText)
     {
         switch (rawText)
         {
-            case "-": return UnaryOperator.MINUS;
+            case "-": return UnaryOpType.MINUS;
             default: 
                 throw new Error("Error: Cannot translate raw"
                     + " text to an IR unary operator");
@@ -60,17 +60,14 @@ public abstract class IRGenerator
      * @param rawText The raw text of the AST node's token.
      * @return The corresponding IR binary instruction operator type.
      */
-    protected BinaryOperator transBinaryOp(String rawText)
+    protected BinaryOpType transBinaryOp(String rawText)
     {
         switch (rawText)
         {
-            case "+": return BinaryOperator.ADD;
-            case "-": return BinaryOperator.SUB;
-            case "*": return BinaryOperator.MULT;
-            case "/": return BinaryOperator.DIV;
-            case "print":
-            case "println":
-                return BinaryOperator.CALL;
+            case "+": return BinaryOpType.ADD;
+            case "-": return BinaryOpType.SUB;
+            case "*": return BinaryOpType.MULT;
+            case "/": return BinaryOpType.DIV;
             default: 
                 throw new Error("Error: Cannot translate raw"
                     + " text to an IR binary operator");

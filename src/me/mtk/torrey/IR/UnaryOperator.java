@@ -1,21 +1,23 @@
 package me.mtk.torrey.IR;
 
-/**
- * The types of unary operators for IR instructions.
- */
-public enum UnaryOperator implements Operator
-{
-    MINUS ("-");
-        
-    private final String opText;
+import java.util.Map;
+import java.util.HashMap;
 
-    UnaryOperator(String opText)
+/**
+ * Represents an unary operator.
+ */
+public final class UnaryOperator extends Operator
+{
+    // Maps an enum prop to its op text
+    private static final Map<UnaryOpType, String> store;
+
+    static
     {
-        this.opText = opText;
+        store = new HashMap<>();
+        store.put(UnaryOpType.MINUS, "-");
     }
 
-    public String opText()
-    {
-        return opText;
+    public UnaryOperator(UnaryOpType op) {
+        super(store.get(op));
     }
 }

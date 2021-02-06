@@ -1,21 +1,9 @@
 package me.mtk.torrey.IR;
 
 /**
- * The call operator for IR instructions.
+ * Represents a call operator.
  */
-public enum CallOperator implements Operator
+public final class CallOperator extends Operator
 {
-    CALL ("call");
-        
-    private final String opText;
-
-    CallOperator(String opText)
-    {
-        this.opText = opText;
-    }
-
-    public String opText()
-    {
-        return opText;
-    }
+    public CallOperator() { super("call"); }
 }

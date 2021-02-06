@@ -1,16 +1,20 @@
 package me.mtk.torrey.IR;
 
 /**
- * To be implemented by all intermediate language
+ * To be extended by all intermediate language
  * instruction operators.
  */
-public interface Operator
+public abstract class Operator
 {
-    /**
-     * Returns the operator text that will appear in the 
-     * intermediate instruction.
-     * 
-     * @return The operator text.
-     */
-    public String opText();
+    private final String opText;
+
+    Operator(String opText)
+    {
+        this.opText = opText;
+    }
+
+    public String opText()
+    {
+        return opText;
+    }
 }

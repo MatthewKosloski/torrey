@@ -3,19 +3,7 @@ package me.mtk.torrey.IR;
 /**
  * The copy operator for IR instructions.
  */
-public enum CopyOperator implements Operator
+public final class CopyOperator extends Operator
 {
-    ASSIGN ("=");
-        
-    private final String opText;
-
-    CopyOperator(String opText)
-    {
-        this.opText = opText;
-    }
-
-    public String opText()
-    {
-        return opText;
-    }
+    public CopyOperator() { super("="); }
 }

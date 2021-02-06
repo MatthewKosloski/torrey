@@ -1,21 +1,9 @@
 package me.mtk.torrey.IR;
 
 /**
- * The param operator for IR instructions.
+ * Represents a param operator.
  */
-public enum ParamOperator implements Operator
+public final class ParamOperator extends Operator
 {
-    PARAM ("param");
-        
-    private final String opText;
-
-    ParamOperator(String opText)
-    {
-        this.opText = opText;
-    }
-
-    public String opText()
-    {
-        return opText;
-    }
+    public ParamOperator() { super("param"); }
 }

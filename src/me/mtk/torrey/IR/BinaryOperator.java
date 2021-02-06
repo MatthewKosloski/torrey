@@ -1,24 +1,26 @@
 package me.mtk.torrey.IR;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
- * The types of binary operators for IR instructions.
+ * Represents a binary operator.
  */
-public enum BinaryOperator implements Operator
+public final class BinaryOperator extends Operator
 {
-    ADD ("+"),
-    SUB ("-"),
-    MULT ("*"),
-    DIV ("/");
+    // Maps an enum prop to its op text
+    private static final Map<BinaryOpType, String> store;
 
-    private final String opText;
-
-    BinaryOperator(String opText)
+    static
     {
-        this.opText = opText;
+        store = new HashMap<>();
+        store.put(BinaryOpType.ADD, "+");
+        store.put(BinaryOpType.SUB, "-");
+        store.put(BinaryOpType.MULT, "*");
+        store.put(BinaryOpType.DIV, "/");
     }
 
-    public String opText()
-    {
-        return opText;
+    public BinaryOperator(BinaryOpType op) {
+        super(store.get(op));
     }
 }

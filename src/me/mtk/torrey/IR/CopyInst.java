@@ -17,7 +17,7 @@ public final class CopyInst extends Quadruple
      */
     public CopyInst(TempAddress lhs, Address rhs)
     {
-        super(CopyOperator.ASSIGN, rhs, null, lhs);
+        super(new CopyOperator(), rhs, null, lhs);
     }
 
     public String toString()
