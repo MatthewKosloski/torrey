@@ -25,11 +25,6 @@ public class Program extends ASTNode
         return visitor.visit(this);
     }
 
-    public <T> T accept(ProgramIRVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
-
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
