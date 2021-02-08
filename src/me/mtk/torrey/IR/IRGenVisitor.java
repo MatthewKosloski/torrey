@@ -49,7 +49,6 @@ public final class IRGenVisitor extends IRGenerator implements
         final ConstAddress constant = new ConstAddress(
             Integer.parseInt(expr.token().rawText()));
         irProgram.addQuad(new CopyInst(result, constant));
-        irProgram.define(result.value(), constant.getConstant());
 
         return null;
     }
