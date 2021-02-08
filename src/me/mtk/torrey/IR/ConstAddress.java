@@ -7,22 +7,11 @@ public final class ConstAddress extends Address
 {
     public ConstAddress(int constant)
     {
-        super(AddressingMode.CONSTANT, String.valueOf(constant));
-    }
-
-    public ConstAddress(String constant)
-    {
         super(AddressingMode.CONSTANT, constant);
     }
 
-    /**
-     * Returns the value stored at this constant address
-     * as an integer.
-     * 
-     * @return The integer stored at this address.
-     */
-    public int getConstant()
+    public ConstAddress(String constantStr)
     {
-        return Integer.parseInt(value);
+        super(AddressingMode.CONSTANT, Integer.parseInt(constantStr));
     }
 }
