@@ -9,6 +9,9 @@ import me.mtk.torrey.IR.BinaryInst;
 import me.mtk.torrey.IR.BinaryOpType;
 import me.mtk.torrey.IR.ParamInst;
 import me.mtk.torrey.IR.CallInst;
+import me.mtk.torrey.IR.Address;
+import me.mtk.torrey.IR.TempAddress;
+import me.mtk.torrey.IR.ConstAddress;
 
 /**
  * Generates 64-bit x86 assembly code
@@ -49,12 +52,47 @@ public final class X86Generator
 
     private void gen(CopyInst inst)
     {
-        // asm.add(new X86Inst("movq", inst.arg1(), dest))
+        final Address srcAddr = inst.arg1();
+        final TempAddress destAddr = inst.result();
+
+        String src = null;
+        final String dest = destAddr.toString();
+
+        if (srcAddr instanceof ConstAddress)
+            src = transConstAddress((ConstAddress) srcAddr);
+        else if (srcAddr instanceof TempAddress)
+            src = srcAddr.toString();
+        else
+            throw new Error("X86Generator.gen(CopyInst):"
+                + " Unhandled Address.");
+
+        asm.add(new X86Inst("movq", src, dest));
     }
 
     private void gen(UnaryInst inst)
-    {
-        asm.add(new X86Inst("negq", inst.arg1().value(), null));
+    { 
+        final Address srcAddr = inst.arg1();
+        final TempAddress destAddr = inst.result();
+
+        String src = null;
+        final String dest = destAddr.toString();
+
+        if (srcAddr instanceof ConstAddress)
+        {
+            src = transConstAddress((ConstAddress) srcAddr);
+            asm.add(new X86Inst("movq", src, dest));
+        }
+        else if (srcAddr instanceof TempAddress)
+            src = srcAddr.toString();
+        else
+            throw new Error("X86Generator.gen(UnaryInst):"
+                + " Unhandled Address.");
+
+        asm.add(new X86Inst("negq", src, null));
+
+        // TODO: The x86 instruction corresponding to the IR instruction
+        // `x = - y` is `negq y`, and thus the new destination is y. We
+        // need to replace all subsequent occurrences of x with y.
     }
 
     private void gen(BinaryInst inst)
@@ -94,6 +132,11 @@ public final class X86Generator
     private void gen(CallInst inst)
     {
     
+    }
+
+    private String transConstAddress(ConstAddress addr)
+    {
+        return String.format("$%s", addr);
     }
 
 }
