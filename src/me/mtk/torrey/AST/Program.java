@@ -29,11 +29,9 @@ public class Program extends ASTNode
     {
         final StringBuilder sb = new StringBuilder();
 
-        for (ASTNode child : children())
-        {
-            sb.append("\n");
-            sb.append(child.toString());
-        }
+        for (int i = 0; i < children().size(); i++)
+            sb.append(children().get(i).toString())
+                .append(i == children().size() - 1 ? "" : "\n");
 
         return sb.toString();
     }
