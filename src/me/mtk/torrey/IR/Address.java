@@ -14,13 +14,13 @@ public class Address
     protected AddressingMode mode;
 
     // The value of the address.
-    protected String value;
+    protected Object value;
 
     /**
      * Constructs a new address.
      * @param value The value stored at this address.
      */
-    public Address(AddressingMode mode, String value)
+    public Address(AddressingMode mode, Object value)
     {
         this.mode = mode;
         this.value = value;
@@ -41,7 +41,7 @@ public class Address
      * 
      * @return A value.
      */
-    public String value()
+    public Object value()
     {
         return value;
     }
@@ -53,6 +53,6 @@ public class Address
      */
     public String toString()
     {
-        return String.format("%s", value);
+        return String.format("%s", value.toString());
     }
 }
