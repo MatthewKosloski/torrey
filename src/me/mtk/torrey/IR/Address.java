@@ -11,10 +11,10 @@ package me.mtk.torrey.IR;
 public class Address
 {
     // The mode of this address.
-    protected AddressingMode mode;
+    private AddressingMode mode;
 
     // The value of the address.
-    protected Object value;
+    private Object value;
 
     /**
      * Constructs a new address.
