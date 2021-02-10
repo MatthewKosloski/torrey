@@ -1,6 +1,8 @@
 package me.mtk.torrey.X86;
 
+import java.util.Map;
 import java.util.Queue;
+import java.util.HashMap;
 import java.util.LinkedList;
 import me.mtk.torrey.IR.Quadruple;
 import me.mtk.torrey.IR.CopyInst;
@@ -56,6 +58,67 @@ public final class X86Generator
                 throw new Error("Cannot generate x86 instruction");
         }
 
+        // At this point, we have a "pseudo-x86" program with a, potentially
+        // infinite, amount of IR temporaries. We need to replace all temporaries 
+        // with base-relative stack addresses (relative to the current frame's 
+        // base pointer). This is not a really effective way of using the 
+        // CPU to do computations, so later we will use some algorithm 
+        // (e.g., graph coloring) to perform register allocation. This 
+        // will make the program much faster as it does not have to make 
+        // as many trips to main memory (registers only require one CPU
+        // clock cycle, main memory access requires hundreds).
+
+        // Maps a temporary (e.g., "t1") to a base-relative stack 
+        // address (e.g., -8(%rbp)).
+        final Map<String, String> stackAddrs = new HashMap<>();
+        
+        // Assign a base-relative stack address to each IR temporary.
+        int offset = 0;
+        for (String temp : ir.temps())
+            stackAddrs.put(temp, String.format("%d(%%rbp)", offset -= 8));
+
+        // Traverse the x86 program, replacing each IR temporary with
+        // its assigned base-relative stack address.
+        for (X86Inst inst : x86.instrs())
+        {
+            if (inst.arg1() != null && inst.arg1().mode() == AddressingMode.TEMP)
+                inst.setArg1(new BaseRelative(
+                    stackAddrs.get((String) inst.arg1().value())));
+            if (inst.arg2() != null && inst.arg2().mode() == AddressingMode.TEMP)
+                inst.setArg2(new BaseRelative(
+                    stackAddrs.get((String) inst.arg2().value())));
+        }
+
+        // In x86, it is illegal for both arguments to an instruction 
+        // be stack locations. Thus, if we have an instruction like
+        // `movq -16(%rbp), -24(%rbp)`, we must put one of the arguments
+        // in a register before perfoming movq. 
+        // So...
+        // Ensure that each instruction adheres to the restriction
+        // that at most one argument of an instruction may be
+        // a memory reference.
+
+        for (int i = 0; i < x86.instrs().size(); i++)
+        {
+            final X86Inst inst = x86.instrs().get(i);
+
+            if (inst.arg1() != null && inst.arg1().mode() 
+                == AddressingMode.BASEREL &&
+                inst.arg2() != null && inst.arg2().mode() == 
+                AddressingMode.BASEREL)
+            {
+                // Both arguments are stack locations,
+                // so move arg1 to register %rax before
+                // performing the instruction.
+                x86.instrs().add(i, new X86Inst("movq", 
+                    inst.arg1(), new Register("%rax")));
+
+                // Update the arg1 of this instruction to
+                // be %rax
+                inst.setArg1(new Register("%rax"));
+            }
+        }
+
         return x86;
     }
 
@@ -64,13 +127,13 @@ public final class X86Generator
         final Address srcAddr = inst.arg1();
         final TempAddress destAddr = inst.result();
 
-        String src = null;
-        final String dest = destAddr.toString();
+        X86Address src = null;
+        final X86Address dest = new Temporary(destAddr.toString());
 
         if (srcAddr instanceof ConstAddress)
             src = transConstAddress((ConstAddress) srcAddr);
         else if (srcAddr instanceof TempAddress)
-            src = srcAddr.toString();
+            src = new Temporary(srcAddr.toString());
         else
             throw new Error("X86Generator.gen(CopyInst):"
                 + " Unhandled Address.");
@@ -83,13 +146,13 @@ public final class X86Generator
         final Address srcAddr = inst.arg1();
         final TempAddress destAddr = inst.result();
 
-        String src = null;
-        final String dest = destAddr.toString();
+        X86Address src = null;
+        final X86Address dest = new Temporary(destAddr.toString());
 
         if (srcAddr instanceof ConstAddress)
             src = transConstAddress((ConstAddress) srcAddr);
         else if (srcAddr instanceof TempAddress)
-            src = srcAddr.toString();
+            src = new Temporary(srcAddr.toString());
         else
             throw new Error("X86Generator.gen(UnaryInst):"
                 + " Unhandled Address.");
@@ -109,13 +172,13 @@ public final class X86Generator
         final Address arg2Addr = inst.arg2();
         final TempAddress destAddr = inst.result();
 
-        String arg1 = null, arg2 = null,
-        dest = destAddr.toString();
+        X86Address arg1 = null, arg2 = null;
+        final X86Address dest = new Temporary(destAddr.toString());
 
         if (arg1Addr instanceof ConstAddress)
             arg1 = transConstAddress((ConstAddress) arg1Addr);
         else if (arg1Addr instanceof TempAddress)
-            arg1 = arg1Addr.toString();
+            arg1 = new Temporary(arg1Addr.toString());
         else
             throw new Error("X86Generator.gen(BinaryInst):"
                 + " Unhandled Address case.");
@@ -123,7 +186,7 @@ public final class X86Generator
         if (arg2Addr instanceof ConstAddress)
             arg2 = transConstAddress((ConstAddress) arg2Addr);
         else if (arg2Addr instanceof TempAddress)
-            arg2 = arg2Addr.toString();
+            arg2 = new Temporary(arg2Addr.toString());
         else
             throw new Error("X86Generator.gen(BinaryInst):"
                 + " Unhandled Address case.");
@@ -149,7 +212,7 @@ public final class X86Generator
         else if (op == "/")
         {
             // move dividend to rax register
-            x86.addInst(new X86Inst("movq", arg1, "%rax"));
+            x86.addInst(new X86Inst("movq", arg1, new Register("%rax")));
 
             // move divisor to temp destination
             x86.addInst(new X86Inst("movq", arg2, dest));
@@ -182,24 +245,26 @@ public final class X86Generator
                 String param = params.remove();
                 x86.addInst(new X86Inst(
                     "movq",
-                    param,
-                    "%rdi"));
+                    new Temporary(param),
+                    new Register("%rdi")));
                 x86.addInst(new X86Inst(
                     "call",
-                    "print_int", null));
+                    new Global("print_int"), 
+                    null));
                 if (procName.equals("println"))
                 {
                     x86.addInst(new X86Inst(
-                    "call",
-                    "print_nl", null));
+                        "call",
+                        new Global("print_nl"), 
+                        null));
                 }
             }
         }
     }
 
-    private String transConstAddress(ConstAddress addr)
+    private Immediate transConstAddress(ConstAddress addr)
     {
-        return String.format("$%s", addr);
+        return new Immediate(String.format("$%s", addr));
     }
 
 }
