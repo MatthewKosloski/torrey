@@ -47,6 +47,27 @@ public final class Token
         this.endPos = endPos;
     }
 
+    /**
+     * Constructs a token of the given type and raw text,
+     * excluding any location information.
+     * 
+     * @param type
+     * @param rawText
+     */
+    public Token(TokenType type, String rawText)
+    {
+        this(type, rawText, -1, -1, -1, null, null);
+    }
+
+    /**
+     * Constructs an "empty" token with no location 
+     * information or raw text.
+     */
+    public Token()
+    {
+        this(TokenType.UNIDENTIFIED, "");
+    }
+
     public TokenType type()
     {
         return type;
@@ -93,13 +114,13 @@ public final class Token
         sb.append(",");
         sb.append(type);
         sb.append(",");
-        sb.append(startPos.line());
+        sb.append(startPos != null ? startPos.line() : -1);
         sb.append(":");
-        sb.append(startPos.col());
+        sb.append(startPos != null ? startPos.col() : -1);
         sb.append(",");
-        sb.append(endPos.line());
+        sb.append(endPos != null ? endPos.line() : -1);
         sb.append(":");
-        sb.append(endPos.col());
+        sb.append(endPos != null ? endPos.col() : -1);
         sb.append(">");
 
         return sb.toString();
