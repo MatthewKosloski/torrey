@@ -1,14 +1,11 @@
 package me.mtk.torrey.X86;
 
-import java.util.List;
 import java.util.Queue;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import me.mtk.torrey.IR.Quadruple;
 import me.mtk.torrey.IR.CopyInst;
 import me.mtk.torrey.IR.UnaryInst;
 import me.mtk.torrey.IR.BinaryInst;
-import me.mtk.torrey.IR.BinaryOpType;
 import me.mtk.torrey.IR.ParamInst;
 import me.mtk.torrey.IR.CallInst;
 import me.mtk.torrey.IR.Address;
