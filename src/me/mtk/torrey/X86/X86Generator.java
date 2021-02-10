@@ -175,7 +175,29 @@ public final class X86Generator
 
     private void gen(CallInst inst)
     {
-    
+        final String procName = (String) inst.arg1().value();
+        final int numParams = (int) inst.arg2().value();
+
+        if (procName.equals("print") || procName.equals("println"))
+        {
+            for (int i = 0; i < numParams; i++)
+            {
+                String param = params.remove();
+                x86.addInst(new X86Inst(
+                    "movq",
+                    param,
+                    "%rdi"));
+                x86.addInst(new X86Inst(
+                    "call",
+                    "print_int", null));
+                if (procName.equals("println"))
+                {
+                    x86.addInst(new X86Inst(
+                    "call",
+                    "print_nl", null));
+                }
+            }
+        }
     }
 
     private String transConstAddress(ConstAddress addr)
