@@ -151,22 +151,9 @@ public final class IRGenVisitor extends IRGenerator implements
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())
         {
-            final Expr childExpr = (Expr) child;
-            if (childExpr instanceof IntegerExpr)
-                // The parameter is an integer,
-                // so rather than generating a temp address,
-                // just generate a constant address.
-                params.add(new ParamInst(
-                    new ConstAddress(childExpr.token().rawText())));
-            else
-            {
-                // The parameter is a more complex sub-expression,
-                // so generate a temp to store the result of
-                // the complex sub-expression.
-                final TempAddress paramTemp = newTemp();
-                childExpr.accept(this, paramTemp);
-                params.add(new ParamInst(paramTemp));
-            }
+            final TempAddress paramTemp = newTemp();
+            ((Expr) child).accept(this, paramTemp);
+            params.add(new ParamInst(paramTemp));
         }
     
         final NameAddress procName = new NameAddress(expr.token().rawText());
