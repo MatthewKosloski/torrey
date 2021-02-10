@@ -36,7 +36,7 @@ public final class X86Generator
     public X86Generator(IRProgram ir)
     {
         this.ir = ir;
-        this.x86 = new X86Program();
+        this.x86 = new X86Program(ir.temps().size() * 8);
         params = new LinkedList<>();
     }
 
