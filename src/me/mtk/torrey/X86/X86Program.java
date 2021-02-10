@@ -75,8 +75,14 @@ public final class X86Program
             .append("\tjmp start\n");
 
         sb.append("conclusion:\n")
+            // Move stack pointer up stackSize bytes to the old base pointer
             .append("\taddq $").append(stackSize).append(", %rsp\n")
+
+            // Pop the old base pointer off the stack, storing it in
+            // register %rbp
             .append("\tpopq %rbp\n")
+
+            // Pop the OS's return address off the stack and jump to it.
             .append("\tretq\n");
     
         return sb.toString();
