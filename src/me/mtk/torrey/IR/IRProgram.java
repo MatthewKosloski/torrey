@@ -49,6 +49,11 @@ public final class IRProgram
         return quads;
     }
 
+    public List<String> temps()
+    {
+        return temps;
+    }
+
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
