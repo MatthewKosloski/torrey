@@ -84,17 +84,15 @@ public final class X86Generator
         final String dest = destAddr.toString();
 
         if (srcAddr instanceof ConstAddress)
-        {
             src = transConstAddress((ConstAddress) srcAddr);
-            x86.addInst(new X86Inst("movq", src, dest));
-        }
         else if (srcAddr instanceof TempAddress)
             src = srcAddr.toString();
         else
             throw new Error("X86Generator.gen(UnaryInst):"
                 + " Unhandled Address.");
 
-        x86.addInst(new X86Inst("negq", src, null));
+        x86.addInst(new X86Inst("movq", src, dest));
+        x86.addInst(new X86Inst("negq", dest, null));
 
         // TODO: The x86 instruction corresponding to the IR instruction
         // `x = - y` is `negq y`, and thus the new destination is y. We
