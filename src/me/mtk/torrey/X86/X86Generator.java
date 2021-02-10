@@ -1,7 +1,9 @@
 package me.mtk.torrey.X86;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import me.mtk.torrey.IR.Quadruple;
 import me.mtk.torrey.IR.CopyInst;
 import me.mtk.torrey.IR.UnaryInst;
@@ -29,10 +31,14 @@ public final class X86Generator
     // An x86 program that is equivalent to the input IR program.
     private X86Program x86;
 
+    // The temp names pointing to parameters of subsequent call instructions.
+    private Queue<String> params;
+
     public X86Generator(IRProgram ir)
     {
         this.ir = ir;
         this.x86 = new X86Program();
+        params = new LinkedList<>();
     }
 
     public X86Program gen()
@@ -164,7 +170,7 @@ public final class X86Generator
 
     private void gen(ParamInst inst)
     {
-    
+        params.add((String) inst.arg1().value());
     }
 
     private void gen(CallInst inst)
