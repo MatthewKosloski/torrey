@@ -1,8 +1,6 @@
 package me.mtk.torrey.AST;
 
 import java.util.List;
-
-import me.mtk.torrey.Lexer.TokenType;
 import me.mtk.torrey.ErrorReporter.SemanticError;
 import me.mtk.torrey.Lexer.Token;
 
@@ -14,7 +12,7 @@ public class Program extends ASTNode
     public Program(List<Expr> exprList) 
     {
         // Create "empty" token to satisfy inheritance requirement.
-        super(new Token(TokenType.UNIDENTIFIED, "", -1, -1, -1, null, null));
+        super(new Token());
 
         for (Expr expr : exprList)
             addChild(expr);
