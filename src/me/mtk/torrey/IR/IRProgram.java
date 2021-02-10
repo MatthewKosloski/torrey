@@ -52,8 +52,11 @@ public final class IRProgram
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
-        for (Quadruple quad : quads)
-            sb.append(quad).append("\n");
+
+        for (int i = 0; i < quads.size(); i++)
+            sb.append(quads.get(i).toString())
+                .append(i == quads.size() - 1 ? "" : "\n");
+            
         return sb.toString();
     }
 
