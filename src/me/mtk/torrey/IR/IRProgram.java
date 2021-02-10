@@ -8,14 +8,33 @@ public final class IRProgram
     // The three-address instructions, each represented
     // by a quadruple (op, arg1, arg2, result).
     private List<Quadruple> quads;
+
+    // The list of temporary names used in the IR program. They
+    // are enumerated in the order in which they are created.
+    private List<String> temps;
     
     public IRProgram()
     {
-        this.quads = new ArrayList<>();
+        quads = new ArrayList<>();
+        temps = new ArrayList<>();
     }
 
     public void addQuad(Quadruple quad)
     {
+        // If we have a first argument and it's a temporary,
+        // record the name of that temporary.
+        if (quad.arg1() != null && quad.arg1().mode() == AddressingMode.TEMP)
+            addTemp((String) quad.arg1().value());
+        
+        // If we have a second argument and it's a temporary,
+        // record the name of that temporary.
+        if (quad.arg2() != null && quad.arg2().mode() == AddressingMode.TEMP)
+            addTemp((String) quad.arg2().value());
+
+        // If we have a result temp address, record the name.
+        if (quad.result() != null)
+            addTemp((String) quad.result().value());
+
         quads.add(quad);
     }
 
@@ -36,5 +55,11 @@ public final class IRProgram
         for (Quadruple quad : quads)
             sb.append(quad).append("\n");
         return sb.toString();
+    }
+
+    private void addTemp(String tempName)
+    {
+        if (temps.indexOf(tempName) == -1)
+            temps.add(tempName);
     }
 }
