@@ -101,31 +101,65 @@ public final class X86Generator
 
     private void gen(BinaryInst inst)
     {
-        // final X86Inst mov = new X86Inst(
-        //     "movq", 
-        //     inst.arg1().value(), 
-        //     inst.result().value());
-            
-        // asm.add(mov);
+        final String op = inst.op().opText();
+        final Address arg1Addr = inst.arg1();
+        final Address arg2Addr = inst.arg2();
+        final TempAddress destAddr = inst.result();
 
-        // if (inst.op().opText() == "+")
-        // {
-        //     asm.add(new X86Inst(
-        //         "addq", 
-        //         inst.arg2().value(), 
-        //         inst.result().value()));
-        // }
-        // else if (inst.op().opText() == "-")
-        // {
-        //     asm.add(new X86Inst(
-        //         "subq", 
-        //         inst.arg2().value(), 
-        //         inst.result().value()));
-        // }
-        // else if (inst.op().opText() == "*")
-        // {
-        //     asm.add(new X86Inst(op, src, dest))
-        // }
+        String arg1 = null, arg2 = null,
+        dest = destAddr.toString();
+
+        if (arg1Addr instanceof ConstAddress)
+            arg1 = transConstAddress((ConstAddress) arg1Addr);
+        else if (arg1Addr instanceof TempAddress)
+            arg1 = arg1Addr.toString();
+        else
+            throw new Error("X86Generator.gen(BinaryInst):"
+                + " Unhandled Address case.");
+
+        if (arg2Addr instanceof ConstAddress)
+            arg2 = transConstAddress((ConstAddress) arg2Addr);
+        else if (arg2Addr instanceof TempAddress)
+            arg2 = arg2Addr.toString();
+        else
+            throw new Error("X86Generator.gen(BinaryInst):"
+                + " Unhandled Address case.");
+
+        if (op == "+" || op == "-" || op == "*")
+        {
+            // Store first argument in temp
+            x86.addInst(new X86Inst("movq", arg1, dest));
+
+            String opcode;
+
+            if (op == "+")
+                opcode = "addq";
+            else if (op == "-")
+                opcode = "subq";
+            else
+                opcode = "imulq";
+
+            // Add, subtract, or multiply second argument
+            // by the first, storing the result in dest.
+            x86.addInst(new X86Inst(opcode, arg2, dest));
+        }
+        else if (op == "/")
+        {
+            // move dividend to rax register
+            x86.addInst(new X86Inst("movq", arg1, "%rax"));
+
+            // move divisor to temp destination
+            x86.addInst(new X86Inst("movq", arg2, dest));
+
+            // sign extension
+            x86.addInst(new X86Inst("cqo", null, null));
+
+            // divide contents in %rax by contents in temp
+            x86.addInst(new X86Inst("idivq", dest, null));
+        }
+        else 
+            throw new Error("X86Generator.gen(BinaryInst):"
+                + " Unhandled binary case.");
     }
 
     private void gen(ParamInst inst)
