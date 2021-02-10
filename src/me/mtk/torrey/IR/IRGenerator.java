@@ -1,7 +1,5 @@
 package me.mtk.torrey.IR;
 
-import java.util.List;
-import java.util.ArrayList;
 import me.mtk.torrey.AST.Program;
 
 /**
