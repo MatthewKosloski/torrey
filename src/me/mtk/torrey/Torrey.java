@@ -12,6 +12,7 @@ import me.mtk.torrey.ErrorReporter.SemanticError;
 import me.mtk.torrey.ErrorReporter.SyntaxError;
 import me.mtk.torrey.Parser.Grammar;
 import me.mtk.torrey.X86.X86Generator;
+import me.mtk.torrey.X86.X86Program;
 import me.mtk.torrey.AST.Program;
 import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.IR.IRGenVisitor;
@@ -56,8 +57,8 @@ public class Torrey
             // ...
 
             // x86-64 code generation
-            final X86Generator x86Gen = new X86Generator(irProgram.quads());
-            x86Gen.gen();
+            final X86Generator x86Gen = new X86Generator(irProgram);
+            final X86Program x86Program = x86Gen.gen();
 
             // first convert the IR to assembly code, using the temporary names
             // then do another pass ("assign homes" pass) to replace the temp 
@@ -66,11 +67,13 @@ public class Torrey
             // This first compiler will not implement register allocation and
             // will simply store intermediate values and such in the stack.
 
-            // System.out.println(tokens);
+            System.out.println(tokens);
+            System.out.println();
             System.out.println(program);
             System.out.println();
-            System.out.println(irProgram);   
-            System.out.println(irProgram.symtable()); 
+            System.out.println(irProgram);
+            System.out.println();
+            System.out.println(x86Program);   
         }
         catch (IOException e)
         {

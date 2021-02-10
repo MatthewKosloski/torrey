@@ -12,6 +12,7 @@ import me.mtk.torrey.IR.CallInst;
 import me.mtk.torrey.IR.Address;
 import me.mtk.torrey.IR.TempAddress;
 import me.mtk.torrey.IR.ConstAddress;
+import me.mtk.torrey.IR.IRProgram;
 
 /**
  * Generates 64-bit x86 assembly code
@@ -22,18 +23,21 @@ import me.mtk.torrey.IR.ConstAddress;
 public final class X86Generator 
 {
     
-    private List<Quadruple> quads;
-    private List<X86Inst> asm;
+    // The IR program from which x86 code will be generated.
+    private IRProgram ir;
 
-    public X86Generator(List<Quadruple> quads)
+    // An x86 program that is equivalent to the input IR program.
+    private X86Program x86;
+
+    public X86Generator(IRProgram ir)
     {
-        this.quads = quads;
-        this.asm = new ArrayList<>();
+        this.ir = ir;
+        this.x86 = new X86Program();
     }
 
-    public void gen()
+    public X86Program gen()
     {
-        for (Quadruple quad : quads)
+        for (Quadruple quad : ir.quads())
         {
             if (quad instanceof CopyInst)
                 gen((CopyInst) quad);
@@ -48,6 +52,8 @@ public final class X86Generator
             else
                 throw new Error("Cannot generate x86 instruction");
         }
+
+        return x86;
     }
 
     private void gen(CopyInst inst)
@@ -66,7 +72,7 @@ public final class X86Generator
             throw new Error("X86Generator.gen(CopyInst):"
                 + " Unhandled Address.");
 
-        asm.add(new X86Inst("movq", src, dest));
+        x86.addInst(new X86Inst("movq", src, dest));
     }
 
     private void gen(UnaryInst inst)
@@ -80,7 +86,7 @@ public final class X86Generator
         if (srcAddr instanceof ConstAddress)
         {
             src = transConstAddress((ConstAddress) srcAddr);
-            asm.add(new X86Inst("movq", src, dest));
+            x86.addInst(new X86Inst("movq", src, dest));
         }
         else if (srcAddr instanceof TempAddress)
             src = srcAddr.toString();
@@ -88,7 +94,7 @@ public final class X86Generator
             throw new Error("X86Generator.gen(UnaryInst):"
                 + " Unhandled Address.");
 
-        asm.add(new X86Inst("negq", src, null));
+        x86.addInst(new X86Inst("negq", src, null));
 
         // TODO: The x86 instruction corresponding to the IR instruction
         // `x = - y` is `negq y`, and thus the new destination is y. We
@@ -97,31 +103,31 @@ public final class X86Generator
 
     private void gen(BinaryInst inst)
     {
-        final X86Inst mov = new X86Inst(
-            "movq", 
-            inst.arg1().value(), 
-            inst.result().value());
+        // final X86Inst mov = new X86Inst(
+        //     "movq", 
+        //     inst.arg1().value(), 
+        //     inst.result().value());
             
-        asm.add(mov);
+        // asm.add(mov);
 
-        if (inst.op().opText() == "+")
-        {
-            asm.add(new X86Inst(
-                "addq", 
-                inst.arg2().value(), 
-                inst.result().value()));
-        }
-        else if (inst.op().opText() == "-")
-        {
-            asm.add(new X86Inst(
-                "subq", 
-                inst.arg2().value(), 
-                inst.result().value()));
-        }
-        else if (inst.op().opText() == "*")
-        {
-            asm.add(new X86Inst(op, src, dest))
-        }
+        // if (inst.op().opText() == "+")
+        // {
+        //     asm.add(new X86Inst(
+        //         "addq", 
+        //         inst.arg2().value(), 
+        //         inst.result().value()));
+        // }
+        // else if (inst.op().opText() == "-")
+        // {
+        //     asm.add(new X86Inst(
+        //         "subq", 
+        //         inst.arg2().value(), 
+        //         inst.result().value()));
+        // }
+        // else if (inst.op().opText() == "*")
+        // {
+        //     asm.add(new X86Inst(op, src, dest))
+        // }
     }
 
     private void gen(ParamInst inst)
