@@ -108,14 +108,14 @@ public final class X86Generator
                 AddressingMode.BASEREL)
             {
                 // Both arguments are stack locations,
-                // so move arg1 to register %rax before
+                // so move arg1 to register %r10 before
                 // performing the instruction.
                 x86.instrs().add(i, new X86Inst("movq", 
-                    inst.arg1(), new Register("%rax")));
+                    inst.arg1(), new Register("%r10")));
 
                 // Update the arg1 of this instruction to
-                // be %rax
-                inst.setArg1(new Register("%rax"));
+                // be %r10
+                inst.setArg1(new Register("%r10"));
             }
         }
 
