@@ -62,19 +62,6 @@ public class Torrey
             final X86Generator x86Gen = new X86Generator(irProgram);
             final X86Program x86Program = x86Gen.gen();
 
-            // first convert the IR to assembly code, using the temporary names
-            // then do another pass ("assign homes" pass) to replace the temp 
-            // names (e.g., "t3") with a base-relative stack address, relative
-            // to the frame pointer.
-            // This first compiler will not implement register allocation and
-            // will simply store intermediate values and such in the stack.
-
-            // System.out.println(tokens);
-            // System.out.println();
-            // System.out.println(program);
-            // System.out.println();
-            // System.out.println(irProgram);
-            // System.out.println();
             System.out.println(x86Program);   
         }
         catch (IOException e)
