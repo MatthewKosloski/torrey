@@ -14,6 +14,7 @@ import me.mtk.torrey.Parser.Grammar;
 import me.mtk.torrey.X86.X86Generator;
 import me.mtk.torrey.X86.X86Program;
 import me.mtk.torrey.AST.Program;
+import me.mtk.torrey.Analysis.ConstantFolderVisitor;
 import me.mtk.torrey.Analysis.TypeChecker;
 import me.mtk.torrey.IR.IRGenVisitor;
 import me.mtk.torrey.IR.IRProgram;
@@ -46,8 +47,9 @@ public class Torrey
                 new ErrorReporter(input), program);
             typeChecker.check();
 
-            // Optimizations on AST go here
-            // ...
+            // High-level optimizations (on AST)
+            final ConstantFolderVisitor cfVistor = new ConstantFolderVisitor();
+            cfVistor.visit(program);
 
             // Intermediate code generation
             final IRGenVisitor irGen = new IRGenVisitor(program);
