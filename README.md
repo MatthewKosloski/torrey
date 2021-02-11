@@ -2,6 +2,33 @@
 
 This is the first compiler of the Torrey programming language.
 
+## Maven Build
+
+To build an executable (JAR file) via Maven, run:
+
+```
+mvn package -f "some\path\torrey\pom.xml"
+```
+
+This will create a new `target` directory in the project root containing `torreyc.jar`.
+
+## Usage
+
+To compile a program `program.torrey`, first build the run time object code:
+
+```
+gcc -c runtime.c
+```
+
+Next, we can use the object code to produce an executable:
+
+```
+java -jar torreyc.jar program.torrey > program.s && gcc program.s runtime.o -o program.out
+```
+
+The above command first compiles the program, producing an assembly code that is written to a `program.s` file. Then,
+to produce an executable, it must first be linked with the run time object code.
+
 ## Grammar
 
 The parser of this compiler implements the following grammar:
