@@ -67,12 +67,12 @@ public class Torrey
             // This first compiler will not implement register allocation and
             // will simply store intermediate values and such in the stack.
 
-            System.out.println(tokens);
-            System.out.println();
-            System.out.println(program);
-            System.out.println();
-            System.out.println(irProgram);
-            System.out.println();
+            // System.out.println(tokens);
+            // System.out.println();
+            // System.out.println(program);
+            // System.out.println();
+            // System.out.println(irProgram);
+            // System.out.println();
             System.out.println(x86Program);   
         }
         catch (IOException e)

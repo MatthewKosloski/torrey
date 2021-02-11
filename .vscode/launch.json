@@ -5,8 +5,8 @@
             "name": "CodeLens (Launch) - Torrey",
             "request": "launch",
             "mainClass": "me.mtk.torrey.Torrey",
-            "cwd": "${workspaceFolder}/src/me/mtk/torrey",
-            "args": "../../../../program.torrey"
+            "cwd": "${workspaceFolder}/src/main/java/me/mtk/torrey",
+            "args": "../../../../../../program.torrey"
         }
     ]
 }

@@ -7,3 +7,7 @@
 *.pdf
 *.synctex.gz
 .vagrant
+target
+.classpath
+.project
+.settings
