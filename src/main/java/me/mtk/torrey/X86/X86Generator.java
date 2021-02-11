@@ -191,23 +191,31 @@ public final class X86Generator
             throw new Error("X86Generator.gen(BinaryInst):"
                 + " Unhandled Address case.");
 
-        if (op == "+" || op == "-" || op == "*")
+        if (op == "+" || op == "-")
         {
             // Store first argument in temp
             x86.addInst(new X86Inst("movq", arg1, dest));
 
-            String opcode;
+            final String opcode = op == "+" ? "addq" : "subq";
 
-            if (op == "+")
-                opcode = "addq";
-            else if (op == "-")
-                opcode = "subq";
-            else
-                opcode = "imulq";
-
-            // Add, subtract, or multiply second argument
+            // Add or subtract the second argument
             // by the first, storing the result in dest.
             x86.addInst(new X86Inst(opcode, arg2, dest));
+        }
+        else if (op == "*")
+        {
+            // move first argument to rax register
+            x86.addInst(new X86Inst("movq", arg1, new Register("%rax")));
+
+            // move second argument to rbx register
+            x86.addInst(new X86Inst("movq", arg2, new Register("%rbx")));
+
+            // multiply te contents of %rax by arg2, placing the low
+            // 64 bits of the product in %rax.
+            x86.addInst(new X86Inst("imulq", new Register("%rbx"), null));
+
+            // move the product, which is in %rax, to a temp location.
+            x86.addInst(new X86Inst("movq", new Register("%rax"), dest));
         }
         else if (op == "/")
         {
@@ -217,11 +225,16 @@ public final class X86Generator
             // move divisor to temp destination
             x86.addInst(new X86Inst("movq", arg2, dest));
 
-            // sign extension
+            // sign-extend %rax into %rdx. The former contains
+            // the low 64 bits of dividend, the latter contains
+            // the high 64 bits.
             x86.addInst(new X86Inst("cqo", null, null));
 
-            // divide contents in %rax by contents in temp
+            // divide %rdx:%rax by divisor, leaving result in %rax.
             x86.addInst(new X86Inst("idivq", dest, null));
+
+            // Move contents of %rax to destination.
+            x86.addInst(new X86Inst("movq", new Register("%rax"), dest));
         }
         else 
             throw new Error("X86Generator.gen(BinaryInst):"
