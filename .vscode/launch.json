@@ -6,7 +6,7 @@
             "request": "launch",
             "mainClass": "me.mtk.torrey.Torrey",
             "cwd": "${workspaceFolder}/src/main/java/me/mtk/torrey",
-            "args": "../../../../../../program.torrey"
+            "args": "-i ../../../../../../program.torrey"
         }
     ]
 }
