@@ -10,12 +10,11 @@ import java.io.FileWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import me.mtk.torrey.Lexer.Lexer;
-import me.mtk.torrey.Lexer.Token;
+import me.mtk.torrey.Lexer.TokenList;
 import me.mtk.torrey.ErrorReporter.ErrorReporter;
 import me.mtk.torrey.ErrorReporter.SemanticError;
 import me.mtk.torrey.ErrorReporter.SyntaxError;
@@ -66,23 +65,17 @@ public class Torrey
         description = "Parse only; do not compile or assemble.",
         order = 5)
     private boolean stopAtParse = false;
-    
-    @Parameter(
-        names = {"--no-hl-opt"}, 
-        description = "Disable the high-level compiler optimizations.",
-        order = 6)
-    private boolean disableHlOpts = false;
 
     @Parameter(
         names = {"-ir"}, 
         description = "Generate intermediate code only; do not compile or assemble.",
-        order = 7)
+        order = 6)
     private boolean stopAtIr = false;
 
     @Parameter(
         names = {"-S"}, 
         description = "Compile only; do not assemble.",
-        order = 8)
+        order = 7)
     private boolean stopAtCompile = false;
 
     @Parameter(
@@ -90,7 +83,18 @@ public class Torrey
         description = "Keep the assembly source file after assembly.",
         order = 8)
     private boolean keepSource = false;
+
+    @Parameter(
+        names = {"--no-hl-opt"}, 
+        description = "Disable the high-level compiler optimizations on the abstract syntax tree.",
+        order = 9)
+    private boolean disableHlOpts = false;
     
+    @Parameter(
+        names = {"--no-stdout"}, 
+        description = "Suppress all output to the standard output stream.",
+        order = 10)
+    private boolean noStd = false;
 
     public boolean isHelp()
     {
@@ -100,6 +104,14 @@ public class Torrey
     public String inPath()
     {
         return inPath;
+    }
+
+    public boolean hasOutFile()
+    {
+        if (outFileName != null && outFileName.trim().length() > 0)
+            return true;
+
+        return false;
     }
 
     public static void main(String ... argv)
@@ -173,22 +185,28 @@ public class Torrey
             // Lexical analysis (scanning)
             final Lexer lexer = new Lexer(
                     new ErrorReporter(input), input);
-            final List<Token> tokens = lexer.lex();
+            final TokenList tokens = lexer.lex();
 
             if (stopAtLex)
             {
-                System.out.println(tokens);
+                if (hasOutFile())
+                    Torrey.write(tokens.toString(), outFileName);
+                else if (!noStd)
+                    System.out.println(tokens);
                 System.exit(0);
             }
 
             // Syntax analysis (parsing)
             final Grammar grammar = new Grammar(
-                    new ErrorReporter(input), tokens);
+                    new ErrorReporter(input), tokens.tokens());
             final Program program = grammar.parse();
 
             if (stopAtParse)
             {
-                System.out.println(program);
+                if (hasOutFile())
+                    Torrey.write(program.toString(), outFileName);
+                else if (!noStd)
+                    System.out.println(program);
                 System.exit(0);
             }
 
@@ -200,7 +218,8 @@ public class Torrey
             // High-level optimizations (on AST)
             if (!disableHlOpts)
             {
-                final ConstantFolderVisitor cfVistor = new ConstantFolderVisitor();
+                final ConstantFolderVisitor cfVistor = 
+                    new ConstantFolderVisitor();
                 cfVistor.visit(program);
             }
 
@@ -210,7 +229,10 @@ public class Torrey
 
             if (stopAtIr)
             {
-                System.out.println(irProgram);
+                if (hasOutFile())
+                    Torrey.write(irProgram.toString(), outFileName);
+                else if (!noStd)
+                    System.out.println(irProgram);
                 System.exit(0);
             }
 
@@ -223,7 +245,10 @@ public class Torrey
 
             if (stopAtCompile)
             {
-                System.out.println(x86Program);
+                if (hasOutFile())
+                    Torrey.write(x86Program.toString(), outFileName);
+                else if (!noStd)
+                    System.out.println(x86Program);
                 System.exit(0);
             }
 
@@ -239,14 +264,11 @@ public class Torrey
             p.waitFor();
 
             // Write the assembly source code to disk.
-            final BufferedWriter writer = 
-                new BufferedWriter(new FileWriter("temp.s"));
-            writer.write(x86Program.toString()); 
-            writer.close();
+            write(x86Program.toString(), "temp.s");
 
             // Build the executable.
-            pb = new ProcessBuilder("gcc", 
-                "temp.s", "runtime.o", "-o", "program.out");
+            pb = new ProcessBuilder("gcc", "temp.s", "runtime.o", "-o", 
+                outFileName != null ? outFileName : "a.out");
             p = pb.start();
 
             // Before, potentially deleting the assembly source,
@@ -291,5 +313,22 @@ public class Torrey
     {
         final byte[] bytes = Files.readAllBytes(Paths.get(path));   
         return new String(bytes, Charset.defaultCharset());
+    }
+
+    /**
+     * Writes the provided output string to a file with the
+     * provided file name.
+     * 
+     * @param output The output string to be written to the file.
+     * @param fileName The name of the output file.
+     * @throws IOException
+     */
+    public static void write(final String output, final String fileName)
+    throws IOException
+    {
+        final BufferedWriter writer = 
+            new BufferedWriter(new FileWriter(fileName));
+        writer.write(output);
+        writer.close();
     }
 }
