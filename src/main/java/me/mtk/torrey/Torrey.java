@@ -94,7 +94,7 @@ public class Torrey
         names = {"--no-stdout"}, 
         description = "Suppress all output to the standard output stream.",
         order = 10)
-    private boolean noStd = false;
+    private boolean noStdOut = false;
 
     public boolean isHelp()
     {
@@ -191,7 +191,7 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(tokens.toString(), outFileName);
-                else if (!noStd)
+                else if (!noStdOut)
                     System.out.println(tokens);
                 System.exit(0);
             }
@@ -205,7 +205,7 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(program.toString(), outFileName);
-                else if (!noStd)
+                else if (!noStdOut)
                     System.out.println(program);
                 System.exit(0);
             }
@@ -231,7 +231,7 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(irProgram.toString(), outFileName);
-                else if (!noStd)
+                else if (!noStdOut)
                     System.out.println(irProgram);
                 System.exit(0);
             }
@@ -247,7 +247,7 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(x86Program.toString(), outFileName);
-                else if (!noStd)
+                else if (!noStdOut)
                     System.out.println(x86Program);
                 System.exit(0);
             }
