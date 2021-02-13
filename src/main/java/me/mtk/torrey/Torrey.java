@@ -1,12 +1,15 @@
 package me.mtk.torrey;
 
+import java.lang.ProcessBuilder;
+import java.lang.Process;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
@@ -62,25 +65,31 @@ public class Torrey
         names = {"-p"}, 
         description = "Parse only; do not compile or assemble.",
         order = 5)
-    private boolean StopAtParse = false;
+    private boolean stopAtParse = false;
     
     @Parameter(
-        names = {"-O1"}, 
-        description = "Perform high-level compiler optimizations.",
+        names = {"--no-hl-opt"}, 
+        description = "Disable the high-level compiler optimizations.",
         order = 6)
-    private boolean hlOptimize = true;
+    private boolean disableHlOpts = false;
 
     @Parameter(
         names = {"-ir"}, 
         description = "Generate intermediate code only; do not compile or assemble.",
         order = 7)
-    private boolean StopAtIr = false;
+    private boolean stopAtIr = false;
 
     @Parameter(
         names = {"-S"}, 
         description = "Compile only; do not assemble.",
         order = 8)
     private boolean stopAtCompile = false;
+
+    @Parameter(
+        names = {"--keep-source"}, 
+        description = "Keep the assembly source file after assembly.",
+        order = 8)
+    private boolean keepSource = false;
     
 
     public boolean isHelp()
@@ -136,7 +145,7 @@ public class Torrey
                 // as its input.
                 torrey.run(read(torrey.inPath().trim()));
             }
-            else
+            else if (!torrey.isHelp())
             {
                 // No input from stdin was detected and no
                 // path to an input file was provided, so
@@ -146,7 +155,7 @@ public class Torrey
         }
         catch (IOException e)
         {
-            System.err.println("An error occurred while reading"
+            System.err.println("Torrey: An error occurred while reading"
                 + " from the standard input stream.");
             System.exit(1);
         }
@@ -169,7 +178,7 @@ public class Torrey
             if (stopAtLex)
             {
                 System.out.println(tokens);
-                return;
+                System.exit(0);
             }
 
             // Syntax analysis (parsing)
@@ -177,18 +186,33 @@ public class Torrey
                     new ErrorReporter(input), tokens);
             final Program program = grammar.parse();
 
+            if (stopAtParse)
+            {
+                System.out.println(program);
+                System.exit(0);
+            }
+
             // Semantic analysis (type checking)
             final TypeChecker typeChecker = new TypeChecker(
                 new ErrorReporter(input), program);
             typeChecker.check();
 
             // High-level optimizations (on AST)
-            final ConstantFolderVisitor cfVistor = new ConstantFolderVisitor();
-            cfVistor.visit(program);
+            if (!disableHlOpts)
+            {
+                final ConstantFolderVisitor cfVistor = new ConstantFolderVisitor();
+                cfVistor.visit(program);
+            }
 
             // Intermediate code generation
             final IRGenVisitor irGen = new IRGenVisitor(program);
             final IRProgram irProgram = irGen.gen();
+
+            if (stopAtIr)
+            {
+                System.out.println(irProgram);
+                System.exit(0);
+            }
 
             // Optimizations on the IR go here
             // ...
@@ -197,7 +221,53 @@ public class Torrey
             final X86Generator x86Gen = new X86Generator(irProgram);
             final X86Program x86Program = x86Gen.gen();
 
-            System.out.println(x86Program);   
+            if (stopAtCompile)
+            {
+                System.out.println(x86Program);
+                System.exit(0);
+            }
+
+            // Assembly and Linking
+
+            // Build the run-time object code.
+            ProcessBuilder pb = new ProcessBuilder("gcc", 
+                "-c", "runtime.c");
+            Process p = pb.start();
+
+            // before building the executable, wait for 
+            // the run-time object code to be built.
+            p.waitFor();
+
+            // Write the assembly source code to disk.
+            final BufferedWriter writer = 
+                new BufferedWriter(new FileWriter("temp.s"));
+            writer.write(x86Program.toString()); 
+            writer.close();
+
+            // Build the executable.
+            pb = new ProcessBuilder("gcc", 
+                "temp.s", "runtime.o", "-o", "program.out");
+            p = pb.start();
+
+            // Before, potentially deleting the assembly source,
+            // wait for the executable to build.
+            p.waitFor();
+
+            if (!keepSource)
+            {
+                // Delete the previously written assembly source 
+                // file from disk.
+                Files.delete(Paths.get("temp.s"));
+            }
+            
+        }
+        catch (InterruptedException e)
+        {
+            System.err.println(e.getMessage());
+        }
+        catch (IOException e)
+        {
+            System.err.println(e.getMessage());
         }
         catch (SyntaxError e)
         {
