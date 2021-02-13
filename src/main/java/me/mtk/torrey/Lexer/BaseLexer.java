@@ -88,7 +88,7 @@ public abstract class BaseLexer
      * 
      * @return The token stream.
      */
-    public List<Token> lex() throws SyntaxError
+    public TokenList lex() throws SyntaxError
     {
         while (!isEOF())
         {
@@ -115,7 +115,7 @@ public abstract class BaseLexer
         reporter.reportSyntaxErrors("Encountered one or more syntax "
             + "errors during lexing:");
 
-        return tokens;
+        return new TokenList(tokens);
     }
 
     /**
