@@ -96,16 +96,32 @@ public class Torrey
         order = 10)
     private boolean noStdOut = false;
 
+    /**
+     * Indicates whether the user is asking for help via the command-line.
+     * 
+     * @return True if the user is asking for help; False otherwise.
+     */
     public boolean isHelp()
     {
         return help;
     }
 
+    /**
+     * Returns the user specified path of the input file.
+     * 
+     * @return The path of the input file.
+     */
     public String inPath()
     {
         return inPath;
     }
 
+    /**
+     * Indicates whether the user specified a name of an output file.
+     * 
+     * @return True if the user specified the name of an output file;
+     * False otherwise.
+     */
     public boolean hasOutFile()
     {
         if (outFileName != null && outFileName.trim().length() > 0)
