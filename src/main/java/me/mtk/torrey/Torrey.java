@@ -129,6 +129,18 @@ public class Torrey
 
         return false;
     }
+    
+    /**
+     * Sends the string to standard output unless the user specifies 
+     * otherwise via a command-line argument.
+     * 
+     * @param str The string to be sent to standard ouput.
+     */
+    public void stdout(String str)
+    {
+        if (!noStdOut)
+            System.out.println(str);
+    }
 
     public static void main(String ... argv)
     {    
@@ -207,8 +219,8 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(tokens.toString(), outFileName);
-                else if (!noStdOut)
-                    System.out.println(tokens);
+                else
+                    stdout(tokens.toString());
                 System.exit(0);
             }
 
@@ -221,8 +233,8 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(program.toString(), outFileName);
-                else if (!noStdOut)
-                    System.out.println(program);
+                else
+                    stdout(program.toString());
                 System.exit(0);
             }
 
@@ -247,8 +259,8 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(irProgram.toString(), outFileName);
-                else if (!noStdOut)
-                    System.out.println(irProgram);
+                else
+                    stdout(irProgram.toString());
                 System.exit(0);
             }
 
@@ -263,8 +275,8 @@ public class Torrey
             {
                 if (hasOutFile())
                     Torrey.write(x86Program.toString(), outFileName);
-                else if (!noStdOut)
-                    System.out.println(x86Program);
+                else
+                    stdout(x86Program.toString());
                 System.exit(0);
             }
 
