@@ -1,10 +1,16 @@
 package me.mtk.torrey;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import me.mtk.torrey.Lexer.Lexer;
 import me.mtk.torrey.Lexer.Token;
 import me.mtk.torrey.ErrorReporter.ErrorReporter;
@@ -21,21 +27,150 @@ import me.mtk.torrey.IR.IRProgram;
 
 public class Torrey 
 {
-    public static void main(String[] args)
-    {
-        if (args.length > 1) 
-        {
-            System.out.println("Usage: Torrey [script]");
-            System.exit(64);
-        }
+    @Parameter(
+        names = {"--help", "-h"}, 
+        description = "Display this information.", 
+        help = true,
+        order = 0)
+    private boolean help;
 
+    @Parameter(
+        names = {"--debug", "-d"}, 
+        description = "Show output from compilation stages.",
+        order = 1)
+    private boolean debug = false;
+
+    @Parameter(
+        names = {"--in", "-i"},
+        description = "The path to the input file.", 
+        order = 2)
+    private String inPath;
+
+    @Parameter(
+        names = {"--out", "-o"}, 
+        description = "Place the output into a file.",
+        order = 3)
+    private String outFileName;
+
+    @Parameter(
+        names = {"-L"}, 
+        description = "Lex only; do not parse, compile, or assemble.",
+        order = 4)
+    private boolean stopAtLex = false;
+
+    @Parameter(
+        names = {"-p"}, 
+        description = "Parse only; do not compile or assemble.",
+        order = 5)
+    private boolean StopAtParse = false;
+    
+    @Parameter(
+        names = {"-O1"}, 
+        description = "Perform high-level compiler optimizations.",
+        order = 6)
+    private boolean hlOptimize = true;
+
+    @Parameter(
+        names = {"-ir"}, 
+        description = "Generate intermediate code only; do not compile or assemble.",
+        order = 7)
+    private boolean StopAtIr = false;
+
+    @Parameter(
+        names = {"-S"}, 
+        description = "Compile only; do not assemble.",
+        order = 8)
+    private boolean stopAtCompile = false;
+    
+
+    public boolean isHelp()
+    {
+        return help;
+    }
+
+    public String inPath()
+    {
+        return inPath;
+    }
+
+    public static void main(String ... argv)
+    {    
+        try
+        {
+            final Torrey torrey = new Torrey();
+            final JCommander jct = JCommander.newBuilder()
+                .addObject(torrey)
+                .build();
+
+            jct.setProgramName("java -jar torreyc.jar");
+            jct.parse(argv);
+    
+            if (torrey.isHelp())
+                jct.usage();
+
+            if (System.in.available() != 0)
+            {
+                // We have bytes that can be read from stdin,
+                // so use it as the source of the input program.
+
+                // System.in is a byte stream, so we wrap it in an 
+                // InputStreamReader to convert it to a character 
+                // stream. We then buffer the input to reduce the 
+                // cost of every read() from the byte stream.
+                final BufferedReader in = 
+                    new BufferedReader(new InputStreamReader(System.in));
+                
+                // Read characters from stdin until EOF.
+                final StringBuffer sb = new StringBuffer();
+                int ascii;
+                while ((ascii = in.read()) != -1)
+                    sb.append((char) ascii);
+        
+                // Run the compiler with the input from stdin.
+                torrey.run(sb.toString());
+            }
+            else if (torrey.inPath() != null)
+            {
+                // Read the contents from the file at the
+                // given path and run the compiler using that
+                // as its input.
+                torrey.run(read(torrey.inPath().trim()));
+            }
+            else
+            {
+                // No input from stdin was detected and no
+                // path to an input file was provided, so
+                // show compiler usage information.
+                jct.usage();
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("An error occurred while reading"
+                + " from the standard input stream.");
+            System.exit(1);
+        }
+        catch (ParameterException e)
+        {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public void run(String input)
+    {
         try
         {
             // Lexical analysis (scanning)
-            final String input = read(args[0]);
             final Lexer lexer = new Lexer(
                     new ErrorReporter(input), input);
             final List<Token> tokens = lexer.lex();
+
+            if (stopAtLex)
+            {
+                System.out.println(tokens);
+                return;
+            }
 
             // Syntax analysis (parsing)
             final Grammar grammar = new Grammar(
@@ -63,10 +198,6 @@ public class Torrey
             final X86Program x86Program = x86Gen.gen();
 
             System.out.println(x86Program);   
-        }
-        catch (IOException e)
-        {
-            System.err.println("Encountered an I/O error.");
         }
         catch (SyntaxError e)
         {
