@@ -30,6 +30,11 @@
       <artifactId>jcommander</artifactId>
       <version>1.78</version>
     </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20201115</version>
+  </dependency>
   </dependencies>
 
   <build>
@@ -48,6 +53,7 @@
               <artifactSet>
                 <includes>
                   <include>com.beust:jcommander</include>
+                  <include>org.json:json</include>
                 </includes>
               </artifactSet>
             </configuration>
