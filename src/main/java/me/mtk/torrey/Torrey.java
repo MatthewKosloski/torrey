@@ -29,6 +29,21 @@ import me.mtk.torrey.IR.IRProgram;
 
 public class Torrey 
 {
+
+    // If the user does not provide an output file name for the 
+    // executable via the command-line, use this as a default.
+    public static String DEFAULT_EXECUTABLE_NAME = "a.out";
+
+    // If the user does not provide an output file name for
+    // the assembly output, use this as a default.
+    public static String DEFAULT_SOURCE_ASM_NAME = "temp.s";
+
+    // The name of the run time dependency.
+    public static String RUNTIME_CCODE_NAME = "runtime.c";
+
+    // The name to be given to the run time object code.
+    public static String RUNTIME_OCODE_NAME = "runtime.o";
+
     @Parameter(
         names = {"--help", "-h"}, 
         description = "Display this information.", 
@@ -96,6 +111,55 @@ public class Torrey
         order = 10)
     private boolean noStdOut = false;
 
+    public static void main(String ... argv)
+    {
+        try
+        {
+            final Torrey torrey = new Torrey();
+            final JCommander jct = JCommander.newBuilder()
+                .addObject(torrey)
+                .build();
+
+            jct.setProgramName("java -jar torreyc.jar");
+            jct.parse(argv);
+    
+            if (torrey.isHelp())
+                jct.usage();
+
+            if (System.in.available() != 0)
+            {
+                // We have bytes that can be read from stdin,
+                // so use it as the source of the input program.
+                torrey.run(torrey.readFromStdin());
+            }
+            else if (torrey.inPath() != null)
+            {
+                // Read the contents from the file at the
+                // given path and run the compiler using that
+                // as its input.
+                torrey.run(torrey.read(torrey.inPath().trim()));
+            }
+            else if (!torrey.isHelp())
+            {
+                // No input from stdin was detected and no
+                // path to an input file was provided, so
+                // show compiler usage information.
+                jct.usage();
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("Torrey: An error occurred while reading"
+                + " from the standard input stream.");
+            System.exit(1);
+        }
+        catch (ParameterException e)
+        {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
     /**
      * Indicates whether the user is asking for help via the command-line.
      * 
@@ -142,70 +206,11 @@ public class Torrey
             System.out.println(str);
     }
 
-    public static void main(String ... argv)
-    {    
-        try
-        {
-            final Torrey torrey = new Torrey();
-            final JCommander jct = JCommander.newBuilder()
-                .addObject(torrey)
-                .build();
-
-            jct.setProgramName("java -jar torreyc.jar");
-            jct.parse(argv);
-    
-            if (torrey.isHelp())
-                jct.usage();
-
-            if (System.in.available() != 0)
-            {
-                // We have bytes that can be read from stdin,
-                // so use it as the source of the input program.
-
-                // System.in is a byte stream, so we wrap it in an 
-                // InputStreamReader to convert it to a character 
-                // stream. We then buffer the input to reduce the 
-                // cost of every read() from the byte stream.
-                final BufferedReader in = 
-                    new BufferedReader(new InputStreamReader(System.in));
-                
-                // Read characters from stdin until EOF.
-                final StringBuffer sb = new StringBuffer();
-                int ascii;
-                while ((ascii = in.read()) != -1)
-                    sb.append((char) ascii);
-        
-                // Run the compiler with the input from stdin.
-                torrey.run(sb.toString());
-            }
-            else if (torrey.inPath() != null)
-            {
-                // Read the contents from the file at the
-                // given path and run the compiler using that
-                // as its input.
-                torrey.run(read(torrey.inPath().trim()));
-            }
-            else if (!torrey.isHelp())
-            {
-                // No input from stdin was detected and no
-                // path to an input file was provided, so
-                // show compiler usage information.
-                jct.usage();
-            }
-        }
-        catch (IOException e)
-        {
-            System.err.println("Torrey: An error occurred while reading"
-                + " from the standard input stream.");
-            System.exit(1);
-        }
-        catch (ParameterException e)
-        {
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
-    }
-
+    /**
+     * Runs the Torrey compiler with a given input program.
+     * 
+     * @param input An input program.
+     */
     public void run(String input)
     {
         try
@@ -218,7 +223,7 @@ public class Torrey
             if (stopAtLex)
             {
                 if (hasOutFile())
-                    Torrey.write(tokens.toString(), outFileName);
+                    write(tokens.toString(), outFileName);
                 else
                     stdout(tokens.toString());
                 System.exit(0);
@@ -232,7 +237,7 @@ public class Torrey
             if (stopAtParse)
             {
                 if (hasOutFile())
-                    Torrey.write(program.toString(), outFileName);
+                    write(program.toString(), outFileName);
                 else
                     stdout(program.toString());
                 System.exit(0);
@@ -258,7 +263,7 @@ public class Torrey
             if (stopAtIr)
             {
                 if (hasOutFile())
-                    Torrey.write(irProgram.toString(), outFileName);
+                    write(irProgram.toString(), outFileName);
                 else
                     stdout(irProgram.toString());
                 System.exit(0);
@@ -274,7 +279,7 @@ public class Torrey
             if (stopAtCompile)
             {
                 if (hasOutFile())
-                    Torrey.write(x86Program.toString(), outFileName);
+                    write(x86Program.toString(), outFileName);
                 else
                     stdout(x86Program.toString());
                 System.exit(0);
@@ -283,8 +288,10 @@ public class Torrey
             // Assembly and Linking
 
             // Build the run-time object code.
-            ProcessBuilder pb = new ProcessBuilder("gcc", 
-                "-c", "runtime.c");
+            ProcessBuilder pb = new ProcessBuilder(
+                "gcc", 
+                "-c", 
+                RUNTIME_CCODE_NAME);
             Process p = pb.start();
 
             // before building the executable, wait for 
@@ -292,11 +299,15 @@ public class Torrey
             p.waitFor();
 
             // Write the assembly source code to disk.
-            write(x86Program.toString(), "temp.s");
+            write(x86Program.toString(), DEFAULT_SOURCE_ASM_NAME);
 
             // Build the executable.
-            pb = new ProcessBuilder("gcc", "temp.s", "runtime.o", "-o", 
-                outFileName != null ? outFileName : "a.out");
+            pb = new ProcessBuilder(
+                "gcc", 
+                DEFAULT_SOURCE_ASM_NAME, 
+                RUNTIME_OCODE_NAME,
+                "-o", 
+                hasOutFile() ? outFileName : DEFAULT_EXECUTABLE_NAME);
             p = pb.start();
 
             // Before, potentially deleting the assembly source,
@@ -307,7 +318,7 @@ public class Torrey
             {
                 // Delete the previously written assembly source 
                 // file from disk.
-                Files.delete(Paths.get("temp.s"));
+                Files.delete(Paths.get(DEFAULT_SOURCE_ASM_NAME));
             }
             
         }
@@ -329,21 +340,7 @@ public class Torrey
         }
     }
 
-    /**
-     * Reads the contents of the file at the given path, 
-     * returning the contents of the file as a string object.
-     * 
-     * @param path Path to the file on the file system.
-     * @return A string containing the contents of the file.
-     * @throws IOException If an I/O error occurs.
-     */
-    public static String read(final String path) throws IOException
-    {
-        final byte[] bytes = Files.readAllBytes(Paths.get(path));   
-        return new String(bytes, Charset.defaultCharset());
-    }
-
-    /**
+    /*
      * Writes the provided output string to a file with the
      * provided file name.
      * 
@@ -351,12 +348,51 @@ public class Torrey
      * @param fileName The name of the output file.
      * @throws IOException
      */
-    public static void write(final String output, final String fileName)
+    private void write(final String output, final String fileName)
     throws IOException
     {
         final BufferedWriter writer = 
             new BufferedWriter(new FileWriter(fileName));
         writer.write(output);
         writer.close();
+    }
+
+    /*
+     * Reads the contents of the file at the given path, 
+     * returning the contents of the file as a string object.
+     * 
+     * @param path Path to the file on the file system.
+     * @return A string containing the contents of the file.
+     * @throws IOException If an I/O error occurs.
+     */
+    private String read(final String path) throws IOException
+    {
+        final byte[] bytes = Files.readAllBytes(Paths.get(path));   
+        return new String(bytes, Charset.defaultCharset());
+    }
+
+    /*
+     * Reads from standard input, returning it
+     * as a string.
+     * 
+     * @return A string of the standard input.
+     * @throws IOException
+     */
+    private String readFromStdin() throws IOException
+    {
+        // System.in is a byte stream, so we wrap it in an 
+        // InputStreamReader to convert it to a character 
+        // stream. We then buffer the input to reduce the 
+        // cost of every read() from the byte stream.
+        final BufferedReader in = 
+            new BufferedReader(new InputStreamReader(System.in));
+        
+        // Read characters from stdin until EOF.
+        final StringBuffer sb = new StringBuffer();
+        int ascii;
+        while ((ascii = in.read()) != -1)
+            sb.append((char) ascii);
+        
+        return sb.toString();
     }
 }
