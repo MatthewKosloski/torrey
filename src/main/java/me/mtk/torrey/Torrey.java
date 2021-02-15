@@ -22,6 +22,7 @@ import me.mtk.torrey.lexer.TokenList;
 import me.mtk.torrey.parser.Grammar;
 import me.mtk.torrey.x86.X86Generator;
 import me.mtk.torrey.x86.X86Program;
+import me.mtk.torrey.ast.PrettyPrinterVisitor;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.analysis.ConstantFolderVisitor;
 import me.mtk.torrey.analysis.TypeChecker;
@@ -216,10 +217,25 @@ public class Torrey
     {
         try
         {
+            if (debug)
+            {
+                stdout("");
+                stdout("DEBUG: Program (input to compiler):");
+                stdout(input);
+                stdout("");
+            }
+
             // Lexical analysis (scanning)
             final Lexer lexer = new Lexer(
                     new ErrorReporter(input), input);
             final TokenList tokens = lexer.lex();
+
+            if (debug)
+            {
+                stdout("DEBUG: Tokens (output from Lexer):");
+                stdout(tokens.toString());
+                stdout("");
+            }
 
             if (stopAtLex)
             {
@@ -230,10 +246,20 @@ public class Torrey
                 System.exit(0);
             }
 
+
             // Syntax analysis (parsing)
             final Grammar grammar = new Grammar(
                     new ErrorReporter(input), tokens.tokens());
             final Program program = grammar.parse();
+
+            if (debug)
+            {
+                stdout("DEBUG: AST (output from Grammar):");
+                final PrettyPrinterVisitor ppVisitor = 
+                    new PrettyPrinterVisitor();
+                stdout(ppVisitor.visit(program));
+                stdout("");
+            }
 
             if (stopAtParse)
             {
@@ -257,9 +283,25 @@ public class Torrey
                 cfVistor.visit(program);
             }
 
+            if (debug && !disableHlOpts)
+            {
+                stdout("DEBUG: Optimized AST (output from ConstantFolderVisitor):");
+                final PrettyPrinterVisitor ppVisitor = 
+                    new PrettyPrinterVisitor();
+                stdout(ppVisitor.visit(program));
+                stdout("");
+            }
+
             // Intermediate code generation
             final IRGenVisitor irGen = new IRGenVisitor(program);
             final IRProgram irProgram = irGen.gen();
+
+            if (debug)
+            {
+                stdout("DEBUG: IR program (output from IRGenVisitor):");
+                stdout(irProgram.toString());
+                stdout("");
+            }
 
             if (stopAtIr)
             {
@@ -277,6 +319,14 @@ public class Torrey
             final X86Generator x86Gen = new X86Generator(irProgram);
             final X86Program x86Program = x86Gen.gen();
 
+            if (debug)
+            {
+                stdout("DEBUG: x86-64 program (output from X86Generator):");
+                stdout(x86Program.toString());
+                stdout("");
+            }
+
+
             if (stopAtCompile)
             {
                 if (hasOutFile())
@@ -287,6 +337,14 @@ public class Torrey
             }
 
             // Assembly and Linking
+
+            if (debug)
+            {
+                stdout("DEBUG: Starting assembly and linking");
+                stdout("DEBUG: Building the run-time object code; running gcc\n"
+                    + " with the following command-line arguments:");
+                stdout(String.format("\t%s, %s", "-c", RUNTIME_CCODE_NAME));
+            }
 
             // Build the run-time object code.
             ProcessBuilder pb = new ProcessBuilder(
@@ -302,6 +360,22 @@ public class Torrey
             // Write the assembly source code to disk.
             write(x86Program.toString(), DEFAULT_SOURCE_ASM_NAME);
 
+            if (debug)
+            {
+                stdout(String.format("DEBUG: Wrote assembly code"
+                + " to file %s in current directory", DEFAULT_SOURCE_ASM_NAME));
+            }
+
+            if (debug)
+            {
+                stdout(String.format("DEBUG: Building the executable and"
+                    + " linking it with object code file\n %s; running gcc with"
+                    + " the following command-line arguments:", RUNTIME_OCODE_NAME));
+                stdout(String.format("\t%s, %s, %s, %s", DEFAULT_SOURCE_ASM_NAME, 
+                RUNTIME_OCODE_NAME, "-o", 
+                hasOutFile() ? outFileName : DEFAULT_EXECUTABLE_NAME));
+            }
+
             // Build the executable.
             pb = new ProcessBuilder(
                 "gcc", 
@@ -315,11 +389,24 @@ public class Torrey
             // wait for the executable to build.
             p.waitFor();
 
+            if (debug)
+            {
+                stdout(String.format("DEBUG: Built executable %s"
+                    + " and saved it to current directory", 
+                    hasOutFile() ? outFileName : DEFAULT_EXECUTABLE_NAME));
+            }
+
             if (!keepSource)
             {
                 // Delete the previously written assembly source 
                 // file from disk.
                 Files.delete(Paths.get(DEFAULT_SOURCE_ASM_NAME));
+            }
+
+            if (debug)
+            {
+                stdout(String.format("DEBUG: Deleted assembly file"
+                    + " %s from current directory", DEFAULT_SOURCE_ASM_NAME));
             }
             
         }
