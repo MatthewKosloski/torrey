@@ -1,4 +1,4 @@
-package me.mtk.torrey.X86;
+package me.mtk.torrey.x86;
 
 public final class Register extends X86Address
 {

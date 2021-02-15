@@ -1,15 +1,15 @@
-package me.mtk.torrey.IR;
+package me.mtk.torrey.ir;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.AST.ASTNode;
-import me.mtk.torrey.AST.BinaryExpr;
-import me.mtk.torrey.AST.Expr;
-import me.mtk.torrey.AST.ExprIRVisitor;
-import me.mtk.torrey.AST.IntegerExpr;
-import me.mtk.torrey.AST.PrintExpr;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.AST.UnaryExpr;
+import me.mtk.torrey.ast.ASTNode;
+import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.Expr;
+import me.mtk.torrey.ast.ExprIRVisitor;
+import me.mtk.torrey.ast.IntegerExpr;
+import me.mtk.torrey.ast.PrintExpr;
+import me.mtk.torrey.ast.Program;
+import me.mtk.torrey.ast.UnaryExpr;
 
 public final class IRGenVisitor extends IRGenerator implements 
     ExprIRVisitor<Void>

@@ -1,4 +1,4 @@
-package me.mtk.torrey.ErrorReporter;
+package me.mtk.torrey.error_reporter;
 
 /**
  * Represents a syntax error that is thrown either during

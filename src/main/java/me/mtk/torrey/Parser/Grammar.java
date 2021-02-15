@@ -1,18 +1,19 @@
-package me.mtk.torrey.Parser;
+package me.mtk.torrey.parser;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.Lexer.Token;
-import me.mtk.torrey.Lexer.TokenType;
-import me.mtk.torrey.AST.Expr;
-import me.mtk.torrey.AST.IntegerExpr;
-import me.mtk.torrey.AST.PrintExpr;
-import me.mtk.torrey.AST.UnaryExpr;
-import me.mtk.torrey.AST.BinaryExpr;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.ErrorReporter.ErrorReporter;
-import me.mtk.torrey.ErrorReporter.SyntaxError;
-import me.mtk.torrey.ErrorReporter.ErrorMessages;
+
+import me.mtk.torrey.ast.Expr;
+import me.mtk.torrey.ast.IntegerExpr;
+import me.mtk.torrey.ast.PrintExpr;
+import me.mtk.torrey.ast.UnaryExpr;
+import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.Program;
+import me.mtk.torrey.error_reporter.ErrorReporter;
+import me.mtk.torrey.error_reporter.SyntaxError;
+import me.mtk.torrey.lexer.Token;
+import me.mtk.torrey.lexer.TokenType;
+import me.mtk.torrey.error_reporter.ErrorMessages;
 
 /**
  * Translates the context-free grammar to a 

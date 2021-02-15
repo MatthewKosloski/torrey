@@ -1,4 +1,4 @@
-package me.mtk.torrey.Analysis;
+package me.mtk.torrey.analysis;
 
 /**
  * Holds the possible data types of expressions.

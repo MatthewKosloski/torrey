@@ -1,4 +1,4 @@
-package me.mtk.torrey.X86;
+package me.mtk.torrey.x86;
 
 /**
  * Represents an x86 argument to an instruction,

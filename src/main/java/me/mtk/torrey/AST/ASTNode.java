@@ -1,8 +1,8 @@
-package me.mtk.torrey.AST;
+package me.mtk.torrey.ast;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.Lexer.*;
+import me.mtk.torrey.lexer.*;
 
 /**
  * A homogeneous abstract syntax tree (AST) node type 

@@ -1,6 +1,6 @@
-package me.mtk.torrey.IR;
+package me.mtk.torrey.ir;
 
-import me.mtk.torrey.AST.Program;
+import me.mtk.torrey.ast.Program;
 
 /**
  * The base class for the IR generator

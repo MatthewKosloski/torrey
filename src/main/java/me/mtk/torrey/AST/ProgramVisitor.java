@@ -1,6 +1,6 @@
-package me.mtk.torrey.AST;
+package me.mtk.torrey.ast;
 
-import me.mtk.torrey.ErrorReporter.SemanticError;
+import me.mtk.torrey.error_reporter.SemanticError;
 
 public interface ProgramVisitor<T>
 {

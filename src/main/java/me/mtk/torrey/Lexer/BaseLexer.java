@@ -1,9 +1,9 @@
-package me.mtk.torrey.Lexer;
+package me.mtk.torrey.lexer;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.ErrorReporter.SyntaxError;
-import me.mtk.torrey.ErrorReporter.ErrorReporter;
+import me.mtk.torrey.error_reporter.SyntaxError;
+import me.mtk.torrey.error_reporter.ErrorReporter;
 
 /**
  * This base class keeps track of the lexer's state

@@ -1,19 +1,19 @@
-package me.mtk.torrey.X86;
+package me.mtk.torrey.x86;
 
 import java.util.Map;
 import java.util.Queue;
 import java.util.HashMap;
 import java.util.LinkedList;
-import me.mtk.torrey.IR.Quadruple;
-import me.mtk.torrey.IR.CopyInst;
-import me.mtk.torrey.IR.UnaryInst;
-import me.mtk.torrey.IR.BinaryInst;
-import me.mtk.torrey.IR.ParamInst;
-import me.mtk.torrey.IR.CallInst;
-import me.mtk.torrey.IR.Address;
-import me.mtk.torrey.IR.TempAddress;
-import me.mtk.torrey.IR.ConstAddress;
-import me.mtk.torrey.IR.IRProgram;
+import me.mtk.torrey.ir.Quadruple;
+import me.mtk.torrey.ir.CopyInst;
+import me.mtk.torrey.ir.UnaryInst;
+import me.mtk.torrey.ir.BinaryInst;
+import me.mtk.torrey.ir.ParamInst;
+import me.mtk.torrey.ir.CallInst;
+import me.mtk.torrey.ir.Address;
+import me.mtk.torrey.ir.TempAddress;
+import me.mtk.torrey.ir.ConstAddress;
+import me.mtk.torrey.ir.IRProgram;
 
 /**
  * Generates 64-bit x86 assembly code

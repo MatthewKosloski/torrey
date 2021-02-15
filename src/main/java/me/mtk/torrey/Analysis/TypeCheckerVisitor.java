@@ -1,18 +1,18 @@
-package me.mtk.torrey.Analysis;
+package me.mtk.torrey.analysis;
 
-import me.mtk.torrey.ErrorReporter.ErrorMessages;
-import me.mtk.torrey.ErrorReporter.ErrorReporter;
-import me.mtk.torrey.ErrorReporter.SemanticError;
-import me.mtk.torrey.AST.ExprVisitor;
-import me.mtk.torrey.AST.ASTNode;
-import me.mtk.torrey.AST.BinaryExpr;
-import me.mtk.torrey.AST.IntegerExpr;
-import me.mtk.torrey.AST.PrintExpr;
-import me.mtk.torrey.AST.UnaryExpr;
-import me.mtk.torrey.AST.Expr;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.AST.ProgramVisitor;
-import me.mtk.torrey.Lexer.Token;
+import me.mtk.torrey.error_reporter.ErrorMessages;
+import me.mtk.torrey.error_reporter.ErrorReporter;
+import me.mtk.torrey.error_reporter.SemanticError;
+import me.mtk.torrey.lexer.Token;
+import me.mtk.torrey.ast.ExprVisitor;
+import me.mtk.torrey.ast.ASTNode;
+import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.IntegerExpr;
+import me.mtk.torrey.ast.PrintExpr;
+import me.mtk.torrey.ast.UnaryExpr;
+import me.mtk.torrey.ast.Expr;
+import me.mtk.torrey.ast.Program;
+import me.mtk.torrey.ast.ProgramVisitor;
 
 public final class TypeCheckerVisitor implements 
     ExprVisitor<DataType>, ProgramVisitor<DataType>

@@ -1,8 +1,8 @@
-package me.mtk.torrey.Analysis;
+package me.mtk.torrey.analysis;
 
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.ErrorReporter.ErrorReporter;
-import me.mtk.torrey.ErrorReporter.SemanticError;
+import me.mtk.torrey.ast.Program;
+import me.mtk.torrey.error_reporter.ErrorReporter;
+import me.mtk.torrey.error_reporter.SemanticError;
 
 public final class TypeChecker 
 {

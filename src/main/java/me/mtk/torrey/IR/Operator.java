@@ -1,4 +1,4 @@
-package me.mtk.torrey.IR;
+package me.mtk.torrey.ir;
 
 /**
  * To be extended by all intermediate language

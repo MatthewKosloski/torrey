@@ -1,4 +1,4 @@
-package me.mtk.torrey.X86;
+package me.mtk.torrey.x86;
 
 public class X86Inst 
 {

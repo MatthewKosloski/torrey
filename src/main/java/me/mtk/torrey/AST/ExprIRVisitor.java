@@ -1,6 +1,6 @@
-package me.mtk.torrey.AST;
+package me.mtk.torrey.ast;
 
-import me.mtk.torrey.IR.TempAddress;
+import me.mtk.torrey.ir.TempAddress;
 
 public interface ExprIRVisitor<T>
 {

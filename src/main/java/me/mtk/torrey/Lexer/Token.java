@@ -1,4 +1,4 @@
-package me.mtk.torrey.Lexer;
+package me.mtk.torrey.lexer;
 
 /**
  * Represents a unit of output from the Lexer. Holds

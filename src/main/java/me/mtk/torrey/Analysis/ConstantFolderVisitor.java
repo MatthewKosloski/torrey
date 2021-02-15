@@ -1,16 +1,16 @@
-package me.mtk.torrey.Analysis;
+package me.mtk.torrey.analysis;
 
-import me.mtk.torrey.AST.ASTNode;
-import me.mtk.torrey.AST.BinaryExpr;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.AST.Expr;
-import me.mtk.torrey.AST.ExprVisitor;
-import me.mtk.torrey.AST.IntegerExpr;
-import me.mtk.torrey.AST.PrintExpr;
-import me.mtk.torrey.AST.ProgramVisitor;
-import me.mtk.torrey.AST.UnaryExpr;
-import me.mtk.torrey.Lexer.Token;
-import me.mtk.torrey.Lexer.TokenType;
+import me.mtk.torrey.ast.ASTNode;
+import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.Program;
+import me.mtk.torrey.ast.Expr;
+import me.mtk.torrey.ast.ExprVisitor;
+import me.mtk.torrey.ast.IntegerExpr;
+import me.mtk.torrey.ast.PrintExpr;
+import me.mtk.torrey.ast.ProgramVisitor;
+import me.mtk.torrey.ast.UnaryExpr;
+import me.mtk.torrey.lexer.Token;
+import me.mtk.torrey.lexer.TokenType;
 
 /**
  * Constant folding is a type of high-level

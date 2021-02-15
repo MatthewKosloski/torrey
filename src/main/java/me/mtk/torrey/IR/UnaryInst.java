@@ -1,4 +1,4 @@
-package me.mtk.torrey.IR;
+package me.mtk.torrey.ir;
 
 /**
  * Represents a unary IR instruction.

@@ -1,7 +1,8 @@
-package me.mtk.torrey.ErrorReporter;
+package me.mtk.torrey.error_reporter;
 
 import java.util.Stack;
-import me.mtk.torrey.Lexer.Token;
+
+import me.mtk.torrey.lexer.Token;
 
 public class ErrorReporter 
 {

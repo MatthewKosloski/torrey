@@ -1,4 +1,4 @@
-package me.mtk.torrey.AST;
+package me.mtk.torrey.ast;
 
 public interface ExprVisitor<T>
 {

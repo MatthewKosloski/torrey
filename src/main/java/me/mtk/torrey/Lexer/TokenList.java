@@ -1,4 +1,4 @@
-package me.mtk.torrey.Lexer;
+package me.mtk.torrey.lexer;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package me.mtk.torrey.IR;
+package me.mtk.torrey.ir;
 
 import java.util.Map;
 import java.util.HashMap;

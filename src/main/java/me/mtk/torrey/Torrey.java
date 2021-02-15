@@ -13,19 +13,20 @@ import java.nio.file.Paths;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import me.mtk.torrey.Lexer.Lexer;
-import me.mtk.torrey.Lexer.TokenList;
-import me.mtk.torrey.ErrorReporter.ErrorReporter;
-import me.mtk.torrey.ErrorReporter.SemanticError;
-import me.mtk.torrey.ErrorReporter.SyntaxError;
-import me.mtk.torrey.Parser.Grammar;
-import me.mtk.torrey.X86.X86Generator;
-import me.mtk.torrey.X86.X86Program;
-import me.mtk.torrey.AST.Program;
-import me.mtk.torrey.Analysis.ConstantFolderVisitor;
-import me.mtk.torrey.Analysis.TypeChecker;
-import me.mtk.torrey.IR.IRGenVisitor;
-import me.mtk.torrey.IR.IRProgram;
+
+import me.mtk.torrey.error_reporter.ErrorReporter;
+import me.mtk.torrey.error_reporter.SemanticError;
+import me.mtk.torrey.error_reporter.SyntaxError;
+import me.mtk.torrey.lexer.Lexer;
+import me.mtk.torrey.lexer.TokenList;
+import me.mtk.torrey.parser.Grammar;
+import me.mtk.torrey.x86.X86Generator;
+import me.mtk.torrey.x86.X86Program;
+import me.mtk.torrey.ast.Program;
+import me.mtk.torrey.analysis.ConstantFolderVisitor;
+import me.mtk.torrey.analysis.TypeChecker;
+import me.mtk.torrey.ir.IRGenVisitor;
+import me.mtk.torrey.ir.IRProgram;
 
 public class Torrey 
 {

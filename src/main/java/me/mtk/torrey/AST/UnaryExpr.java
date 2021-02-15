@@ -1,7 +1,7 @@
-package me.mtk.torrey.AST;
+package me.mtk.torrey.ast;
 
-import me.mtk.torrey.IR.TempAddress;
-import me.mtk.torrey.Lexer.Token;
+import me.mtk.torrey.ir.TempAddress;
+import me.mtk.torrey.lexer.Token;
 
 public class UnaryExpr extends Expr
 {

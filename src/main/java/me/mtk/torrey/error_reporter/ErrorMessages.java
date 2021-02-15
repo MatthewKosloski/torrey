@@ -1,4 +1,4 @@
-package me.mtk.torrey.ErrorReporter;
+package me.mtk.torrey.error_reporter;
 
 /**
  * Stores the format strings used for error 

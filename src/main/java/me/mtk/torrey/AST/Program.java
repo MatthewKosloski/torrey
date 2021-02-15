@@ -1,8 +1,8 @@
-package me.mtk.torrey.AST;
+package me.mtk.torrey.ast;
 
 import java.util.List;
-import me.mtk.torrey.ErrorReporter.SemanticError;
-import me.mtk.torrey.Lexer.Token;
+import me.mtk.torrey.error_reporter.SemanticError;
+import me.mtk.torrey.lexer.Token;
 
 /**
  * The top-level AST node returned by the parser.
