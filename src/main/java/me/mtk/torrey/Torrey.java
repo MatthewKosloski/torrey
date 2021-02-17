@@ -195,18 +195,6 @@ public class Torrey
 
         return false;
     }
-    
-    /**
-     * Sends the string to standard output unless the user specifies 
-     * otherwise via a command-line argument.
-     * 
-     * @param str The string to be sent to standard ouput.
-     */
-    public void stdout(String str)
-    {
-        if (!noStdOut)
-            System.out.println(str);
-    }
 
     /**
      * Runs the Torrey compiler with a given input program.
@@ -482,5 +470,17 @@ public class Torrey
             sb.append((char) ascii);
         
         return sb.toString();
+    }
+
+    /**
+     * Sends the string to standard output unless the user specifies 
+     * otherwise via a command-line argument.
+     * 
+     * @param str The string to be sent to standard ouput.
+     */
+    private void stdout(String str)
+    {
+        if (!noStdOut)
+            System.out.println(str);
     }
 }
