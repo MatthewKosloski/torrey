@@ -35,10 +35,18 @@ The above command compiles the Torrey program and outputs an executable `a.out`.
 
 ####  Input from the File System
 
-To run the compiler with a file on the file system, provide the `-i` or `--in` flag:
+To run the compiler with a file on the file system, provide the `-i` or `--in` flag like so:
 
 ```
-java -jar torreyc.jar -i foo.torrey
+; program.torrey
+(println 42 (* (/ 12 2) (+ 3 4)) (- 42))
+```
+
+```
+$ java -jar torreyc.jar -i foo.torrey && ./a.out
+$ 42
+$ 42
+$ -42
 ```
 
 The above command compiles `foo.torrey`, which is in the same directory as the compiler jar, and outputs an executable `a.out`.
