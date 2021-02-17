@@ -112,7 +112,7 @@ public class Torrey
 
     @Parameter(
         names = {"--no-hl-opt"}, 
-        description = "Disable the high-level compiler optimizations on the abstract syntax tree.",
+        description = "Disable high-level compiler optimizations.",
         order = 10)
     private boolean disableHlOpts = false;
     
