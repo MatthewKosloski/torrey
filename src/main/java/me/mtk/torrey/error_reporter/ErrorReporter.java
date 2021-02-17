@@ -82,9 +82,34 @@ public class ErrorReporter
         while (endIndex < input.length() && input.charAt(endIndex) != '\n')
             endIndex++;
 
-        final String offendingLine = input.substring(tok.beginLineIndex(), endIndex);
+        final String offendingLine = input.substring(
+                tok.beginLineIndex(), endIndex);
 
         final StringBuilder str = new StringBuilder();
+
+        // Count number of leading and trailing white space characters
+        int trimCount = 0;
+        if (!offendingLine.isBlank())
+        {
+            int i = 0;
+
+            // Count leading white space characters
+            while (Character.isWhitespace(offendingLine.charAt(i)) 
+                && i < offendingLine.length())
+            {
+                trimCount++;
+                i++;
+            }
+
+            // Count trailing white space characters
+            i = offendingLine.length() - 1;
+            while (Character.isWhitespace(offendingLine.charAt(i)) 
+            && i >= 0)
+            {
+                trimCount++;
+                i--;
+            }
+        }
 
         str.append("\n")
             .append(String.format(template, args))
@@ -92,13 +117,14 @@ public class ErrorReporter
             // Print the line number and column number of the offending token
             .append(tok.startPos())
             .append("\n\n")
-            .append(offendingLine)
+            .append(offendingLine.trim())
             .append("\n");
 
         // Print "^^^...", pointing to the offending token.
 
         // move the pointer under the token
-        for (int i = 0; i < tok.beginIndex() - tok.beginLineIndex(); i++)
+        for (int i = 0; i < tok.beginIndex() - 
+            tok.beginLineIndex() - trimCount; i++)
             str.append(" ");
         
         // print the pointer across the token
