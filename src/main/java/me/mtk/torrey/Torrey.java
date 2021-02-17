@@ -138,7 +138,7 @@ public class Torrey
             if (torrey.version)
                 torrey.showVersionInfo();
     
-            if (torrey.isHelp())
+            if (torrey.help)
                 jct.usage();
 
             if (System.in.available() != 0)
@@ -147,14 +147,14 @@ public class Torrey
                 // so use it as the source of the input program.
                 torrey.run(torrey.readFromStdin());
             }
-            else if (torrey.inPath() != null)
+            else if (torrey.inPath != null)
             {
                 // Read the contents from the file at the
                 // given path and run the compiler using that
                 // as its input.
-                torrey.run(torrey.read(torrey.inPath().trim()));
+                torrey.run(torrey.read(torrey.inPath.trim()));
             }
-            else if (!torrey.isHelp())
+            else if (!torrey.help)
             {
                 // No input from stdin was detected and no
                 // path to an input file was provided, so
@@ -173,40 +173,6 @@ public class Torrey
             System.err.println(e.getMessage());
             System.exit(1);
         }
-    }
-
-    /**
-     * Indicates whether the user is asking for help via the command-line.
-     * 
-     * @return True if the user is asking for help; False otherwise.
-     */
-    public boolean isHelp()
-    {
-        return help;
-    }
-
-    /**
-     * Returns the user specified path of the input file.
-     * 
-     * @return The path of the input file.
-     */
-    public String inPath()
-    {
-        return inPath;
-    }
-
-    /**
-     * Indicates whether the user specified a name of an output file.
-     * 
-     * @return True if the user specified the name of an output file;
-     * False otherwise.
-     */
-    public boolean hasOutFile()
-    {
-        if (outFileName != null && outFileName.trim().length() > 0)
-            return true;
-
-        return false;
     }
 
     /**
@@ -506,5 +472,19 @@ public class Torrey
     {
         if (!noStdOut)
             System.out.println(str);
+    }
+
+    /*
+     * Indicates whether the user specified a name of an output file.
+     * 
+     * @return True if the user specified the name of an output file;
+     * False otherwise.
+     */
+    private boolean hasOutFile()
+    {
+        if (outFileName != null && outFileName.trim().length() > 0)
+            return true;
+
+        return false;
     }
 }
