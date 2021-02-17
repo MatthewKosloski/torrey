@@ -46,6 +46,9 @@ public class Torrey
     // The name to be given to the run time object code.
     private static String RUNTIME_OCODE_NAME = "runtime.o";
 
+    // The semantic version number of this software.
+    private static String SEMANTIC_VERSION = "1.0.0"; 
+
     @Parameter(
         names = {"--help", "-h"}, 
         description = "Display this information.", 
@@ -54,63 +57,69 @@ public class Torrey
     private boolean help;
 
     @Parameter(
+        names = {"--version", "-v"}, 
+        description = "Display compiler version information.", 
+        order = 1)
+    private boolean version = false;
+
+    @Parameter(
         names = {"--debug", "-d"}, 
         description = "Show output from compilation stages.",
-        order = 1)
+        order = 2)
     private boolean debug = false;
 
     @Parameter(
         names = {"--in", "-i"},
         description = "The path to the input file.", 
-        order = 2)
+        order = 3)
     private String inPath;
 
     @Parameter(
         names = {"--out", "-o"}, 
         description = "Place the output into a file.",
-        order = 3)
+        order = 4)
     private String outFileName;
 
     @Parameter(
         names = {"-L"}, 
         description = "Lex only; do not parse, compile, or assemble.",
-        order = 4)
+        order = 5)
     private boolean stopAtLex = false;
 
     @Parameter(
         names = {"-p"}, 
         description = "Parse only; do not compile or assemble.",
-        order = 5)
+        order = 6)
     private boolean stopAtParse = false;
 
     @Parameter(
         names = {"-ir"}, 
         description = "Generate intermediate code only; do not compile or assemble.",
-        order = 6)
+        order = 7)
     private boolean stopAtIr = false;
 
     @Parameter(
         names = {"-S"}, 
         description = "Compile only; do not assemble.",
-        order = 7)
+        order = 8)
     private boolean stopAtCompile = false;
 
     @Parameter(
         names = {"--keep-source"}, 
         description = "Keep the assembly source file after assembly.",
-        order = 8)
+        order = 9)
     private boolean keepSource = false;
 
     @Parameter(
         names = {"--no-hl-opt"}, 
         description = "Disable the high-level compiler optimizations on the abstract syntax tree.",
-        order = 9)
+        order = 10)
     private boolean disableHlOpts = false;
     
     @Parameter(
         names = {"--no-stdout"}, 
         description = "Suppress all output to the standard output stream.",
-        order = 10)
+        order = 11)
     private boolean noStdOut = false;
 
     public static void main(String ... argv)
@@ -122,8 +131,12 @@ public class Torrey
                 .addObject(torrey)
                 .build();
 
-            jct.setProgramName("java -jar torreyc.jar");
+            jct.setProgramName(String.format("java -jar torreyc-%s.jar", 
+                SEMANTIC_VERSION));
             jct.parse(argv);
+
+            if (torrey.version)
+                torrey.showVersionInfo();
     
             if (torrey.isHelp())
                 jct.usage();
@@ -414,6 +427,17 @@ public class Torrey
         {
             System.err.println(e.getMessage());
         }
+    }
+
+    /**
+     * Prints compiler version information to the standard output stream.
+     */
+    public void showVersionInfo()
+    {
+        stdout(String.format("torreyc %s", SEMANTIC_VERSION));
+        stdout("This is free and open source software available at:");
+        stdout("https://github.com/MatthewKosloski/torrey/");
+        System.exit(0);
     }
 
     /*

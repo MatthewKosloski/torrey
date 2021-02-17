@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>me.mtk.torrey</groupId>
-  <artifactId>torrey</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>torreyc</artifactId>
+  <version>1.0.0</version>
 
   <name>torrey</name>
   <!-- FIXME change it to the project's website -->
@@ -84,7 +84,7 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <configuration>
-            <finalName>torreyc</finalName>
+            <!-- <finalName>torreyc</finalName> -->
             <archive>
               <manifest>
                 <mainClass>me.mtk.torrey.Torrey</mainClass>
