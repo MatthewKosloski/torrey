@@ -31,7 +31,7 @@ $ 42
 $ -42
 ```
 
-The above command compiles the Torrey program `(println (+ 2 3))` and outputs an executable `a.out`. This method is convenient for quick tests of a few lines, but is impractical for sophisticated, multi-line programs.  To input decently sized Torrey programs, use the `-i` or `--in` flag as demonstrated below.
+The above command compiles the Torrey program and outputs an executable `a.out`. This method is convenient for quick tests of a few lines, but is impractical for sophisticated, multi-line programs.  To input decently sized Torrey programs, use the `-i` or `--in` flag as demonstrated below.
 
 ####  Input from the File System
 
