@@ -25,7 +25,10 @@ The input string must come from exactly one of two places: the standard input st
 To run the compiler with input from standard input, pipe the input into `java` like so:
 
 ```
-echo "(println (+ 2 3))" | java -jar torreyc.jar
+$ echo "(println 42 (* (/ 12 2) (+ 3 4)) (- 42))" | java -jar torreyc-1.0.0.jar && ./a.out
+$ 42
+$ 42
+$ -42
 ```
 
 The above command compiles the Torrey program `(println (+ 2 3))` and outputs an executable `a.out`. This method is convenient for quick tests of a few lines, but is impractical for sophisticated, multi-line programs.  To input decently sized Torrey programs, use the `-i` or `--in` flag as demonstrated below.
