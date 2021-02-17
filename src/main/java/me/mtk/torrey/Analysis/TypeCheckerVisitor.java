@@ -4,6 +4,7 @@ import me.mtk.torrey.error_reporter.ErrorMessages;
 import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SemanticError;
 import me.mtk.torrey.lexer.Token;
+import me.mtk.torrey.lexer.TokenType;
 import me.mtk.torrey.ast.ExprVisitor;
 import me.mtk.torrey.ast.ASTNode;
 import me.mtk.torrey.ast.BinaryExpr;
@@ -83,6 +84,18 @@ public final class TypeCheckerVisitor implements
             // expected type DataType.INTEGER but got secondDataType
             reporter.error(second.token(), ErrorMessages.UnexpectedOperand, 
                 operator.rawText(), DataType.INTEGER, secondDataType);
+        }
+
+        if (firstDataType == DataType.INTEGER && 
+            secondDataType == DataType.INTEGER && 
+            operator.type() == TokenType.SLASH &&
+            Integer.parseInt(second.token().rawText()) == 0)
+        {
+            // Both operands are integers to a division operator
+            // and the denominator is 0.
+
+            reporter.error(second.token(), ErrorMessages.DivisionByZero, 
+            operator.rawText());   
         }
 
         return DataType.INTEGER;

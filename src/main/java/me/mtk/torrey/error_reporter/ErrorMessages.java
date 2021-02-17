@@ -21,4 +21,5 @@ public final class ErrorMessages
     public static final String ExpectedClosingParen = "Expected a closing parenthesis ')'";
     public static final String UnexpectedOperand = "Expected operand to operator '%s' to be " 
         + "type '%s' but found type '%s' instead";
+    public static final String DivisionByZero = "Division by zero";
 }
