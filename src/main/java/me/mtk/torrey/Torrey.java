@@ -34,17 +34,17 @@ public class Torrey
 
     // If the user does not provide an output file name for the 
     // executable via the command-line, use this as a default.
-    public static String DEFAULT_EXECUTABLE_NAME = "a.out";
+    private static String DEFAULT_EXECUTABLE_NAME = "a.out";
 
     // If the user does not provide an output file name for
     // the assembly output, use this as a default.
-    public static String DEFAULT_SOURCE_ASM_NAME = "temp.s";
+    private static String DEFAULT_SOURCE_ASM_NAME = "temp.s";
 
     // The name of the run time dependency.
-    public static String RUNTIME_CCODE_NAME = "runtime.c";
+    private static String RUNTIME_CCODE_NAME = "runtime.c";
 
     // The name to be given to the run time object code.
-    public static String RUNTIME_OCODE_NAME = "runtime.o";
+    private static String RUNTIME_OCODE_NAME = "runtime.o";
 
     @Parameter(
         names = {"--help", "-h"}, 
