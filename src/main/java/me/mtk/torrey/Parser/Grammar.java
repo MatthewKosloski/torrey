@@ -195,7 +195,7 @@ public class Grammar extends Parser
         consumeLeftParen();
  
         // "let"
-        final Token letOp = nextToken();
+        final Token tok = nextToken();
 
         // "["
         consumeLeftBracket();
@@ -238,7 +238,7 @@ public class Grammar extends Parser
         // ")"
         consumeRightParen();
 
-        return new LetExpr(letOp, new LetBindings(bindings), exprList);
+        return new LetExpr(tok, new LetBindings(bindings), exprList);
     }
 
     // integer -> [0-9]+ ;
