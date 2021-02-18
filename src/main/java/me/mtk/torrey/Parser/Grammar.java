@@ -1,10 +1,7 @@
 package me.mtk.torrey.parser;
 
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import me.mtk.torrey.ast.Expr;
 import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.IntegerExpr;
