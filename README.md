@@ -84,17 +84,20 @@ The following grammar describes the syntax of a syntactically valid Torrey progr
 The following grammar is implemented by the compiler's parser.  See `src/main/java/me/mtk/torrey/parser/Grammar.java` for the implementation of this grammar.
 
 ```
-program       -> expression* ;
+program       -> expr* ;
 
-expression    -> integer
+expr          -> integer
                | unary
                | binary
-               | print ;
+               | print
+               | let ;
 
 integer       -> [0-9]+ ;
-unary         -> "(" "-" expression ")" ;
-binary        -> "(" ("+" | "-" | "*" | "/") expression expression ")" ;
-print         -> "(" ("print" | "println") expression+ ")" ;
+identifier    -> [a-zA-Z_$]+ [a-zA-Z0-9_$!?-]* ;
+unary         -> "(" "-" expr ")" ;
+binary        -> "(" ("+" | "-" | "*" | "/") expr expr ")" ;
+print         -> "(" ("print" | "println") expr+ ")" ;
+let           -> "(" "let" "[" (identifier expr)* "]" expr* ")" ;
 ```
 
 ## Intermediate Representation (IR) Grammar
