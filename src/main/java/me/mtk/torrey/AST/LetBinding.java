@@ -12,4 +12,10 @@ public class LetBinding extends ASTNode
         addChild(identifier);
         addChild(expr);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s %s", first(), second());
+    }
 }
