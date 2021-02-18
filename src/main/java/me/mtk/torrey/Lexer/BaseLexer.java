@@ -110,7 +110,9 @@ public abstract class BaseLexer
             tokenStartCol = curCol;
             tokenStartLine = curLine;
         }
-        addToken(TokenType.EOF);
+
+        // Add the end-of-file token.
+        tokens.add(new Token(TokenType.EOF, ""));
 
         reporter.reportSyntaxErrors("Encountered one or more syntax "
             + "errors during lexing:");
