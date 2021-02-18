@@ -7,13 +7,13 @@ import java.util.List;
  * each binding is an identifier expression
  * mapped to an expression.
  */
-public class Bindings extends ASTNode
+public class LetBindings extends ASTNode
 {
-    public Bindings(List<Binding> bindings) 
+    public LetBindings(List<LetBinding> bindings) 
     {
         super(null);
 
-        for (Binding binding : bindings)
+        for (LetBinding binding : bindings)
             addChild(binding);
     }
 }

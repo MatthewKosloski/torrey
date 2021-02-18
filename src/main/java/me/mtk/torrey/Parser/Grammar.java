@@ -12,8 +12,8 @@ import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.BinaryExpr;
-import me.mtk.torrey.ast.Bindings;
-import me.mtk.torrey.ast.Binding;
+import me.mtk.torrey.ast.LetBindings;
+import me.mtk.torrey.ast.LetBinding;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SyntaxError;
@@ -50,7 +50,7 @@ public class Grammar extends Parser
             }
             catch (SyntaxError e)
             {
-                synchronize(e);
+                synchronize();
             }
         }
 
@@ -203,7 +203,7 @@ public class Grammar extends Parser
         // "["
         consumeLeftBracket();
 
-        final List<Binding> bindings = new ArrayList<>();
+        final List<LetBinding> bindings = new ArrayList<>();
 
         if (!peek(TokenType.RBRACK))
         {
@@ -226,7 +226,7 @@ public class Grammar extends Parser
                     id = new IdentifierExpr(nextToken());
 
                 final Expr expr = expression();
-                bindings.add(new Binding(id, expr));
+                bindings.add(new LetBinding(id, expr));
             }
         }
 
@@ -241,7 +241,7 @@ public class Grammar extends Parser
         // ")"
         consumeRightParen();
 
-        return new LetExpr(letOp, new Bindings(bindings), exprList);
+        return new LetExpr(letOp, new LetBindings(bindings), exprList);
     }
 
     // integer -> [0-9]+ ;

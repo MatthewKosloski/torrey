@@ -3,9 +3,9 @@ package me.mtk.torrey.ast;
 /**
  * Binds an identifier to an expression in a let expression.
  */
-public class Binding extends ASTNode
+public class LetBinding extends ASTNode
 {
-    public Binding(IdentifierExpr identifier, Expr expr) 
+    public LetBinding(IdentifierExpr identifier, Expr expr) 
     {
         super(identifier.token());
 

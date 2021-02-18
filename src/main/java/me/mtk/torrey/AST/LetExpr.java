@@ -6,7 +6,7 @@ import me.mtk.torrey.lexer.Token;
 
 public class LetExpr extends Expr
 {
-    public LetExpr(Token letTok, Bindings bindings, List<Expr> exprList)
+    public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
     {
         // "let"
         super(letTok);
