@@ -15,6 +15,7 @@ public final class Keywords
         store = new HashMap<>();
         store.put("print", TokenType.PRINT);
         store.put("println", TokenType.PRINTLN);
+        store.put("let", TokenType.LET);
     }
 
     /**

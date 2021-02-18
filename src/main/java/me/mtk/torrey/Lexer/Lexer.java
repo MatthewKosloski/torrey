@@ -47,6 +47,8 @@ public final class Lexer extends BaseLexer
 
             case '(': addToken(TokenType.LPAREN); break;
             case ')': addToken(TokenType.RPAREN); break;
+            case '[': addToken(TokenType.LBRACK); break;
+            case ']': addToken(TokenType.RBRACK); break;
 
             case '+': addToken(TokenType.PLUS); break;
             case '-': addToken(TokenType.MINUS); break;
@@ -56,13 +58,14 @@ public final class Lexer extends BaseLexer
             default:
                 if (isDigit(currentChar))
                     addIntegerToken();
-                else if (isStartOfIdentifier(currentChar))
+                else if (isIdInitial(currentChar))
                     addIdentifierToken();
                 else
                 {
                     hasLexicalError = true;
                     addToken(TokenType.UNIDENTIFIED);
-                    reporter.error(getLastToken(), ErrorMessages.UnexpectedCharacter, 
+                    reporter.error(getLastToken(), 
+                        ErrorMessages.UnexpectedCharacter, 
                         getLastToken().rawText());
                 }
 
@@ -102,7 +105,7 @@ public final class Lexer extends BaseLexer
     private void addIdentifierToken()
     {
         // Consume the identifier.
-        while (isPartOfIdentifier(peek())) nextChar();
+        while (isIdSubsequent(peek())) nextChar();
 
         tokenIndexEnd = cursor;
         
@@ -112,7 +115,7 @@ public final class Lexer extends BaseLexer
             tokenIndexEnd);
         TokenType type = Keywords.get(identifier);
 
-        addToken(type == null ? TokenType.UNIDENTIFIED : type);
+        addToken(type == null ? TokenType.IDENTIFIER : type);
     }
 
     /*
@@ -123,10 +126,10 @@ public final class Lexer extends BaseLexer
     * @return True if the character is the start of an identifer;
     * False otherwise.
     */
-    private boolean isStartOfIdentifier(char c)
+    private boolean isIdInitial(char c)
     {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-            (c == '_') || (c == '$');  
+        // [a-zA-Z_$]
+        return isLetter(c) || c == '_' || c == '$';  
     }
 
     /*
@@ -137,8 +140,10 @@ public final class Lexer extends BaseLexer
     * @return True if the character is part of an identifier;
     * False otherwise.
     */
-    private boolean isPartOfIdentifier(char c)
+    private boolean isIdSubsequent(char c)
     {
-        return isStartOfIdentifier(c) || isDigit(c) || c == '?' || c == '-';
+        // [a-zA-Z0-9_$!?-]
+        return isIdInitial(c) || isDigit(c) || c == '!' 
+            || c == '?' || c == '-';
     }
 }

@@ -215,6 +215,18 @@ public abstract class BaseLexer
     }
 
     /**
+     * Indicates if the provided character is a letter as
+     * specified by the regular expression [a-zA-Z].
+     * 
+     * @param c A character
+     * @return True if c is a letter; False otherwise.
+     */
+    public boolean isLetter(char c)
+    {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    /**
      * Indicates if the provided character is a whitespace
      * character.
      * 

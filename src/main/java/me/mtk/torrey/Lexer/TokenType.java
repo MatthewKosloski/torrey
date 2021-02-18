@@ -2,19 +2,8 @@ package me.mtk.torrey.lexer;
 
 public enum TokenType
 {
-    // Grouping tokens
-    LPAREN, RPAREN,
-
-    // Binary arithmetic tokens
+    LPAREN, RPAREN, LBRACK, RBRACK,
     PLUS, MINUS, STAR, SLASH,
-
-    // Print expression
-    PRINT, PRINTLN,
-
-    INTEGER,
-
-    UNIDENTIFIED,
-
-    // End of file token
-    EOF
+    PRINT, PRINTLN, LET,
+    INTEGER, IDENTIFIER, UNIDENTIFIED, EOF
 }
