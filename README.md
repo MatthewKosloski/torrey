@@ -1,6 +1,6 @@
 # The Torrey Programming Language
 
-This is the first compiler of the Torrey programming language.
+This is the second compiler of the Torrey programming language. Click [here](https://github.com/MatthewKosloski/torrey/tree/c01) to view the source code of the first compiler.
 
 ## Maven Build
 
