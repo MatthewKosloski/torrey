@@ -24,6 +24,12 @@ public final class PrettyPrinterVisitor implements
         return jo.toString(2);
     }
 
+    // TODO: Pretty-Print let expressions.
+    public Object visit(LetExpr expr) { return null; }
+
+    // TODO: Pretty-Print identifier expressions.
+    public Object visit(IdentifierExpr expr) { return null; }
+
     public JSONObject visit(BinaryExpr expr)
     {
         final JSONObject jo = new JSONObject();

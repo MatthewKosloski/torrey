@@ -1,13 +1,19 @@
 package me.mtk.torrey.parser;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.mtk.torrey.ast.Expr;
+import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.IntegerExpr;
+import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.Bindings;
+import me.mtk.torrey.ast.Binding;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SyntaxError;
@@ -44,7 +50,7 @@ public class Grammar extends Parser
             }
             catch (SyntaxError e)
             {
-                synchronize();
+                synchronize(e);
             }
         }
 
@@ -52,9 +58,11 @@ public class Grammar extends Parser
     }
 
     // expression   -> integer
+    //              | identifier
     //              | unary
     //              | binary
-    //              | print ;
+    //              | print 
+    //              | let ;
     private Expr expression() throws SyntaxError
     {
 
@@ -80,6 +88,11 @@ public class Grammar extends Parser
                 // expression -> print ;
                 return print();
             }
+            else if (peekNext(TokenType.LET))
+            {
+                // expression -> let ;
+                return let();
+            }
             else
             {
                 reporter.throwSyntaxError(peekNext(), 
@@ -92,9 +105,13 @@ public class Grammar extends Parser
             // expression -> integer ;
             return integer();
         }
+        else if (peek(TokenType.IDENTIFIER))
+        {
+            // expression -> identifier ;
+            return identifier();
+        }
 
-        reporter.throwSyntaxError(peek(), 
-            ErrorMessages.ExpectedIntUnaryBinaryPrint,
+        reporter.throwSyntaxError(peek(), ErrorMessages.ExpectedExpr,
             peek().rawText());
         
         return null;
@@ -174,10 +191,69 @@ public class Grammar extends Parser
         return new PrintExpr(printOp, exprList);
     }
 
+    // let -> "(" "let" "[" (identifier expr)* "]" expr* ")" ;
+    private LetExpr let() throws SyntaxError
+    {
+        // "("
+        consumeLeftParen();
+ 
+        // "let"
+        final Token letOp = nextToken();
+
+        // "["
+        consumeLeftBracket();
+
+        final List<Binding> bindings = new ArrayList<>();
+
+        if (!peek(TokenType.RBRACK))
+        {
+            // The next token is not a closing bracket,
+            // so try to parse (identifier expr)*.
+
+            while (!peek(TokenType.RBRACK, TokenType.EOF))
+            {
+                // Initialize the identifier with an empty token
+                IdentifierExpr id = new IdentifierExpr(new Token());
+
+                // identifier
+                if (!peek(TokenType.IDENTIFIER))
+                {
+                    reporter.throwSyntaxError(peek(), 
+                        ErrorMessages.ExpectedIdentifier,
+                        peek().rawText());
+                }
+                else
+                    id = new IdentifierExpr(nextToken());
+
+                final Expr expr = expression();
+                bindings.add(new Binding(id, expr));
+            }
+        }
+
+        // "]"
+        consumeRightBracket();
+
+        // expr*
+        final List<Expr> exprList = new ArrayList<>();
+        while (!peek(TokenType.RPAREN, TokenType.EOF))
+            exprList.add(expression());
+
+        // ")"
+        consumeRightParen();
+
+        return new LetExpr(letOp, new Bindings(bindings), exprList);
+    }
+
     // integer -> [0-9]+ ;
     private IntegerExpr integer()
     {
         return new IntegerExpr(nextToken());
+    }
+
+    // identifier -> [a-zA-Z_$]+ [a-zA-Z0-9_$!?-]* ;
+    private IdentifierExpr identifier()
+    {
+        return new IdentifierExpr(nextToken());
     }
 
     private void consumeLeftParen() throws SyntaxError
@@ -192,5 +268,19 @@ public class Grammar extends Parser
         if (!match(TokenType.RPAREN))
             reporter.throwSyntaxError(lookahead(0), 
                 ErrorMessages.ExpectedClosingParen);
+    }
+
+    private void consumeLeftBracket() throws SyntaxError
+    {
+        if (!match(TokenType.LBRACK))
+            reporter.throwSyntaxError(peek(), 
+                ErrorMessages.ExpectedOpeningBracket);
+    }
+
+    private void consumeRightBracket() throws SyntaxError
+    {
+        if (!match(TokenType.RBRACK))
+            reporter.throwSyntaxError(peek(), 
+                ErrorMessages.ExpectedClosingBracket);
     }
 }
