@@ -87,6 +87,7 @@ The following grammar is implemented by the compiler's parser.  See `src/main/ja
 program       -> expr* ;
 
 expr          -> integer
+               | identifier
                | unary
                | binary
                | print
