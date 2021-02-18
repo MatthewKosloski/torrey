@@ -92,22 +92,23 @@ public class ErrorReporter
         if (!offendingLine.isBlank())
         {
             int i = 0;
+            char c = offendingLine.charAt(i);
 
             // Count leading white space characters
-            while (Character.isWhitespace(offendingLine.charAt(i)) 
-                && i < offendingLine.length())
+            while (c != '\n' && Character.isWhitespace(c) &&
+                i < offendingLine.length())
             {
                 trimCount++;
-                i++;
+                c = offendingLine.charAt(++i);
             }
 
             // Count trailing white space characters
             i = offendingLine.length() - 1;
-            while (Character.isWhitespace(offendingLine.charAt(i)) 
+            while (c != '\n' && Character.isWhitespace(c) 
             && i >= 0)
             {
                 trimCount++;
-                i--;
+                c = offendingLine.charAt(--i);
             }
         }
 
