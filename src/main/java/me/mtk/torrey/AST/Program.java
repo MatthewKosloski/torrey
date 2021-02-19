@@ -2,7 +2,6 @@ package me.mtk.torrey.ast;
 
 import java.util.List;
 import me.mtk.torrey.error_reporter.SemanticError;
-import me.mtk.torrey.lexer.Token;
 
 /**
  * The top-level AST node returned by the parser.
@@ -11,8 +10,7 @@ public class Program extends ASTNode
 {
     public Program(List<Expr> exprList) 
     {
-        // Create "empty" token to satisfy inheritance requirement.
-        super(new Token());
+        super(null);
 
         for (Expr expr : exprList)
             addChild(expr);
