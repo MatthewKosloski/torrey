@@ -6,8 +6,7 @@ import org.json.JSONObject;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.Position;
 
-public final class PrettyPrinterVisitor implements 
-    ExprVisitor<Object>, ProgramVisitor<Object>
+public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
 {
     public String visit(Program program)
     {
@@ -15,7 +14,7 @@ public final class PrettyPrinterVisitor implements
 
         final JSONArray ja = new JSONArray();
         for (ASTNode child : program.children())
-            ja.put(((Expr) child).accept(this));
+            ja.put(child.accept(this));
 
         jo.put("node_type", "Program")
             .put("children", ja)
@@ -24,19 +23,68 @@ public final class PrettyPrinterVisitor implements
         return jo.toString(2);
     }
 
-    // TODO: Pretty-Print let expressions.
-    public Object visit(LetExpr expr) { return null; }
+    public Object visit(LetExpr expr) {
+        final JSONObject jo = new JSONObject();
+        final JSONArray ja = new JSONArray();
 
-    // TODO: Pretty-Print identifier expressions.
-    public Object visit(IdentifierExpr expr) { return null; }
+        for (ASTNode child : expr.children())
+            ja.put(child.accept(this));
+
+        jo.put("node_type", "LetExpr")
+            .put("children", ja)
+            .put("token", prettyToken(expr.token()));
+
+        return jo;
+    }
+
+    public Object visit(LetBinding binding)
+    {
+        final JSONObject jo = new JSONObject();
+        final JSONArray ja = new JSONArray();
+
+        for (ASTNode child : binding.children())
+            ja.put(child.accept(this));
+
+        jo.put("node_type", "LetBinding")
+            .put("children", ja)
+            .put("token", prettyToken(binding.token()));
+
+        return jo;
+    }
+
+    public Object visit(LetBindings bindings)
+    {
+        final JSONObject jo = new JSONObject();
+        final JSONArray ja = new JSONArray();
+
+        for (ASTNode child : bindings.children())
+            ja.put(child.accept(this));
+
+        jo.put("node_type", "LetBindings")
+            .put("children", ja)
+            .put("token", bindings.token() == null 
+                ? "null" 
+                : bindings.token());
+
+        return jo;
+    }
+
+    public Object visit(IdentifierExpr expr) 
+    {
+        final JSONObject jo = new JSONObject()
+            .put("node_type", "IdentifierExpr")
+            .put("token", prettyToken(expr.token()));
+
+        return jo;
+    }
 
     public JSONObject visit(BinaryExpr expr)
     {
         final JSONObject jo = new JSONObject();
         final JSONArray ja = new JSONArray();
 
-        ja.put(((Expr) expr.first()).accept(this));
-        ja.put(((Expr) expr.second()).accept(this));
+        ja.put(expr.first().accept(this));
+        ja.put(expr.second().accept(this));
 
         jo.put("node_type", "BinaryExpr")
             .put("children", ja)
@@ -50,7 +98,7 @@ public final class PrettyPrinterVisitor implements
         final JSONObject jo = new JSONObject();
 
         jo.put("node_type", "UnaryExpr")
-            .put("child", ((Expr) expr.first()).accept(this))
+            .put("child", expr.first().accept(this))
             .put("token", prettyToken(expr.token()));
 
         return jo;
@@ -62,7 +110,7 @@ public final class PrettyPrinterVisitor implements
         final JSONArray ja = new JSONArray();
 
         for (ASTNode child : expr.children())
-            ja.put(((Expr) child).accept(this));
+            ja.put(child.accept(this));
 
         jo.put("node_type", "PrintExpr")
             .put("children", ja)
@@ -81,7 +129,7 @@ public final class PrettyPrinterVisitor implements
     }
 
 
-    public JSONObject prettyToken(Token tok)
+    private JSONObject prettyToken(Token tok)
     {
         final JSONObject jo = new JSONObject()
             .put("rawText", tok.rawText())
@@ -99,7 +147,7 @@ public final class PrettyPrinterVisitor implements
         return jo;
     }
 
-    public JSONObject prettyPos(Position pos)
+    private JSONObject prettyPos(Position pos)
     {
         final JSONObject jo = new JSONObject()
             .put("line", pos.line())
@@ -107,6 +155,4 @@ public final class PrettyPrinterVisitor implements
 
         return jo;
     }
-
-
 }
