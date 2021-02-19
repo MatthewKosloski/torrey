@@ -20,6 +20,8 @@ public abstract class ASTNode
     // makes it much easier to build external tree visitors.
     private List<ASTNode> children;
 
+    public abstract <T> T accept(ASTNodeVisitor<T> visitor);
+
     /**
      * Construct a new AST node from a token.
      * 

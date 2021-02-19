@@ -14,6 +14,12 @@ public class LetBinding extends ASTNode
     }
 
     @Override
+    public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s %s", first(), second());

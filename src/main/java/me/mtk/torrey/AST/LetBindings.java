@@ -16,6 +16,12 @@ public class LetBindings extends ASTNode
         for (LetBinding binding : bindings)
             addChild(binding);
     }
+    
+    @Override
+    public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
 
     @Override
     public String toString()

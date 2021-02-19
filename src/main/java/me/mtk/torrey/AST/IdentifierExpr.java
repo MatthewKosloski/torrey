@@ -8,6 +8,12 @@ public class IdentifierExpr extends Expr
     public IdentifierExpr(Token t) { super(t); }
 
     @Override
+    public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
+
+    @Override
     public <T> T accept(ExprVisitor<T> visitor)
     {
         return visitor.visit(this);

@@ -8,6 +8,12 @@ public class IntegerExpr extends Expr
     public IntegerExpr(Token t) { super(t); }
 
     @Override
+    public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
+
+    @Override
     public <T> T accept(ExprVisitor<T> visitor)
     {
         return visitor.visit(this);

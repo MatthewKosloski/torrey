@@ -18,6 +18,12 @@ public class Program extends ASTNode
             addChild(expr);
     }
 
+    @Override
+    public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
+
     public <T> T accept(ProgramVisitor<T> visitor) throws SemanticError
     {
         return visitor.visit(this);
