@@ -10,135 +10,81 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
 {
     public String visit(Program program)
     {
-        final JSONObject jo = new JSONObject();
-
-        final JSONArray ja = new JSONArray();
-        for (ASTNode child : program.children())
-            ja.put(child.accept(this));
-
-        jo.put("node_type", "Program")
-            .put("children", ja)
-            .put("token", prettyToken(program.token()));
-
-        return jo.toString(2);
+        return parse(program)
+            .toString(2);
     }
 
-    public Object visit(LetExpr expr) {
-        final JSONObject jo = new JSONObject();
-        final JSONArray ja = new JSONArray();
+    public JSONObject visit(LetExpr expr) { return parse(expr); }
+    public JSONObject visit(LetBinding binding) { return parse(binding); }
+    public JSONObject visit(LetBindings bindings) { return parse(bindings); }
+    public JSONObject visit(IdentifierExpr expr) { return parse(expr); }
+    public JSONObject visit(BinaryExpr expr) { return parse(expr); }
+    public JSONObject visit(UnaryExpr expr) { return parse(expr); }
+    public JSONObject visit(PrintExpr expr) { return parse(expr); }
+    public JSONObject visit(IntegerExpr expr) { return parse(expr); }
 
-        for (ASTNode child : expr.children())
-            ja.put(child.accept(this));
-
-        jo.put("node_type", "LetExpr")
-            .put("children", ja)
-            .put("token", prettyToken(expr.token()));
-
-        return jo;
-    }
-
-    public Object visit(LetBinding binding)
+    /*
+     * Constructs a JSON object representation of the
+     * given ASTNode. The JSON object looks like:
+     * {
+     *   "node_type": "",
+     *   "children": [ ... ],
+     *   "token": ""
+     * }
+     * The children key's value is a JSON array of arbitrary depth
+     * and the token key's value can be "null" or a JSON object 
+     * representation of the node's token object.
+     * 
+     * @param node An ASTNode from which to construct a JSON object.
+     * @return The JSON object representation of the given node.
+     */
+    private JSONObject parse(ASTNode node)
     {
         final JSONObject jo = new JSONObject();
         final JSONArray ja = new JSONArray();
 
-        for (ASTNode child : binding.children())
-            ja.put(child.accept(this));
-
-        jo.put("node_type", "LetBinding")
-            .put("children", ja)
-            .put("token", prettyToken(binding.token()));
-
-        return jo;
-    }
-
-    public Object visit(LetBindings bindings)
-    {
-        final JSONObject jo = new JSONObject();
-        final JSONArray ja = new JSONArray();
-
-        for (ASTNode child : bindings.children())
-            ja.put(child.accept(this));
-
-        jo.put("node_type", "LetBindings")
-            .put("children", ja)
-            .put("token", bindings.token() == null 
+        jo.put("node_type", node.getClass().getSimpleName())
+            .put("token", node.token() == null 
                 ? "null" 
-                : bindings.token());
+                : parse(node.token()));
+
+        if (node.children().size() != 0)
+        {
+            for (ASTNode child : node.children())
+                ja.put(child.accept(this));
+            jo.put("children", ja);
+        }
 
         return jo;
     }
 
-    public Object visit(IdentifierExpr expr) 
-    {
-        final JSONObject jo = new JSONObject()
-            .put("node_type", "IdentifierExpr")
-            .put("token", prettyToken(expr.token()));
-
-        return jo;
-    }
-
-    public JSONObject visit(BinaryExpr expr)
-    {
-        final JSONObject jo = new JSONObject();
-        final JSONArray ja = new JSONArray();
-
-        ja.put(expr.first().accept(this));
-        ja.put(expr.second().accept(this));
-
-        jo.put("node_type", "BinaryExpr")
-            .put("children", ja)
-            .put("token", prettyToken(expr.token()));
-
-        return jo;
-    }
-
-    public JSONObject visit(UnaryExpr expr)
-    {
-        final JSONObject jo = new JSONObject();
-
-        jo.put("node_type", "UnaryExpr")
-            .put("child", expr.first().accept(this))
-            .put("token", prettyToken(expr.token()));
-
-        return jo;
-    }
-
-    public JSONObject visit(PrintExpr expr)
-    {
-        final JSONObject jo = new JSONObject();
-        final JSONArray ja = new JSONArray();
-
-        for (ASTNode child : expr.children())
-            ja.put(child.accept(this));
-
-        jo.put("node_type", "PrintExpr")
-            .put("children", ja)
-            .put("token", prettyToken(expr.token()));
-
-        return jo;
-    }
-
-    public JSONObject visit(IntegerExpr expr)
-    {
-        final JSONObject jo = new JSONObject()
-            .put("node_type", "IntegerExpr")
-            .put("token", prettyToken(expr.token()));
-
-        return jo;
-    }
-
-
-    private JSONObject prettyToken(Token tok)
+    /*
+     * Constructs a JSON object representation of the
+     * given Token. The JSON object looks like:
+     * {
+     *   "rawText": "",
+     *   "type": "",
+     *   "startPos": { ... },
+     *   "endPos": { ... },
+     *   "beginIndex": "",
+     *   "beginLineIndex": "",
+     *   "endIndex": ""
+     * }
+     * The value of keys startPos and endPos is "null" or a JSON 
+     * object representation of a Position.
+     * @param tok A Token from which to construct a JSON object.
+     * @return The JSON object representation of the given Token.
+     */
+    private JSONObject parse(Token tok)
     {
         final JSONObject jo = new JSONObject()
             .put("rawText", tok.rawText())
             .put("type", tok.type())
             .put("startPos", tok.startPos() != null 
-                ? prettyPos(tok.startPos()) 
+                ? parse(tok.startPos()) 
                 : "null")
             .put("endPos", tok.startPos() != null 
-                ? prettyPos(tok.endPos()) 
+                ? parse(tok.endPos()) 
                 : "null")
             .put("beginIndex", tok.beginIndex())
             .put("beginLineIndex", tok.beginLineIndex())
@@ -147,7 +93,17 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
         return jo;
     }
 
-    private JSONObject prettyPos(Position pos)
+    /*
+     * Constructs a JSON object representation of the
+     * given Position. The JSON object looks like:
+     * {
+     *   "line": "",
+     *   "col": ""
+     * }
+     * @param pos A Position from which to construct a JSON object.
+     * @return The JSON object representation of the given Position.
+     */
+    private JSONObject parse(Position pos)
     {
         final JSONObject jo = new JSONObject()
             .put("line", pos.line())
