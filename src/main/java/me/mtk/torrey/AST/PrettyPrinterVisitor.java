@@ -1,17 +1,22 @@
 package me.mtk.torrey.ast;
 
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.Position;
 
+/**
+ * Pretty prints an AST by producing a JSON representation.
+ */
 public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
 {
+    /**
+     * Returns a JSON representation of the given AST.
+     * @param program The root node of an AST.
+     */
     public String visit(Program program)
     {
-        return parse(program)
-            .toString(2);
+        return parse(program).toString(2);
     }
 
     public JSONObject visit(LetExpr expr) { return parse(expr); }
