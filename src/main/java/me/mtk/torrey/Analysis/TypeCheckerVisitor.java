@@ -235,6 +235,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // in an environment.
             ((LetBindings) expr.first()).accept(this);
 
+            // Save the environment in the AST.
+            expr.setEnv(top);
+
             // Restore the previous environment.
             top = prevEnv;
 
@@ -255,17 +258,26 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // Type check all bindings and store them
             // in an environment.
             ((LetBindings) expr.first()).accept(this);
-            
-            // Type check the last expression and record the type in the AST.
-            final Expr lastExpr = (Expr) expr.last();
-            lastExpr.setEvalType(lastExpr.accept(this));
+
+            // Type check all expressions in the body
+            // and record the types in the AST.
+            // (body expressions start at index 1).
+            for (int i = 1; i < expr.children().size(); i++)
+            {
+                final Expr bodyExpr = (Expr) expr.children().get(i);
+                bodyExpr.setEvalType(bodyExpr.accept(this));
+            }
+
+            // Save the environment in the AST.
+            expr.setEnv(top);
 
             // Restore the previous environment.
             top = prevEnv;
 
             // The type of this let expression is the same 
             // as the type of its last expression.
-            return lastExpr.evalType();
+            expr.setEvalType(((Expr) expr.last()).evalType());
+            return expr.evalType();
         }
     }
 
