@@ -314,7 +314,12 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         final Symbol sym = new Symbol(id, uniqueId(id), 
             boundedExpr.evalType());
 
-        top.put(id, sym);
+        if (!top.has(id))
+            top.put(id, sym);
+        else
+            // The identifier id has already been declared in this scope.
+            reporter.error(idExpr.token(), 
+                ErrorMessages.AlreadyDeclared, id);
 
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.

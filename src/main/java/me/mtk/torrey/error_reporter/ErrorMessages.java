@@ -27,4 +27,5 @@ public final class ErrorMessages
     public static final String ExpectedIdentifier = "Expected an identifier"
         + " but found '%s' instead";
     public static final String UndefinedId = "Identifier '%s' is not defined in this environment";
+    public static final String AlreadyDeclared = "Identifier '%s' has already been declared in this scope";
 }
