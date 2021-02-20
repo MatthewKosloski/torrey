@@ -5,21 +5,28 @@ import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SemanticError;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.TokenType;
-import me.mtk.torrey.ast.ExprVisitor;
+import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.ASTNode;
+import me.mtk.torrey.ast.ASTNodeVisitor;
 import me.mtk.torrey.ast.BinaryExpr;
 import me.mtk.torrey.ast.IntegerExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.Expr;
 import me.mtk.torrey.ast.Program;
-import me.mtk.torrey.ast.ProgramVisitor;
+import me.mtk.torrey.ast.LetExpr;
+import me.mtk.torrey.ast.LetBinding;
+import me.mtk.torrey.ast.LetBindings;
+import me.mtk.torrey.symbols.Env;
+import me.mtk.torrey.symbols.Symbol;
 
-public final class TypeCheckerVisitor implements 
-    ExprVisitor<DataType>, ProgramVisitor<DataType>
+public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 {
 
     private ErrorReporter reporter;
+
+    // The current environment.
+    private Env top;
 
     /**
      * Constructs a new TypeCheckerVisitor that walks an
@@ -32,6 +39,7 @@ public final class TypeCheckerVisitor implements
     public TypeCheckerVisitor(ErrorReporter reporter)
     {
         this.reporter = reporter;
+        top = new Env(null);
     }
 
     /**
@@ -41,13 +49,20 @@ public final class TypeCheckerVisitor implements
      * @param program The program to be type checked.
      * @return The DataType of the program.
      */
-    public DataType visit(Program program) throws SemanticError
+    public DataType visit(Program program)
     {
-        for (ASTNode child : program.children())
-            ((Expr) child).accept(this);
+        try
+        {
+            for (ASTNode child : program.children())
+                ((Expr) child).accept(this);
 
-        reporter.reportSemanticErrors("Encountered one or more semantic"
-            + " errors during type checking:");
+            reporter.reportSemanticErrors("Encountered one or more semantic"
+                + " errors during type checking:");
+        }
+        catch (SemanticError e)
+        {
+            System.err.println(e.getMessage());
+        }
 
         // A Program doesn't have a data type,
         // but we must return one so we will
@@ -72,14 +87,14 @@ public final class TypeCheckerVisitor implements
 
         final Token operator = expr.token();
 
-        if (firstDataType != DataType.INTEGER)
+        if (firstDataType != DataType.INTEGER && firstDataType != DataType.UNDEFINED)
         {
             // expected type DataType.INTEGER but got firstDataType
             reporter.error(first.token(), ErrorMessages.UnexpectedOperand, 
                 operator.rawText(), DataType.INTEGER, firstDataType);
         } 
 
-        if (secondDataType != DataType.INTEGER)
+        if (secondDataType != DataType.INTEGER && secondDataType != DataType.UNDEFINED)
         {
             // expected type DataType.INTEGER but got secondDataType
             reporter.error(second.token(), ErrorMessages.UnexpectedOperand, 
@@ -127,13 +142,16 @@ public final class TypeCheckerVisitor implements
         for (ASTNode child : expr.children())
         {
             final Expr childExpr = (Expr) child;
-            final DataType operandDataType = childExpr.accept(this);
+            final DataType type = childExpr.accept(this);
 
-            if (operandDataType != DataType.INTEGER)
+            if (type != DataType.INTEGER && type != DataType.UNDEFINED)
             {
-                // expected type DataType.INTEGER but got operandDataType
-                reporter.error(childExpr.token(), ErrorMessages.UnexpectedOperand,
-                    operator.rawText(), DataType.INTEGER, operandDataType);
+                // expected type DataType.INTEGER
+                reporter.error(childExpr.token(), 
+                    ErrorMessages.UnexpectedOperand,
+                    operator.rawText(), 
+                    DataType.INTEGER, 
+                    type);
             } 
         }
         
@@ -151,15 +169,115 @@ public final class TypeCheckerVisitor implements
     {
         final Token operator = expr.token();
         final Expr operand = (Expr) expr.first();
-        final DataType operandDataType = operand.accept(this);
+        final DataType type = operand.accept(this);
 
-        if (operandDataType != DataType.INTEGER)
+        if (type != DataType.INTEGER && type != DataType.UNDEFINED)
         {
-            // expected type DataType.INTEGER but got operandDataType
+            // expected type DataType.INTEGER
             reporter.error(operand.token(), ErrorMessages.UnexpectedOperand, 
-                operator.rawText(), DataType.INTEGER, operandDataType);
+                operator.rawText(), DataType.INTEGER, type);
         } 
 
         return DataType.INTEGER;
+    }
+
+    public DataType visit(IdentifierExpr expr)
+    {
+        final String id = expr.token().rawText();
+        final Symbol sym = top.get(id);
+
+        if (sym != null)
+            // The identifier is bounded to a symbol
+            // in the lexical scope chain.
+            return sym.type();
+        else
+        {
+            // The identifier isn't bounded to a symbol
+            reporter.error(expr.token(), ErrorMessages.UndefinedId, id);
+            return DataType.UNDEFINED;
+        }
+    }
+
+    public DataType visit(LetExpr expr)
+    {
+
+        if (expr.children().size() == 0)
+        {
+            // The expression has no bindings or expressions
+            // in its body (e.g., (let []) ).
+            return DataType.UNDEFINED;
+        }
+        else if (expr.children().size() == 1)
+        {
+            // The expression has one or more bindings but
+            // no expressions in its body (e.g., (let [x 42]) ).
+
+            // Cache the previous environment and create
+            // a new environment.
+            final Env prevEnv = top;
+            top = new Env(top);
+
+            // Type check all bindings and store them
+            // in an environment.
+            ((LetBindings) expr.first()).accept(this);
+
+            // Restore the previous environment.
+            top = prevEnv;
+
+            return DataType.UNDEFINED;
+        }
+        else
+        {
+            // The expression has one or more bindings and
+            // one or more expressions in its body
+            // (e.g., (let [x 42] (print x)) ).
+            
+            // Cache the previous environment and create
+            // a new environment.
+            final Env prevEnv = top;
+            top = new Env(top);
+
+            // Type check all bindings and store them
+            // in an environment.
+            ((LetBindings) expr.first()).accept(this);
+            
+            // Type check the last expression.
+            final DataType lastExprType = ((Expr) expr.last()).accept(this);
+
+            // Restore the previous environment.
+            top = prevEnv;
+
+            // The type of this let expression is the same as the type
+            // of its last expression.
+            return lastExprType;
+        }
+    }
+
+    public DataType visit(LetBindings bindings)
+    {
+        // Call visit(LetBinding) to type check
+        // all the bindings in this AST node.
+        for (ASTNode n : bindings.children())
+            ((LetBinding) n).accept(this);
+
+        // A LetBindings AST node has no data type as it's
+        // simply a container for bindings.
+        return DataType.UNDEFINED;
+    }
+
+    public DataType visit(LetBinding binding)
+    {
+        final LetBinding letBinding = (LetBinding) binding;
+        final IdentifierExpr idExpr = (IdentifierExpr) letBinding.first();
+        final Expr boundedExpr = (Expr) letBinding.second();
+
+        // The data type of the expression bounded to the identifier
+        final DataType type = boundedExpr.accept(this);
+        
+        final String identifier = idExpr.token().rawText();
+        final Symbol sym = new Symbol(identifier, type);
+        top.put(identifier, sym);
+
+        return type;
     }
 }

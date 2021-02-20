@@ -26,4 +26,5 @@ public final class ErrorMessages
     public static final String DivisionByZero = "Division by zero";
     public static final String ExpectedIdentifier = "Expected an identifier"
         + " but found '%s' instead";
+    public static final String UndefinedId = "Identifier '%s' is not defined in this environment";
 }
