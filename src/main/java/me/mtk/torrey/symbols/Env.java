@@ -62,4 +62,18 @@ public class Env
         return null;
     }
 
+    /**
+     * Indicates whether the specified identifier
+     * has already been declared in this scope.
+     * 
+     * @param id An identifier.
+     * @return True if the specified identifier
+     * has already been declared in this scope;
+     * False otherwise.
+     */
+    public boolean has(String id)
+    {
+        return table.get(id) != null;
+    }
+
 }
