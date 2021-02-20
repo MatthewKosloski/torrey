@@ -59,10 +59,10 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             // so we can reduce this binary expression to an integer.
             switch (expr.token().type())
             {
-                case PLUS: return createIntExpr(c1 + c2);
-                case MINUS: return createIntExpr(c1 - c2);
-                case STAR: return createIntExpr(c1 * c2);
-                case SLASH: return createIntExpr(c1 / c2);
+                case PLUS: return new IntegerExpr(c1 + c2);
+                case MINUS: return new IntegerExpr(c1 - c2);
+                case STAR: return new IntegerExpr(c1 * c2);
+                case SLASH: return new IntegerExpr(c1 / c2);
                 default: return null;
             }
         }
@@ -134,19 +134,5 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     public Expr visit(IntegerExpr expr) 
     { 
         return expr; 
-    }
-
-    /*
-     * Helper method for easy construction of integer
-     * expressions.
-     * 
-     * @param constant The constant value to be stored
-     * in this integer expresison.
-     * @return An integer expression.
-     */
-    private IntegerExpr createIntExpr(int constant)
-    {
-        return new IntegerExpr(new Token(TokenType.INTEGER, 
-            constant + ""));
     }
 }
