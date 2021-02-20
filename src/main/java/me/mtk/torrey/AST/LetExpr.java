@@ -3,13 +3,19 @@ package me.mtk.torrey.ast;
 import java.util.List;
 import me.mtk.torrey.ir.TempAddress;
 import me.mtk.torrey.lexer.Token;
+import me.mtk.torrey.symbols.Env;
 
 public class LetExpr extends Expr
 {
+    private Env environment;
+
     public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
     {
         // "let"
         super(letTok);
+
+        // The environment doesn't get created until semantic analysis.
+        environment = null;
 
         // (identifier expr)*
         addChild(bindings);
@@ -35,5 +41,15 @@ public class LetExpr extends Expr
     public <T> T accept(ExprIRVisitor<T> visitor, TempAddress result)
     {
         return visitor.visit(this, result);
+    }
+
+    public void setEnv(Env e)
+    {
+        environment = e;
+    }
+
+    public Env environment()
+    {
+        return environment;
     }
 }
