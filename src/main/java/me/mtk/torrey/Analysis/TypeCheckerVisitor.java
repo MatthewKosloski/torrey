@@ -111,13 +111,13 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
                 operator.rawText(), DataType.INTEGER, second.evalType());
         }
 
-        if (first.evalType() == DataType.INTEGER && 
-            second.evalType() == DataType.INTEGER && 
+        if (first instanceof IntegerExpr && 
+            second instanceof IntegerExpr && 
             operator.type() == TokenType.SLASH &&
             Integer.parseInt(second.token().rawText()) == 0)
         {
-            // Both operands are integers to a division operator
-            // and the denominator is 0.
+            // Both operands are primitives and integers to 
+            // a division operator and the denominator is 0.
 
             reporter.error(second.token(), ErrorMessages.DivisionByZero, 
             operator.rawText());   
