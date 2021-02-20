@@ -1,9 +1,12 @@
 package me.mtk.torrey.ast;
 
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.Position;
+import me.mtk.torrey.symbols.Env;
+import me.mtk.torrey.symbols.Symbol;
 
 /**
  * Pretty prints an AST by producing a JSON representation.
@@ -60,6 +63,17 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
             jo.put("children", ja);
         }
 
+        // Node-specific properties here
+        if (node instanceof Expr)
+            jo.put("evalType", ((Expr) node).evalType());
+        if (node instanceof LetExpr)
+        {
+            final LetExpr letExpr = (LetExpr) node;
+            jo.put("environment", letExpr.environment() == null
+                ? "null"
+                : parse(letExpr.environment()));
+        }
+
         return jo;
     }
 
@@ -114,6 +128,33 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
             .put("line", pos.line())
             .put("col", pos.col());
 
+        return jo;
+    }
+
+    private JSONObject parse(Env env)
+    {
+        final JSONObject jo = new JSONObject();
+        final JSONObject table = new JSONObject();
+
+        env.symtab().forEach((id, sym) -> 
+            table.put(id, parse(sym)));
+        
+        jo.put("node_type", env.getClass().getSimpleName())
+            .put("parent", env.parent() == null ? "null" : parse(env.parent()))
+            .put("table", table);
+
+        return jo;
+    }
+
+    private JSONObject parse(Symbol sym)
+    {
+        final JSONObject jo = new JSONObject();
+
+        jo.put("node_type", sym.getClass().getSimpleName())
+            .put("identifier", sym.id())
+            .put("uniqueId", sym.uniqueId())
+            .put("type", sym.type());
+        
         return jo;
     }
 }
