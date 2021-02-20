@@ -20,7 +20,7 @@ public abstract class Expr extends ASTNode
     public Expr(Token t)
     { 
         super(t);
-        evalType = DataType.UNDEFINED; 
+        evalType = null; 
     }
 
     public abstract <T> T accept(ExprVisitor<T> visitor);
