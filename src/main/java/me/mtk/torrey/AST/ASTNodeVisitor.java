@@ -1,7 +1,5 @@
 package me.mtk.torrey.ast;
 
-import me.mtk.torrey.error_reporter.SemanticError;
-
 public interface ASTNodeVisitor<T>
 {
     public T visit(Program program);
