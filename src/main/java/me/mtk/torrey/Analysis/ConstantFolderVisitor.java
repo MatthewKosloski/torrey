@@ -50,13 +50,14 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         if (firstFolded instanceof ConstantConvertable
             && secondFolded instanceof ConstantConvertable)
         {
+            // Both folded children can be converted to constants,
+            // so we can reduce this binary expression to an integer expression.
+
             // Get the constants of the operands to the
             // arthmetic expression.
             final int c1 = ((ConstantConvertable) firstFolded).toConstant();
             final int c2 = ((ConstantConvertable) secondFolded).toConstant();
 
-            // Both folded children are integers or unary operators, 
-            // so we can reduce this binary expression to an integer.
             switch (expr.token().type())
             {
                 case PLUS: return new IntegerExpr(c1 + c2);
