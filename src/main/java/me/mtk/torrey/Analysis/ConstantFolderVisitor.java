@@ -13,8 +13,6 @@ import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.ast.LetBinding;
-import me.mtk.torrey.lexer.Token;
-import me.mtk.torrey.lexer.TokenType;
 
 /**
  * Constant folding is a type of high-level
