@@ -64,9 +64,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             System.err.println(e.getMessage());
         }
 
-        // A Program doesn't have a data type,
-        // but we must return one so we will
-        // return UNDEFINED.
+        // A Program AST does not evaluate to a 
+        // data type as it's not an expression.
         return DataType.UNDEFINED;
     }
 
@@ -82,27 +81,30 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
 
-        final DataType firstDataType = first.accept(this);
-        final DataType secondDataType = second.accept(this);
+        // Type check the operands and record the types in the AST.
+        first.setEvalType(first.accept(this));
+        second.setEvalType(second.accept(this));
 
         final Token operator = expr.token();
 
-        if (firstDataType != DataType.INTEGER && firstDataType != DataType.UNDEFINED)
+        if (first.evalType() != DataType.INTEGER 
+            && first.evalType() != DataType.UNDEFINED)
         {
-            // expected type DataType.INTEGER but got firstDataType
+            // expected type DataType.INTEGER
             reporter.error(first.token(), ErrorMessages.UnexpectedOperand, 
-                operator.rawText(), DataType.INTEGER, firstDataType);
+                operator.rawText(), DataType.INTEGER, first.evalType());
         } 
 
-        if (secondDataType != DataType.INTEGER && secondDataType != DataType.UNDEFINED)
+        if (second.evalType() != DataType.INTEGER 
+            && second.evalType() != DataType.UNDEFINED)
         {
-            // expected type DataType.INTEGER but got secondDataType
+            // expected type DataType.INTEGER
             reporter.error(second.token(), ErrorMessages.UnexpectedOperand, 
-                operator.rawText(), DataType.INTEGER, secondDataType);
+                operator.rawText(), DataType.INTEGER, second.evalType());
         }
 
-        if (firstDataType == DataType.INTEGER && 
-            secondDataType == DataType.INTEGER && 
+        if (first.evalType() == DataType.INTEGER && 
+            second.evalType() == DataType.INTEGER && 
             operator.type() == TokenType.SLASH &&
             Integer.parseInt(second.token().rawText()) == 0)
         {
@@ -113,7 +115,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             operator.rawText());   
         }
 
-        return DataType.INTEGER;
+        expr.setEvalType(DataType.INTEGER);
+        return expr.evalType();
     }
 
     /**
@@ -125,7 +128,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      */
     public DataType visit(IntegerExpr expr)
     {
-        return DataType.INTEGER;
+        expr.setEvalType(DataType.INTEGER);
+        return expr.evalType();
     }
 
     /**
@@ -142,20 +146,23 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         for (ASTNode child : expr.children())
         {
             final Expr childExpr = (Expr) child;
-            final DataType type = childExpr.accept(this);
 
-            if (type != DataType.INTEGER && type != DataType.UNDEFINED)
+            childExpr.setEvalType(childExpr.accept(this));
+
+            if (childExpr.evalType() != DataType.INTEGER 
+                && childExpr.evalType() != DataType.UNDEFINED)
             {
                 // expected type DataType.INTEGER
                 reporter.error(childExpr.token(), 
                     ErrorMessages.UnexpectedOperand,
                     operator.rawText(), 
                     DataType.INTEGER, 
-                    type);
+                    childExpr.evalType());
             } 
         }
         
-        return DataType.PRINT;
+        expr.setEvalType(DataType.UNDEFINED);
+        return expr.evalType();
     }
 
     /**
@@ -169,16 +176,20 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
         final Token operator = expr.token();
         final Expr operand = (Expr) expr.first();
-        final DataType type = operand.accept(this);
+        
+        // Type check the operand and record the type in the AST.
+        operand.setEvalType(operand.accept(this));
 
-        if (type != DataType.INTEGER && type != DataType.UNDEFINED)
+        if (operand.evalType() != DataType.INTEGER 
+            && operand.evalType() != DataType.UNDEFINED)
         {
             // expected type DataType.INTEGER
-            reporter.error(operand.token(), ErrorMessages.UnexpectedOperand, 
-                operator.rawText(), DataType.INTEGER, type);
+            reporter.error(operand.token(), ErrorMessages.UnexpectedOperand,
+                operator.rawText(), DataType.INTEGER, operand.evalType());
         } 
 
-        return DataType.INTEGER;
+        expr.setEvalType(DataType.INTEGER);
+        return expr.evalType();
     }
 
     public DataType visit(IdentifierExpr expr)
@@ -189,13 +200,15 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         if (sym != null)
             // The identifier is bounded to a symbol
             // in the lexical scope chain.
-            return sym.type();
+            expr.setEvalType(sym.type());
         else
         {
             // The identifier isn't bounded to a symbol
             reporter.error(expr.token(), ErrorMessages.UndefinedId, id);
-            return DataType.UNDEFINED;
+            expr.setEvalType(DataType.UNDEFINED);
         }
+
+        return expr.evalType();
     }
 
     public DataType visit(LetExpr expr)
@@ -205,7 +218,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         {
             // The expression has no bindings or expressions
             // in its body (e.g., (let []) ).
-            return DataType.UNDEFINED;
+            expr.setEvalType(DataType.UNDEFINED);
+            return expr.evalType();
         }
         else if (expr.children().size() == 1)
         {
@@ -224,7 +238,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // Restore the previous environment.
             top = prevEnv;
 
-            return DataType.UNDEFINED;
+            expr.setEvalType(DataType.UNDEFINED);
+            return expr.evalType();
         }
         else
         {
@@ -241,15 +256,16 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // in an environment.
             ((LetBindings) expr.first()).accept(this);
             
-            // Type check the last expression.
-            final DataType lastExprType = ((Expr) expr.last()).accept(this);
+            // Type check the last expression and record the type in the AST.
+            final Expr lastExpr = (Expr) expr.last();
+            lastExpr.setEvalType(lastExpr.accept(this));
 
             // Restore the previous environment.
             top = prevEnv;
 
-            // The type of this let expression is the same as the type
-            // of its last expression.
-            return lastExprType;
+            // The type of this let expression is the same 
+            // as the type of its last expression.
+            return lastExpr.evalType();
         }
     }
 
@@ -260,8 +276,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         for (ASTNode n : bindings.children())
             ((LetBinding) n).accept(this);
 
-        // A LetBindings AST node has no data type as it's
-        // simply a container for bindings.
+        // A LetBindings AST does not evaluate to a 
+        // data type as it's not an expression.
         return DataType.UNDEFINED;
     }
 
@@ -271,13 +287,15 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         final IdentifierExpr idExpr = (IdentifierExpr) letBinding.first();
         final Expr boundedExpr = (Expr) letBinding.second();
 
-        // The data type of the expression bounded to the identifier
-        final DataType type = boundedExpr.accept(this);
+        // Type check the bounded expression and record it in the AST.
+        boundedExpr.setEvalType(boundedExpr.accept(this));
         
         final String identifier = idExpr.token().rawText();
-        final Symbol sym = new Symbol(identifier, type);
+        final Symbol sym = new Symbol(identifier, boundedExpr.evalType());
         top.put(identifier, sym);
 
-        return type;
+        // A LetBinding AST does not evaluate to a 
+        // data type as it's not an expression.
+        return DataType.UNDEFINED;
     }
 }
