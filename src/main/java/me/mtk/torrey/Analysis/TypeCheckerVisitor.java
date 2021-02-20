@@ -1,5 +1,7 @@
 package me.mtk.torrey.analysis;
 
+import java.util.Map;
+import java.util.HashMap;
 import me.mtk.torrey.error_reporter.ErrorMessages;
 import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SemanticError;
@@ -22,11 +24,16 @@ import me.mtk.torrey.symbols.Symbol;
 
 public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 {
-
+    // A reference to the error reporter that will
+    // report any semantic errors during type checking.
     private ErrorReporter reporter;
 
     // The current environment.
     private Env top;
+
+    // Maps an identifier to the number of occurrences
+    // of the identifier in the entire program.
+    private Map<String, Integer> occurrences;
 
     /**
      * Constructs a new TypeCheckerVisitor that walks an
@@ -40,6 +47,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
         this.reporter = reporter;
         top = new Env(null);
+        occurrences = new HashMap<>();
     }
 
     /**
@@ -302,12 +310,29 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // Type check the bounded expression and record it in the AST.
         boundedExpr.setEvalType(boundedExpr.accept(this));
         
-        final String identifier = idExpr.token().rawText();
-        final Symbol sym = new Symbol(identifier, boundedExpr.evalType());
-        top.put(identifier, sym);
+        final String id = idExpr.token().rawText();
+        final Symbol sym = new Symbol(id, uniqueId(id), 
+            boundedExpr.evalType());
+
+        top.put(id, sym);
 
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.
         return DataType.UNDEFINED;
     }
+
+    private String uniqueId(String id)
+    {
+        // The number of occurrences of the 
+        // identifier in the entire program.
+        final Integer numOccurrences = occurrences.get(id);
+
+        if (numOccurrences != null)
+            occurrences.put(id, numOccurrences + 1);
+        else
+            occurrences.put(id, 1);
+
+        return String.format("%s%d", id, occurrences.get(id));
+    }
+
 }
