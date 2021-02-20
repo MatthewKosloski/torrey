@@ -76,4 +76,23 @@ public class Env
         return table.get(id) != null;
     }
 
+    /**
+     * Returns the parent environment.
+     * 
+     * @return The parent environment.
+     */
+    public Env parent()
+    {
+        return parent;
+    }
+    
+    /**
+     * Returns this scope's symbol table.
+     * @return The scope's symbol table.
+     */
+    public Map<String, Symbol> symtab()
+    {
+        return table;
+    }
+
 }
