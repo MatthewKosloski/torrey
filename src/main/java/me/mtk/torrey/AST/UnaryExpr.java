@@ -3,7 +3,7 @@ package me.mtk.torrey.ast;
 import me.mtk.torrey.ir.TempAddress;
 import me.mtk.torrey.lexer.Token;
 
-public class UnaryExpr extends Expr
+public class UnaryExpr extends Expr implements ConstantConvertable
 {
     public UnaryExpr(Token unaryOp, Expr operand) 
     { 
@@ -30,4 +30,10 @@ public class UnaryExpr extends Expr
     {
         return visitor.visit(this, result);
     }
+
+    public int toConstant()
+    {
+        return Integer.parseInt(first().token().rawText()) * -1;
+    }
+
 }

@@ -3,6 +3,7 @@ package me.mtk.torrey.analysis;
 import me.mtk.torrey.ast.ASTNode;
 import me.mtk.torrey.ast.ASTNodeVisitor;
 import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.ConstantConvertable;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.Expr;
 import me.mtk.torrey.ast.IdentifierExpr;
@@ -46,35 +47,23 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         expr.children().set(0, firstFolded);
         expr.children().set(1, secondFolded);
 
-        if (firstFolded instanceof IntegerExpr && 
-        secondFolded instanceof IntegerExpr)
+        if (firstFolded instanceof ConstantConvertable
+            && secondFolded instanceof ConstantConvertable)
         {
-            // Both folded children are integers, so we can 
-            // reduce this binary expression to an integer.
+            // Get the constants of the operands to the
+            // arthmetic expression.
+            final int c1 = ((ConstantConvertable) firstFolded).toConstant();
+            final int c2 = ((ConstantConvertable) secondFolded).toConstant();
+
+            // Both folded children are integers or unary operators, 
+            // so we can reduce this binary expression to an integer.
             switch (expr.token().type())
             {
-                case MINUS:
-                    final int difference = 
-                        Integer.parseInt(firstFolded.token().rawText()) -
-                        Integer.parseInt(secondFolded.token().rawText());
-                    return createIntExpr(difference);
-                case STAR:
-                    final int product = 
-                        Integer.parseInt(firstFolded.token().rawText()) * 
-                        Integer.parseInt(secondFolded.token().rawText());
-                    return createIntExpr(product);
-                case SLASH:
-                    final int divisor = 
-                        Integer.parseInt(firstFolded.token().rawText()) / 
-                        Integer.parseInt(secondFolded.token().rawText());
-                    return createIntExpr(divisor);
-                case PLUS:
-                    final int sum = 
-                        Integer.parseInt(firstFolded.token().rawText()) + 
-                        Integer.parseInt(secondFolded.token().rawText());
-                    return createIntExpr(sum);
-                default:
-                    return null;
+                case PLUS: return createIntExpr(c1 + c2);
+                case MINUS: return createIntExpr(c1 - c2);
+                case STAR: return createIntExpr(c1 * c2);
+                case SLASH: return createIntExpr(c1 / c2);
+                default: return null;
             }
         }
         else

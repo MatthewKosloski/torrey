@@ -3,7 +3,7 @@ package me.mtk.torrey.ast;
 import me.mtk.torrey.ir.TempAddress;
 import me.mtk.torrey.lexer.Token;
 
-public class IntegerExpr extends Expr
+public class IntegerExpr extends Expr implements ConstantConvertable
 {
     public IntegerExpr(Token t) { super(t); }
 
@@ -23,5 +23,10 @@ public class IntegerExpr extends Expr
     public <T> T accept(ExprIRVisitor<T> visitor, TempAddress result)
     {
         return visitor.visit(this, result);
+    }
+
+    public int toConstant()
+    {
+        return Integer.parseInt(token().rawText());
     }
 }
