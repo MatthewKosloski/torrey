@@ -2,7 +2,10 @@ package me.mtk.torrey.ast;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.lexer.*;
+
+// import me.mtk.torrey.error_reporter.SemanticError;
+import me.mtk.torrey.lexer.Token;
+import me.mtk.torrey.lexer.TokenType;
 
 /**
  * A homogeneous abstract syntax tree (AST) node type 
@@ -83,6 +86,16 @@ public abstract class ASTNode
     public ASTNode second()
     {
         return children.get(1);
+    }
+
+    /**
+     * A convenience method to retrieve the last child.
+     * 
+     * @return The last child of this node.
+     */
+    public ASTNode last()
+    {
+        return children.get(children.size() - 1);
     }
 
     /**
