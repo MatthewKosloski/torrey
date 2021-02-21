@@ -1,6 +1,5 @@
 package me.mtk.torrey.ast;
 
-import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import me.mtk.torrey.lexer.Token;
