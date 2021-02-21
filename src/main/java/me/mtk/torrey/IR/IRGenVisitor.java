@@ -3,21 +3,40 @@ package me.mtk.torrey.ir;
 import java.util.List;
 import java.util.ArrayList;
 import me.mtk.torrey.ast.ASTNode;
+import me.mtk.torrey.ast.ASTNodeIRVisitor;
 import me.mtk.torrey.ast.BinaryExpr;
 import me.mtk.torrey.ast.Expr;
-import me.mtk.torrey.ast.ExprIRVisitor;
+import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.IntegerExpr;
+import me.mtk.torrey.ast.LetBinding;
+import me.mtk.torrey.ast.LetBindings;
+import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.UnaryExpr;
 
-public final class IRGenVisitor extends IRGenerator implements 
-    ExprIRVisitor<Void>
+public final class IRGenVisitor implements ASTNodeIRVisitor<Object>
 {
+    // The current temp variable number.
+    private int tempCounter;
+
+    // The IR Program being generated.
+    private IRProgram irProgram;
+
+    // The AST from which IR instructions will
+    // be generated.
+    private Program program;
 
     public IRGenVisitor(Program program)
     {
-        super(program);
+        this.irProgram = new IRProgram();
+        this.program = program;
+    }
+
+    public IRProgram gen()
+    {
+        program.accept(this, newTemp());
+        return irProgram;
     }
 
     /**
@@ -26,15 +45,15 @@ public final class IRGenVisitor extends IRGenerator implements
      * @param Program The root AST node.
      * @return The list of generated intermediate instructions.
      */
-    public IRProgram gen()
+    public Void visit(Program program)
     {
         // For every AST node, call the appropriate
         // visit() method to generate the IR instruction
         // corresponding to that node.
         for (ASTNode child : program.children())
             ((Expr) child).accept(this, newTemp());
-    
-        return irProgram;
+
+        return null;
     }
 
     /**
@@ -163,5 +182,36 @@ public final class IRGenVisitor extends IRGenerator implements
         irProgram.addQuad(new CallInst(procName, numParams));
 
         return null;
+    }
+
+    public Void visit(LetExpr expr, TempAddress result)
+    {
+        return null;
+    }
+
+    public Void visit(LetBindings bindings, TempAddress result)
+    {
+        return null;
+    }
+
+    public Void visit(LetBinding binding, TempAddress result)
+    {
+        return null;
+    }
+
+    public Void visit(IdentifierExpr expr, TempAddress result)
+    {
+        return null;
+    }
+
+
+    /**
+     * Generates a new temp address.
+     * 
+     * @return A temporary address.
+     */
+    private TempAddress newTemp()
+    {
+        return new TempAddress(String.format("t%d", tempCounter++));
     }
 }
