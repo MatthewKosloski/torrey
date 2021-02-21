@@ -1,7 +1,5 @@
 package me.mtk.torrey.ast;
 
-import me.mtk.torrey.ir.TempAddress;
-
 /**
  * Binds an identifier to an expression in a let expression.
  */

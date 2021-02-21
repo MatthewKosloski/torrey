@@ -1,6 +1,5 @@
 package me.mtk.torrey.ast;
 
-import me.mtk.torrey.ir.TempAddress;
 import me.mtk.torrey.lexer.Token;
 
 public class IdentifierExpr extends Expr

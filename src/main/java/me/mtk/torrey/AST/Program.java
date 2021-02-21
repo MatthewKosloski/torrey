@@ -2,7 +2,6 @@ package me.mtk.torrey.ast;
 
 import java.util.List;
 import me.mtk.torrey.error_reporter.SemanticError;
-import me.mtk.torrey.ir.TempAddress;
 
 /**
  * The top-level AST node returned by the parser.

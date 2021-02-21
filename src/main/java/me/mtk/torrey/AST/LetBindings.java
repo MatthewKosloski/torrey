@@ -1,7 +1,6 @@
 package me.mtk.torrey.ast;
 
 import java.util.List;
-import me.mtk.torrey.ir.TempAddress;
 
 /**
  * Stores zero or more let bindings, where

@@ -2,9 +2,6 @@ package me.mtk.torrey.ast;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import me.mtk.torrey.ir.TempAddress;
-// import me.mtk.torrey.error_reporter.SemanticError;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.TokenType;
 
