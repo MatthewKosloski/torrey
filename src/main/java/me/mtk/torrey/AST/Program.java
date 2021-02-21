@@ -1,7 +1,6 @@
 package me.mtk.torrey.ast;
 
 import java.util.List;
-import me.mtk.torrey.error_reporter.SemanticError;
 
 /**
  * The top-level AST node returned by the parser.
@@ -18,11 +17,6 @@ public class Program extends ASTNode
 
     @Override
     public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
-
-    public <T> T accept(ProgramVisitor<T> visitor) throws SemanticError
     {
         return visitor.visit(this);
     }
