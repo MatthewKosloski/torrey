@@ -67,11 +67,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     }
 
     /**
-     * Generates one or more IR instructions for the given integer AST node.
+     * Generates one or more IR instructions for the 
+     * given integer AST node.
      * 
      * @param expr An integer AST node.
-     * @param result The address at which the value of the integer
-     * is to be stored.
+     * @param result The address at which the value of 
+     * the integer is to be stored.
      */
     public Void visit(IntegerExpr expr)
     {
@@ -84,16 +85,18 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     }
 
     /**
-     * Generates one or more IR instructions for the given unary AST node.
+     * Generates one or more IR instructions for the 
+     * given unary AST node.
      * 
      * @param expr An unary AST node.
-     * @param result The address at which the result of the unary operation
-     * is to be stored.
+     * @param result The address at which the result 
+     * of the unary operation is to be stored.
      */
     public Void visit(UnaryExpr expr)
     {
         final TempAddress result = temps.pop();
-        final UnaryOpType op = UnaryOpType.transUnaryOp(expr.token().rawText());
+        final UnaryOpType op = UnaryOpType.transUnaryOp(
+            expr.token().rawText());
         final Expr childExpr = (Expr) expr.first();
 
         // This will either be a constant or temporary.
@@ -120,16 +123,18 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     }
 
     /**
-     * Generates one or more IR instructions for the given binary AST node.
+     * Generates one or more IR instructions for the 
+     * given binary AST node.
      * 
      * @param expr An binary AST node.
-     * @param result The address at which the result of the binary operation
-     * is to be stored.
+     * @param result The address at which the result of 
+     * the binary operation is to be stored.
      */
     public Void visit(BinaryExpr expr)
     {
         final TempAddress result = temps.pop();
-        final BinaryOpType op = BinaryOpType.transBinaryOp(expr.token().rawText());
+        final BinaryOpType op = BinaryOpType.transBinaryOp(
+            expr.token().rawText());
 
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
@@ -173,7 +178,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     }
 
     /**
-     * Generates one or more IR instructions for the given print AST node.
+     * Generates one or more IR instructions for 
+     * the given print AST node.
      * 
      * @param expr A print AST node.
      */
@@ -192,8 +198,10 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             params.add(new ParamInst(paramTemp));
         }
     
-        final NameAddress procName = new NameAddress(expr.token().rawText());
-        final ConstAddress numParams = new ConstAddress(expr.children().size());
+        final NameAddress procName = new NameAddress(
+            expr.token().rawText());
+        final ConstAddress numParams = new ConstAddress(
+            expr.children().size());
 
         irProgram.addQuads(params);
         irProgram.addQuad(new CallInst(procName, numParams));
@@ -229,6 +237,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
      */
     private TempAddress newTemp()
     {
-        return new TempAddress(String.format("t%d", tempCounter++));
+        return new TempAddress(String.format("t%d", 
+            tempCounter++));
     }
 }
