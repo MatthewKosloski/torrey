@@ -21,6 +21,12 @@ public abstract class ASTNode
     // makes it much easier to build external tree visitors.
     private List<ASTNode> children;
 
+    /**
+     * Calls the appropriate visit() method on the visitor.
+     * @param <T> A data type.
+     * @param visitor A visitor.
+     * @return An object.
+     */
     public abstract <T> T accept(ASTNodeVisitor<T> visitor);
 
     /**
