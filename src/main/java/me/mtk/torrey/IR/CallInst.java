@@ -31,7 +31,7 @@ public final class CallInst extends Quadruple
      */
     public CallInst(NameAddress procName, ConstAddress numParams)
     {
-        super(new CallOperator(), procName, numParams, null);
+        this(null, procName, numParams);
     }
 
     /**
