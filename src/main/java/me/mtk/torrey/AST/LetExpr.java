@@ -30,12 +30,6 @@ public class LetExpr extends Expr
         return visitor.visit(this);
     }
 
-    @Override
-    public <T> T accept(ExprVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
-
     public void setEnv(Env e)
     {
         environment = e;

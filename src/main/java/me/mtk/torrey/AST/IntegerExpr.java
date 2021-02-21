@@ -21,12 +21,6 @@ public class IntegerExpr extends Expr implements ConstantConvertable
         return visitor.visit(this);
     }
 
-    @Override
-    public <T> T accept(ExprVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
-
     public int toConstant()
     {
         return Integer.parseInt(token().rawText());

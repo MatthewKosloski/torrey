@@ -22,8 +22,6 @@ public abstract class Expr extends ASTNode
         evalType = null; 
     }
 
-    public abstract <T> T accept(ExprVisitor<T> visitor);
-
     /**
      * Sets the type that this expression evaluates to.
      * 
