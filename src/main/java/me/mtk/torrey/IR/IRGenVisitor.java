@@ -62,7 +62,7 @@ public final class IRGenVisitor extends IRGenerator implements
      */
     public Void visit(UnaryExpr expr, TempAddress result)
     {
-        final UnaryOpType op = transUnaryOp(expr.token().rawText());
+        final UnaryOpType op = UnaryOpType.transUnaryOp(expr.token().rawText());
         final Expr childExpr = (Expr) expr.first();
 
         // This will either be a constant or temporary.
@@ -96,7 +96,7 @@ public final class IRGenVisitor extends IRGenerator implements
      */
     public Void visit(BinaryExpr expr, TempAddress result)
     {
-        final BinaryOpType op = transBinaryOp(expr.token().rawText());
+        final BinaryOpType op = BinaryOpType.transBinaryOp(expr.token().rawText());
 
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
