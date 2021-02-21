@@ -4,29 +4,29 @@ import me.mtk.torrey.analysis.DataType;
 
 public class Symbol 
 {
-    private String identifier;
-    private String uniqueId;
+    private String name;
     private DataType type;
+    private SymCategory category;
 
-    public Symbol(String identifier, String uniqueId, DataType type)
+    public Symbol(String name, DataType type, SymCategory category)
     {
-        this.identifier = identifier;
-        this.uniqueId = uniqueId;
+        this.name = name;
         this.type = type;
+        this.category = category;
     }
 
-    public String id()
+    public String name()
     {
-        return identifier;
-    }
-
-    public String uniqueId()
-    {
-        return uniqueId;
+        return name;
     }
 
     public DataType type()
     {
         return type;
-    }    
+    }
+
+    public SymCategory category()
+    {
+        return category;
+    }
 }

@@ -20,6 +20,7 @@ import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.LetBinding;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.symbols.Env;
+import me.mtk.torrey.symbols.SymCategory;
 import me.mtk.torrey.symbols.Symbol;
 
 public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
@@ -303,16 +304,15 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
     public DataType visit(LetBinding binding)
     {
-        final LetBinding letBinding = (LetBinding) binding;
-        final IdentifierExpr idExpr = (IdentifierExpr) letBinding.first();
-        final Expr boundedExpr = (Expr) letBinding.second();
+        final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
+        final Expr boundedExpr = (Expr) binding.second();
 
         // Type check the bounded expression and record it in the AST.
         boundedExpr.setEvalType(boundedExpr.accept(this));
         
         final String id = idExpr.token().rawText();
-        final Symbol sym = new Symbol(id, uniqueId(id), 
-            boundedExpr.evalType());
+        final Symbol sym = new Symbol(id, boundedExpr.evalType(),
+            SymCategory.VARIABLE);
 
         if (!top.has(id))
             top.put(id, sym);

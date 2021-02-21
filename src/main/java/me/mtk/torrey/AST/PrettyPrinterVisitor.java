@@ -150,9 +150,9 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
         final JSONObject jo = new JSONObject();
 
         jo.put("node_type", sym.getClass().getSimpleName())
-            .put("identifier", sym.id())
-            .put("uniqueId", sym.uniqueId())
-            .put("type", sym.type());
+            .put("name", sym.name())
+            .put("type", sym.type())
+            .put("category", sym.category());
         
         return jo;
     }
