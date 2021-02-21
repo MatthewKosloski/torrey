@@ -15,12 +15,11 @@ import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.UnaryExpr;
+import me.mtk.torrey.symbols.Env;
+import me.mtk.torrey.symbols.Symbol;
 
 public final class IRGenVisitor implements ASTNodeVisitor<Object>
 {
-    // The current temp variable number.
-    private int tempCounter;
-
     // The IR Program being generated.
     private IRProgram irProgram;
 
@@ -30,6 +29,9 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     // The AST from which IR instructions will
     // be generated.
     private Program program;
+
+    // The current environment.
+    private Env top;
 
     public IRGenVisitor(Program program)
     {
@@ -59,7 +61,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
         {
             // Push new temporary address onto the stack
             // to store the result of the expression.
-            temps.push(newTemp());
+            temps.push(new TempAddress());
             ((Expr) child).accept(this);
         }
 
@@ -112,7 +114,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(newTemp());
+            temps.push(new TempAddress());
             arg = temps.peek();
             childExpr.accept(this);
         }
@@ -152,7 +154,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(newTemp());
+            temps.push(new TempAddress());
             arg1 = temps.peek();
             first.accept(this);
         }
@@ -167,7 +169,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(newTemp());
+            temps.push(new TempAddress());
             arg2 = temps.peek();
             second.accept(this);
         }
@@ -192,7 +194,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())
         {
-            temps.push(newTemp());
+            temps.push(new TempAddress());
             final TempAddress paramTemp = temps.peek();
             ((Expr) child).accept(this);
             params.add(new ParamInst(paramTemp));
@@ -211,33 +213,75 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
 
     public Void visit(LetExpr expr)
     {
+        
+        if (expr.children().size() == 0)
+        {
+            // The expression has no bindings or expressions
+            // in its body (e.g., (let []) ).
+        }
+        else if (expr.children().size() == 1)
+        {
+            // The expression has one or more bindings but
+            // no expressions in its body (e.g., (let [x 42]) ).      
+        }
+        else
+        {
+            // The expression has one or more bindings and
+            // one or more expressions in its body
+            // (e.g., (let [x 42] (print x)) ).
+
+            // Cache the previous environment and activate
+            // the environment of this expression.
+            final Env prevEnv = top;
+            top = expr.environment();
+
+            // Generate IR instructions for the expressions bounded
+            // to the identifiers and populate the symbol table.
+            ((LetBindings) expr.first()).accept(this);
+
+            // Generate IR instructions for the one or more
+            // expressions in the body.
+
+            // Do work ....
+
+            // Restore the previous environment.
+            top = prevEnv;      
+        }
+
         return null;
     }
 
     public Void visit(LetBindings bindings)
     {
+        for (ASTNode n : bindings.children())
+            ((LetBinding) n).accept(this);
+
         return null;
     }
 
     public Void visit(LetBinding binding)
     {
+        // Generate IR instructions for the identifier.
+        final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
+        idExpr.accept(this);
+
+        // Generate IR instructions for the bounded expression.
+        final Expr boundedExpr = (Expr) binding.second();
+        boundedExpr.accept(this);
+
         return null;
     }
 
     public Void visit(IdentifierExpr expr)
     {
+        temps.push(new TempAddress());
+
+        // final String uniqueId = top.get(expr.token().rawText()).uniqueId();
+
+        System.out.format("Identifier: %s\n", expr.token().rawText());
+        System.out.format("Identifier value: %s\n", expr.token().rawText());
+
+        // irProgram.addQuad(new CopyInst(temps.pop(), new NameAddress(uniqueId)));
         return null;
-    }
-
-
-    /**
-     * Generates a new temp address.
-     * 
-     * @return A temporary address.
-     */
-    private TempAddress newTemp()
-    {
-        return new TempAddress(String.format("t%d", 
-            tempCounter++));
     }
 }

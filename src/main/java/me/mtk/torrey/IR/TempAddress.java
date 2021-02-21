@@ -5,8 +5,11 @@ package me.mtk.torrey.ir;
  */
 public final class TempAddress extends Address
 {
-    public TempAddress(String tempName)
+    // The number of the temporary address.
+    private static int num = 0;
+
+    public TempAddress()
     {
-        super(AddressingMode.TEMP, tempName);
+        super(AddressingMode.TEMP, String.format("t%d_", num++));
     }
 }
