@@ -25,12 +25,6 @@ public class UnaryExpr extends Expr implements ConstantConvertable
         return visitor.visit(this);
     }
 
-    @Override
-    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress result)
-    {
-        return visitor.visit(this, result);
-    }
-
     public int toConstant()
     {
         return Integer.parseInt(first().token().rawText()) * -1;

@@ -23,12 +23,6 @@ public class Program extends ASTNode
         return visitor.visit(this);
     }
 
-    @Override
-    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress addr)
-    {
-        return visitor.visit(this);
-    }
-
     public <T> T accept(ProgramVisitor<T> visitor) throws SemanticError
     {
         return visitor.visit(this);

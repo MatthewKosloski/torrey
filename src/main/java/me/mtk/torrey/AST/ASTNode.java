@@ -25,7 +25,6 @@ public abstract class ASTNode
     private List<ASTNode> children;
 
     public abstract <T> T accept(ASTNodeVisitor<T> visitor);
-    public abstract <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress addr);
 
     /**
      * Construct a new AST node from a token.

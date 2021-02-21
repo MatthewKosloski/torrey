@@ -25,12 +25,6 @@ public class LetBindings extends ASTNode
     }
 
     @Override
-    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress result)
-    {
-        return visitor.visit(this, result);
-    }
-
-    @Override
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();

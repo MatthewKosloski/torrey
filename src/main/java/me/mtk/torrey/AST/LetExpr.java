@@ -37,12 +37,6 @@ public class LetExpr extends Expr
         return visitor.visit(this);
     }
 
-    @Override
-    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress result)
-    {
-        return visitor.visit(this, result);
-    }
-
     public void setEnv(Env e)
     {
         environment = e;
