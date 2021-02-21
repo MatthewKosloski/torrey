@@ -29,7 +29,7 @@ public class IntegerExpr extends Expr implements ConstantConvertable
     }
 
     @Override
-    public <T> T accept(ExprIRVisitor<T> visitor, TempAddress result)
+    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress result)
     {
         return visitor.visit(this, result);
     }

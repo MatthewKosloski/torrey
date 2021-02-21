@@ -3,6 +3,7 @@ package me.mtk.torrey.ast;
 import java.util.List;
 import java.util.ArrayList;
 
+import me.mtk.torrey.ir.TempAddress;
 // import me.mtk.torrey.error_reporter.SemanticError;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.TokenType;
@@ -24,6 +25,7 @@ public abstract class ASTNode
     private List<ASTNode> children;
 
     public abstract <T> T accept(ASTNodeVisitor<T> visitor);
+    public abstract <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress addr);
 
     /**
      * Construct a new AST node from a token.

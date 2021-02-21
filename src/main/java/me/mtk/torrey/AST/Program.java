@@ -2,6 +2,7 @@ package me.mtk.torrey.ast;
 
 import java.util.List;
 import me.mtk.torrey.error_reporter.SemanticError;
+import me.mtk.torrey.ir.TempAddress;
 
 /**
  * The top-level AST node returned by the parser.
@@ -18,6 +19,12 @@ public class Program extends ASTNode
 
     @Override
     public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress addr)
     {
         return visitor.visit(this);
     }

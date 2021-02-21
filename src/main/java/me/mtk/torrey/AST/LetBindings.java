@@ -1,6 +1,7 @@
 package me.mtk.torrey.ast;
 
 import java.util.List;
+import me.mtk.torrey.ir.TempAddress;
 
 /**
  * Stores zero or more let bindings, where
@@ -21,6 +22,12 @@ public class LetBindings extends ASTNode
     public <T> T accept(ASTNodeVisitor<T> visitor)
     {
         return visitor.visit(this);
+    }
+
+    @Override
+    public <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress result)
+    {
+        return visitor.visit(this, result);
     }
 
     @Override

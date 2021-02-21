@@ -24,7 +24,7 @@ public abstract class Expr extends ASTNode
     }
 
     public abstract <T> T accept(ExprVisitor<T> visitor);
-    public abstract <T> T accept(ExprIRVisitor<T> visitor, TempAddress result);
+    public abstract <T> T accept(ASTNodeIRVisitor<T> visitor, TempAddress result);
 
     /**
      * Sets the type that this expression evaluates to.
