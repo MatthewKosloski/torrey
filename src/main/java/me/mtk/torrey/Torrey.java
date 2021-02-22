@@ -235,7 +235,11 @@ public class Torrey
                 System.exit(0);
             }
 
-            // Semantic analysis (type checking)
+            // Semantic analysis
+
+            // Type checks operands to expressions, decorates
+            // the AST with type information, and creates 
+            // environments for let expressions.
             final TypeChecker typeChecker = new TypeChecker(
                 new ErrorReporter(input), program);
             typeChecker.check();
