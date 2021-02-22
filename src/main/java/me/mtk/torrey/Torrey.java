@@ -267,8 +267,8 @@ public class Torrey
             }
 
             // Intermediate code generation
-            final IRGenVisitor irGen = new IRGenVisitor(program);
-            final IRProgram irProgram = irGen.gen();
+            final IRGenVisitor irVisitor = new IRGenVisitor(program);
+            final IRProgram irProgram = irVisitor.gen();
 
             if (debug)
             {
