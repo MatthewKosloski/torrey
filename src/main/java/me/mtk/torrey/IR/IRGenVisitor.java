@@ -16,7 +16,6 @@ import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.symbols.Env;
-import me.mtk.torrey.symbols.Symbol;
 
 public final class IRGenVisitor implements ASTNodeVisitor<Object>
 {
@@ -109,6 +108,10 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // so rather than generating a temp address,
             // just generate a constant address.
             arg = new ConstAddress(childExpr.token().rawText());
+        else if (childExpr instanceof IdentifierExpr)
+            // Get the temp address of the argument from
+            // the symbol table.
+            arg = top.get(childExpr.token().rawText()).address();
         else
         {
             // The argument is a more complex sub-expression,
@@ -149,6 +152,10 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // so rather than generating a temp address,
             // just generate a constant address.
             arg1 = new ConstAddress(first.token().rawText());
+        else if (first instanceof IdentifierExpr)
+            // Get the temp address of the argument from
+            // the symbol table.
+            arg1 = top.get(first.token().rawText()).address();
         else
         {
             // The argument is a more complex sub-expression,
@@ -164,6 +171,10 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // so rather than generating a temp address,
             // just generate a constant address.
             arg2 = new ConstAddress(second.token().rawText());
+        else if (second instanceof IdentifierExpr)
+            // Get the temp address of the argument from
+            // the symbol table.
+            arg2 = top.get(second.token().rawText()).address();
         else
         {
             // The argument is a more complex sub-expression,
@@ -213,40 +224,30 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
 
     public Void visit(LetExpr expr)
     {
-        
-        if (expr.children().size() == 0)
+        // Cache the previous environment and activate
+        // the environment of this expression.
+        final Env prevEnv = top;
+        top = expr.environment();
+
+        // Generate IR instructions for the expressions bounded
+        // to the identifiers and populate the symbol table.
+        ((LetBindings) expr.first()).accept(this);
+
+        if (expr.children().size() > 1)
         {
-            // The expression has no bindings or expressions
-            // in its body (e.g., (let []) ).
+            // The expression has one or more expressions
+            // in its body, so generate IR instructions
+            // for these expressions.
+
+            for (int i = 1; i < expr.children().size(); i++)
+            {
+                temps.push(new TempAddress());
+                ((Expr) expr.children().get(i)).accept(this);
+            }
         }
-        else if (expr.children().size() == 1)
-        {
-            // The expression has one or more bindings but
-            // no expressions in its body (e.g., (let [x 42]) ).      
-        }
-        else
-        {
-            // The expression has one or more bindings and
-            // one or more expressions in its body
-            // (e.g., (let [x 42] (print x)) ).
 
-            // Cache the previous environment and activate
-            // the environment of this expression.
-            final Env prevEnv = top;
-            top = expr.environment();
-
-            // Generate IR instructions for the expressions bounded
-            // to the identifiers and populate the symbol table.
-            ((LetBindings) expr.first()).accept(this);
-
-            // Generate IR instructions for the one or more
-            // expressions in the body.
-
-            // Do work ....
-
-            // Restore the previous environment.
-            top = prevEnv;      
-        }
+        // Restore the previous environment.
+        top = prevEnv;      
 
         return null;
     }
@@ -254,34 +255,51 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     public Void visit(LetBindings bindings)
     {
         for (ASTNode n : bindings.children())
+        {
+            temps.push(new TempAddress());
             ((LetBinding) n).accept(this);
+        }
 
         return null;
     }
 
     public Void visit(LetBinding binding)
     {
-        // Generate IR instructions for the identifier.
+        final TempAddress result = temps.pop();
         final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
-        idExpr.accept(this);
+        final Expr expr = (Expr) binding.second();
+        final String id = idExpr.token().rawText();
 
-        // Generate IR instructions for the bounded expression.
-        final Expr boundedExpr = (Expr) binding.second();
-        boundedExpr.accept(this);
+        // An address to store the result of expr.
+        Address rhs;
+
+        if (expr instanceof IntegerExpr)
+            // The argument is an integer,
+            // so rather than generating a temp address,
+            // just generate a constant address.
+            rhs = new ConstAddress(expr.token().rawText());
+        else
+        {
+            // The argument is a more complex sub-expression,
+            // so generate a temp to store the result of
+            // the complex sub-expression.
+            temps.push(new TempAddress());
+            rhs = temps.peek();
+
+            // Generate IR instructions for the bounded expression.
+            expr.accept(this);
+        }
+
+        // Store the temp address in the symbol table.
+        top.get(id).setAddress((TempAddress) result);
+
+        irProgram.addQuad(new CopyInst(result, rhs));
 
         return null;
     }
 
     public Void visit(IdentifierExpr expr)
     {
-        temps.push(new TempAddress());
-
-        // final String uniqueId = top.get(expr.token().rawText()).uniqueId();
-
-        System.out.format("Identifier: %s\n", expr.token().rawText());
-        System.out.format("Identifier value: %s\n", expr.token().rawText());
-
-        // irProgram.addQuad(new CopyInst(temps.pop(), new NameAddress(uniqueId)));
         return null;
     }
 }
