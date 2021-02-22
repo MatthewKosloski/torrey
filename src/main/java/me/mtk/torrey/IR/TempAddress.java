@@ -10,6 +10,6 @@ public final class TempAddress extends Address
 
     public TempAddress()
     {
-        super(AddressingMode.TEMP, String.format("t%d_", num++));
+        super(AddressingMode.TEMP, String.format("t%d", num++));
     }
 }
