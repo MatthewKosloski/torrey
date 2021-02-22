@@ -32,10 +32,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     // The current environment.
     private Env top;
 
-    // Maps an identifier to the number of occurrences
-    // of the identifier in the entire program.
-    private Map<String, Integer> occurrences;
-
     /**
      * Constructs a new TypeCheckerVisitor that walks an
      * AST starting at the Program node checking for type
@@ -48,7 +44,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
         this.reporter = reporter;
         top = new Env(null);
-        occurrences = new HashMap<>();
     }
 
     /**
@@ -326,19 +321,4 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // data type as it's not an expression.
         return DataType.UNDEFINED;
     }
-
-    private String uniqueId(String id)
-    {
-        // The number of occurrences of the 
-        // identifier in the entire program.
-        final Integer numOccurrences = occurrences.get(id);
-
-        if (numOccurrences != null)
-            occurrences.put(id, numOccurrences + 1);
-        else
-            occurrences.put(id, 1);
-
-        return String.format("%s%d", id, occurrences.get(id));
-    }
-
 }
