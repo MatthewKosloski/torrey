@@ -217,12 +217,11 @@ public class Torrey
             final Grammar grammar = new Grammar(
                     new ErrorReporter(input), tokens.tokens());
             final Program program = grammar.parse();
+            final PrettyPrinterVisitor ppVisitor = new PrettyPrinterVisitor();
 
             if (debug)
             {
                 stdout("DEBUG: AST (output from Grammar):");
-                final PrettyPrinterVisitor ppVisitor = 
-                    new PrettyPrinterVisitor();
                 stdout(ppVisitor.visit(program));
                 stdout("");
             }
