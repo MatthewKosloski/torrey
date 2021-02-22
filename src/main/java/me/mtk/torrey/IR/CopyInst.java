@@ -20,11 +20,6 @@ public final class CopyInst extends Quadruple
         super(new CopyOperator(), rhs, null, lhs);
     }
 
-    public CopyInst(NameAddress lhs, Address rhs)
-    {
-        super(new CopyOperator(), rhs, null, lhs);
-    }
-
     public String toString()
     {
         return String.format("%s %s %s", result, op.opText(), arg1);
