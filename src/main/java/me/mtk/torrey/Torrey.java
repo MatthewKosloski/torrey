@@ -244,6 +244,13 @@ public class Torrey
                 new ErrorReporter(input), program);
             typeChecker.check();
 
+            if (debug)
+            {
+                stdout("DEBUG: AST (output from TypeChecker):");
+                stdout(ppVisitor.visit(program));
+                stdout("");
+            }
+
             // High-level optimizations (on AST)
             if (!disableHlOpts)
             {
