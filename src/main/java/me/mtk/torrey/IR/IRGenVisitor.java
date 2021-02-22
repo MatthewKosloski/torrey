@@ -205,9 +205,23 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())
         {
-            temps.push(new TempAddress());
-            final TempAddress paramTemp = temps.peek();
-            ((Expr) child).accept(this);
+            TempAddress paramTemp;
+
+            if (child instanceof IdentifierExpr)
+            {
+                // Get the temp address of the argument from
+                // the symbol table.
+                paramTemp = top.get(child.token().rawText()).address();
+            }
+            else 
+            {
+                // The argument is a more complex sub-expression,
+                // so generate a temp to store the result of
+                // the complex sub-expression.
+                temps.push(new TempAddress());
+                paramTemp = temps.peek();
+            }
+            child.accept(this);
             params.add(new ParamInst(paramTemp));
         }
     
