@@ -262,8 +262,6 @@ public class Torrey
             if (debug && !disableHlOpts)
             {
                 stdout("DEBUG: Optimized AST (output from ConstantFolderVisitor):");
-                final PrettyPrinterVisitor ppVisitor = 
-                    new PrettyPrinterVisitor();
                 stdout(ppVisitor.visit(program));
                 stdout("");
             }
