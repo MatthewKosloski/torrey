@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
 import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SemanticError;
 import me.mtk.torrey.error_reporter.SyntaxError;
