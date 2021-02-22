@@ -12,7 +12,7 @@ public final class ParamInst extends Quadruple
      */
     public ParamInst(Address addr)
     {
-        super(new ParamOperator(), addr, null, null);
+        super(new ParamOperator(), addr);
     }
 
     /**
