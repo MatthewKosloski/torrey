@@ -1,7 +1,5 @@
 package me.mtk.torrey.analysis;
 
-import java.util.Map;
-import java.util.HashMap;
 import me.mtk.torrey.error_reporter.ErrorMessages;
 import me.mtk.torrey.error_reporter.ErrorReporter;
 import me.mtk.torrey.error_reporter.SemanticError;
