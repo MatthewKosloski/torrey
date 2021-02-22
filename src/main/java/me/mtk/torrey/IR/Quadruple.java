@@ -16,7 +16,7 @@ public abstract class Quadruple
     
     // The address at which the result of the instruction 
     // is to be stored.
-    protected TempAddress result;
+    protected Address result;
     
     /**
      * Instantiates a new quadruple to hold the properties
@@ -35,6 +35,22 @@ public abstract class Quadruple
         this.arg2 = arg2;
         this.result = result;
     }
+    
+    public Quadruple(Operator op, Address arg1, Address arg2, NameAddress result)
+    {
+        this.op = op;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+        this.result = result;
+    }
+
+    public Quadruple(Operator op, Address arg)
+    {
+        this.op = op;
+        this.arg1 = arg;
+        this.arg2 = null;
+        this.result = null;
+    }
 
     public Operator op()
     {
@@ -51,7 +67,7 @@ public abstract class Quadruple
         return arg2;
     }
 
-    public TempAddress result()
+    public Address result()
     {
         return result;
     }
