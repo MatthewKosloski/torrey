@@ -227,7 +227,7 @@ public final class X86Generator
             // sign-extend %rax into %rdx. The former contains
             // the low 64 bits of dividend, the latter contains
             // the high 64 bits.
-            x86.addInst(new X86Inst("cqo", null, null));
+            x86.addInst(new Cqo());
 
             // divide %rdx:%rax by divisor, leaving result in %rax.
             x86.addInst(new X86Inst("idivq", dest, null));
