@@ -110,8 +110,7 @@ public final class X86Generator
                 // Both arguments are stack locations,
                 // so move arg1 to register %r10 before
                 // performing the instruction.
-                x86.instrs().add(i, new X86Inst("movq", 
-                    inst.arg1(), new Register("%r10")));
+                x86.instrs().add(i, new Movq(inst.arg1(), new Register("%r10")));
 
                 // Update the arg1 of this instruction to
                 // be %r10
@@ -138,7 +137,7 @@ public final class X86Generator
             throw new Error("X86Generator.gen(CopyInst):"
                 + " Unhandled Address.");
 
-        x86.addInst(new X86Inst("movq", src, dest));
+        x86.addInst(new Movq(src, dest));
     }
 
     private void gen(UnaryInst inst)
@@ -157,7 +156,7 @@ public final class X86Generator
             throw new Error("X86Generator.gen(UnaryInst):"
                 + " Unhandled Address.");
 
-        x86.addInst(new X86Inst("movq", src, dest));
+        x86.addInst(new Movq(src, dest));
         x86.addInst(new X86Inst("negq", dest, null));
 
         // TODO: The x86 instruction corresponding to the IR instruction
@@ -194,7 +193,7 @@ public final class X86Generator
         if (op == "+" || op == "-")
         {
             // Store first argument in temp
-            x86.addInst(new X86Inst("movq", arg1, dest));
+            x86.addInst(new Movq(arg1, dest));
 
             final String opcode = op == "+" ? "addq" : "subq";
 
@@ -205,25 +204,25 @@ public final class X86Generator
         else if (op == "*")
         {
             // move first argument to rax register
-            x86.addInst(new X86Inst("movq", arg1, new Register("%rax")));
+            x86.addInst(new Movq(arg1, new Register("%rax")));
 
             // move second argument to rbx register
-            x86.addInst(new X86Inst("movq", arg2, new Register("%rbx")));
+            x86.addInst(new Movq(arg2, new Register("%rbx")));
 
             // multiply te contents of %rax by arg2, placing the low
             // 64 bits of the product in %rax.
             x86.addInst(new X86Inst("imulq", new Register("%rbx"), null));
 
             // move the product, which is in %rax, to a temp location.
-            x86.addInst(new X86Inst("movq", new Register("%rax"), dest));
+            x86.addInst(new Movq(new Register("%rax"), dest));
         }
         else if (op == "/")
         {
             // move dividend to rax register
-            x86.addInst(new X86Inst("movq", arg1, new Register("%rax")));
+            x86.addInst(new Movq(arg1, new Register("%rax")));
 
             // move divisor to temp destination
-            x86.addInst(new X86Inst("movq", arg2, dest));
+            x86.addInst(new Movq(arg2, dest));
 
             // sign-extend %rax into %rdx. The former contains
             // the low 64 bits of dividend, the latter contains
@@ -234,7 +233,7 @@ public final class X86Generator
             x86.addInst(new X86Inst("idivq", dest, null));
 
             // Move contents of %rax to destination.
-            x86.addInst(new X86Inst("movq", new Register("%rax"), dest));
+            x86.addInst(new Movq(new Register("%rax"), dest));
         }
         else 
             throw new Error("X86Generator.gen(BinaryInst):"
@@ -256,8 +255,7 @@ public final class X86Generator
             for (int i = 0; i < numParams; i++)
             {
                 String param = params.remove();
-                x86.addInst(new X86Inst(
-                    "movq",
+                x86.addInst(new Movq(
                     new Temporary(param),
                     new Register("%rdi")));
                 x86.addInst(new X86Inst(
