@@ -1,7 +1,6 @@
 package me.mtk.torrey.ir;
 
 import java.util.List;
-import java.util.Stack;
 import java.util.ArrayList;
 import me.mtk.torrey.ast.ASTNode;
 import me.mtk.torrey.ast.ASTNodeVisitor;
@@ -17,13 +16,10 @@ import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.symbols.Env;
 
-public final class IRGenVisitor implements ASTNodeVisitor<Object>
+public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
 {
     // The IR Program being generated.
     private IRProgram irProgram;
-
-    // Holds the temporary address to be used.
-    private Stack<TempAddress> temps;
 
     // The AST from which IR instructions will
     // be generated.
@@ -35,7 +31,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
     public IRGenVisitor(Program program)
     {
         this.irProgram = new IRProgram();
-        this.temps = new Stack<>();
         this.program = program;
     }
 
@@ -51,18 +46,13 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
      * @param Program The root AST node.
      * @return The list of generated intermediate instructions.
      */
-    public Void visit(Program program)
+    public TempAddress visit(Program program)
     {
         // For every AST node, call the appropriate
         // visit() method to generate the IR instruction
         // corresponding to that node.
         for (ASTNode child : program.children())
-        {
-            // Push new temporary address onto the stack
-            // to store the result of the expression.
-            temps.push(new TempAddress());
             ((Expr) child).accept(this);
-        }
 
         return null;
     }
@@ -75,14 +65,13 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
      * @param result The address at which the value of 
      * the integer is to be stored.
      */
-    public Void visit(IntegerExpr expr)
+    public TempAddress visit(IntegerExpr expr)
     {
-        final TempAddress result = temps.pop();
+        final TempAddress result = new TempAddress();
         final ConstAddress constant = new ConstAddress(
             Integer.parseInt(expr.token().rawText()));
         irProgram.addQuad(new CopyInst(result, constant));
-
-        return null;
+        return result;
     }
 
     /**
@@ -93,9 +82,9 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
      * @param result The address at which the result 
      * of the unary operation is to be stored.
      */
-    public Void visit(UnaryExpr expr)
+    public TempAddress visit(UnaryExpr expr)
     {
-        final TempAddress result = temps.pop();
+        final TempAddress result = new TempAddress();
         final UnaryOpType op = UnaryOpType.transUnaryOp(
             expr.token().rawText());
         final Expr childExpr = (Expr) expr.first();
@@ -117,14 +106,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(new TempAddress());
-            arg = temps.peek();
-            childExpr.accept(this);
+            arg = childExpr.accept(this);
         }
 
         irProgram.addQuad(new UnaryInst(op, arg, result));
 
-        return null;
+        return result;
     }
 
     /**
@@ -135,9 +122,9 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
      * @param result The address at which the result of 
      * the binary operation is to be stored.
      */
-    public Void visit(BinaryExpr expr)
+    public TempAddress visit(BinaryExpr expr)
     {
-        final TempAddress result = temps.pop();
+        final TempAddress result = new TempAddress();
         final BinaryOpType op = BinaryOpType.transBinaryOp(
             expr.token().rawText());
 
@@ -161,9 +148,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(new TempAddress());
-            arg1 = temps.peek();
-            first.accept(this);
+            arg1 = first.accept(this);
         }
 
         if (second instanceof IntegerExpr)
@@ -180,14 +165,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(new TempAddress());
-            arg2 = temps.peek();
-            second.accept(this);
+            arg2 = second.accept(this);
         }
 
         irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
 
-        return null;
+        return result;
     }
 
     /**
@@ -196,7 +179,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
      * 
      * @param expr A print AST node.
      */
-    public Void visit(PrintExpr expr)
+    public TempAddress visit(PrintExpr expr)
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
@@ -208,20 +191,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             TempAddress paramTemp;
 
             if (child instanceof IdentifierExpr)
-            {
                 // Get the temp address of the argument from
                 // the symbol table.
                 paramTemp = top.get(child.token().rawText()).address();
-            }
-            else 
-            {
-                // The argument is a more complex sub-expression,
-                // so generate a temp to store the result of
-                // the complex sub-expression.
-                temps.push(new TempAddress());
-                paramTemp = temps.peek();
-            }
-            child.accept(this);
+            else
+                paramTemp = child.accept(this);
+
             params.add(new ParamInst(paramTemp));
         }
     
@@ -236,7 +211,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
         return null;
     }
 
-    public Void visit(LetExpr expr)
+    public TempAddress visit(LetExpr expr)
     {
         // Cache the previous environment and activate
         // the environment of this expression.
@@ -255,8 +230,11 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
 
             for (int i = 1; i < expr.children().size(); i++)
             {
-                temps.push(new TempAddress());
-                ((Expr) expr.children().get(i)).accept(this);
+                final Expr child = (Expr) expr.children().get(i);
+                final TempAddress addr = child.accept(this);
+                
+                if (i == expr.children().size() - 1) 
+                    return addr;
             }
         }
 
@@ -266,26 +244,22 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
         return null;
     }
 
-    public Void visit(LetBindings bindings)
+    public TempAddress visit(LetBindings bindings)
     {
         for (ASTNode n : bindings.children())
-        {
-            temps.push(new TempAddress());
             ((LetBinding) n).accept(this);
-        }
-
         return null;
     }
 
-    public Void visit(LetBinding binding)
+    public TempAddress visit(LetBinding binding)
     {
-        final TempAddress result = temps.pop();
+        final TempAddress result = new TempAddress();
         final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
         final Expr expr = (Expr) binding.second();
         final String id = idExpr.token().rawText();
 
         // An address to store the result of expr.
-        Address rhs;
+        Address rhs = null;
 
         if (expr instanceof IntegerExpr)
             // The argument is an integer,
@@ -297,22 +271,20 @@ public final class IRGenVisitor implements ASTNodeVisitor<Object>
             // The argument is a more complex sub-expression,
             // so generate a temp to store the result of
             // the complex sub-expression.
-            temps.push(new TempAddress());
-            rhs = temps.peek();
 
             // Generate IR instructions for the bounded expression.
-            expr.accept(this);
+            rhs = expr.accept(this);
         }
 
         // Store the temp address in the symbol table.
-        top.get(id).setAddress((TempAddress) result);
+        top.get(id).setAddress(result);
 
         irProgram.addQuad(new CopyInst(result, rhs));
 
         return null;
     }
 
-    public Void visit(IdentifierExpr expr)
+    public TempAddress visit(IdentifierExpr expr)
     {
         return null;
     }
