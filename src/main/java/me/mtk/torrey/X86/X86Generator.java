@@ -209,9 +209,9 @@ public final class X86Generator
             // move second argument to rbx register
             x86.addInst(new Movq(arg2, new Register("%rbx")));
 
-            // multiply te contents of %rax by arg2, placing the low
+            // multiply the contents of %rax by arg2, placing the low
             // 64 bits of the product in %rax.
-            x86.addInst(new X86Inst("imulq", new Register("%rbx"), null));
+            x86.addInst(new Imulq(new Register("%rbx")));
 
             // move the product, which is in %rax, to a temp location.
             x86.addInst(new Movq(new Register("%rax"), dest));
@@ -230,7 +230,7 @@ public final class X86Generator
             x86.addInst(new Cqo());
 
             // divide %rdx:%rax by divisor, leaving result in %rax.
-            x86.addInst(new X86Inst("idivq", dest, null));
+            x86.addInst(new Idivq(dest));
 
             // Move contents of %rax to destination.
             x86.addInst(new Movq(new Register("%rax"), dest));
