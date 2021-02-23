@@ -16,6 +16,12 @@ import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.symbols.Env;
 
+/**
+ * Converts the given abstract syntax tree to a more low-level,
+ * linear intermediate representation, or IR. This IR is a type
+ * of three-address code represented as a collection of quadruples
+ * of the form (operator, argument1, argument2, result).
+ */
 public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
 {
     // The IR Program being generated.
@@ -28,12 +34,26 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     // The current environment.
     private Env top;
 
+    /**
+     * Instantiates a new IRGenVisitor with an abstract
+     * syntax tree to be converted to an IR program.
+     * 
+     * @param program The AST from which IR instructions
+     * will be generated.
+     */
     public IRGenVisitor(Program program)
     {
         this.irProgram = new IRProgram();
         this.program = program;
     }
 
+    /**
+     * Generate the IR instructions, returning the 
+     * resulting IR program.
+     * 
+     * @return A intermediate program composed of a 
+     * linear sequence of quadruples.
+     */
     public IRProgram gen()
     {
         program.accept(this);
@@ -41,10 +61,11 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     }
 
     /**
-     * Traverses the given AST, generating intermediate code.
+     * Generates IR instructions for every expression
+     * in the given program.
      * 
      * @param Program The root AST node.
-     * @return The list of generated intermediate instructions.
+     * @return null.
      */
     public TempAddress visit(Program program)
     {
@@ -62,8 +83,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * given integer AST node.
      * 
      * @param expr An integer AST node.
-     * @param result The address at which the value of 
-     * the integer is to be stored.
+     * @return The destination address of the 
+     * result of the given AST node.
      */
     public TempAddress visit(IntegerExpr expr)
     {
@@ -79,8 +100,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * given unary AST node.
      * 
      * @param expr An unary AST node.
-     * @param result The address at which the result 
-     * of the unary operation is to be stored.
+     * @return The destination address of the 
+     * result of the given AST node.
      */
     public TempAddress visit(UnaryExpr expr)
     {
@@ -99,9 +120,9 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * Generates one or more IR instructions for the 
      * given binary AST node.
      * 
-     * @param expr An binary AST node.
-     * @param result The address at which the result of 
-     * the binary operation is to be stored.
+     * @param expr A binary AST node.
+     * @return The destination address of the 
+     * result of the given AST node.
      */
     public TempAddress visit(BinaryExpr expr)
     {
@@ -118,10 +139,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     }
 
     /**
-     * Generates one or more IR instructions for 
-     * the given print AST node.
+     * Generates one or more IR instructions for the 
+     * given print expression.
      * 
-     * @param expr A print AST node.
+     * @param expr An print expression.
+     * @return The destination address of the 
+     * result of the given print expression.
      */
     public TempAddress visit(PrintExpr expr)
     {
@@ -147,6 +170,16 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         return null;
     }
 
+    /**
+     * Generates one or more IR instructions for the 
+     * given let expression.
+     * 
+     * @param expr A let expression.
+     * @return If the let expression has one or more
+     * expressions in its body, then the destination address 
+     * of the last expression of the body is returned; null
+     * otherwise.
+     */
     public TempAddress visit(LetExpr expr)
     {
         // Cache the previous environment and activate
@@ -169,7 +202,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
                 final Expr child = (Expr) expr.children().get(i);
                 final TempAddress addr = child.accept(this);
                 
-                // Return the destination address of the expression.
+                // Return the destination address of the last
+                // expression of the body.
                 if (i == expr.children().size() - 1) 
                     return addr;
             }
@@ -181,6 +215,13 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         return null;
     }
 
+    /**
+     * Generates IR instructions for each LetBinding
+     * AST node within the given LetBindings node.
+     * 
+     * @param bindings A LetBindings AST node.
+     * @return null.
+     */
     public TempAddress visit(LetBindings bindings)
     {
         for (ASTNode n : bindings.children())
@@ -188,6 +229,15 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         return null;
     }
 
+     /**
+     * Generates IR instructions for the bounded
+     * expression and stores its source address in
+     * the Symbol pointed to by the identifier
+     * to which the expression is bound.
+     * 
+     * @param bindings A LetBinding AST node.
+     * @return null.
+     */
     public TempAddress visit(LetBinding binding)
     {
         final TempAddress result = new TempAddress();
@@ -206,6 +256,15 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         return null;
     }
 
+    /**
+     * Traverses the lexical-scope chain, looking
+     * for the destination address of the expression
+     * bound to the given identifier.
+     * 
+     * @param expr An identifier expression.
+     * @return The destination address of the expression
+     * bound to the given identifier. 
+     */
     public TempAddress visit(IdentifierExpr expr)
     {
         return top.get(expr.token().rawText()).address();
