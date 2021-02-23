@@ -157,7 +157,7 @@ public final class X86Generator
                 + " Unhandled Address.");
 
         x86.addInst(new Movq(src, dest));
-        x86.addInst(new X86Inst("negq", dest, null));
+        x86.addInst(new Negq(dest));
 
         // TODO: The x86 instruction corresponding to the IR instruction
         // `x = - y` is `negq y`, and thus the new destination is y. We
