@@ -87,23 +87,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         final TempAddress result = new TempAddress();
         final UnaryOpType op = UnaryOpType.transUnaryOp(
             expr.token().rawText());
-        final Expr childExpr = (Expr) expr.first();
 
-        // This will either be a constant or temporary.
-        Address arg;
-
-        if (childExpr instanceof IntegerExpr)
-            // The argument is an integer,
-            // so rather than generating a temp address,
-            // just generate a constant address.
-            arg = new ConstAddress(childExpr.token().rawText());
-        else
-        {
-            // The argument is a more complex sub-expression,
-            // so generate a temp to store the result of
-            // the complex sub-expression.
-            arg = childExpr.accept(this);
-        }
+        final Address arg = getDestinationAddr(expr.first());
 
         irProgram.addQuad(new UnaryInst(op, arg, result));
 
@@ -123,38 +108,9 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         final TempAddress result = new TempAddress();
         final BinaryOpType op = BinaryOpType.transBinaryOp(
             expr.token().rawText());
-
-        final Expr first = (Expr) expr.first();
-        final Expr second = (Expr) expr.second();
         
-        // These will either be a constant or temporary.
-        Address arg1, arg2;
-
-        if (first instanceof IntegerExpr)
-            // The argument is an integer,
-            // so rather than generating a temp address,
-            // just generate a constant address.
-            arg1 = new ConstAddress(first.token().rawText());
-        else
-        {
-            // The argument is a more complex sub-expression,
-            // so generate a temp to store the result of
-            // the complex sub-expression.
-            arg1 = first.accept(this);
-        }
-
-        if (second instanceof IntegerExpr)
-            // The argument is an integer,
-            // so rather than generating a temp address,
-            // just generate a constant address.
-            arg2 = new ConstAddress(second.token().rawText());
-        else
-        {
-            // The argument is a more complex sub-expression,
-            // so generate a temp to store the result of
-            // the complex sub-expression.
-            arg2 = second.accept(this);
-        }
+        final Address arg1 = getDestinationAddr(expr.first());
+        final Address arg2 = getDestinationAddr(expr.second());
 
         irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
 
@@ -213,6 +169,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
                 final Expr child = (Expr) expr.children().get(i);
                 final TempAddress addr = child.accept(this);
                 
+                // Return the destination address of the expression.
                 if (i == expr.children().size() - 1) 
                     return addr;
             }
@@ -234,29 +191,14 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     public TempAddress visit(LetBinding binding)
     {
         final TempAddress result = new TempAddress();
-        final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
-        final Expr expr = (Expr) binding.second();
-        final String id = idExpr.token().rawText();
+        final String id = binding.first().token().rawText();
 
-        // An address to store the result of expr.
-        Address rhs = null;
+        // The source of the copy instruction is the
+        // destination of the bounded expression.
+        final Address rhs = getDestinationAddr(binding.second());
 
-        if (expr instanceof IntegerExpr)
-            // The argument is an integer,
-            // so rather than generating a temp address,
-            // just generate a constant address.
-            rhs = new ConstAddress(expr.token().rawText());
-        else
-        {
-            // The argument is a more complex sub-expression,
-            // so generate a temp to store the result of
-            // the complex sub-expression.
-
-            // Generate IR instructions for the bounded expression.
-            rhs = expr.accept(this);
-        }
-
-        // Store the temp address in the symbol table.
+        // Store the source address of the bounded expression
+        // in the symbol table.
         top.get(id).setAddress(result);
 
         irProgram.addQuad(new CopyInst(result, rhs));
@@ -267,5 +209,37 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     public TempAddress visit(IdentifierExpr expr)
     {
         return top.get(expr.token().rawText()).address();
+    }
+
+    /*
+     * Returns the destination address of the 
+     * result of the given expression.
+     * 
+     * @param expr An expression.
+     * @return Either a constant address, if the 
+     * expression is an integer, or a temporary address.
+     */
+    private Address getDestinationAddr(Expr expr)
+    {
+        Address addr = null;
+        if (expr instanceof IntegerExpr)
+            addr = new ConstAddress(expr.token().rawText());
+        else
+            addr = expr.accept(this);
+        return addr;
+    }
+
+    /*
+     * Returns the destination address of the 
+     * result of the given AST node (presumably
+     * an expression).
+     * 
+     * @param n An AST node.
+     * @return Either a constant address, if the 
+     * expression is an integer, or a temporary address.
+     */
+    private Address getDestinationAddr(ASTNode n)
+    {
+        return getDestinationAddr((Expr) n);
     }
 }
