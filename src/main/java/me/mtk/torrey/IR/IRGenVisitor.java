@@ -286,6 +286,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
 
     public TempAddress visit(IdentifierExpr expr)
     {
-        return null;
+        return top.get(expr.token().rawText()).address();
     }
 }
