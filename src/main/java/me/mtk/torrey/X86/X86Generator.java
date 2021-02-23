@@ -255,20 +255,10 @@ public final class X86Generator
             for (int i = 0; i < numParams; i++)
             {
                 String param = params.remove();
-                x86.addInst(new Movq(
-                    new Temporary(param),
-                    new Register("%rdi")));
-                x86.addInst(new X86Inst(
-                    "call",
-                    new Global("print_int"), 
-                    null));
+                x86.addInst(new Movq(new Temporary(param), new Register("%rdi")));
+                x86.addInst(new Callq(new Global("print_int")));
                 if (procName.equals("println"))
-                {
-                    x86.addInst(new X86Inst(
-                        "call",
-                        new Global("print_nl"), 
-                        null));
-                }
+                    x86.addInst(new Callq(new Global("print_nl")));
             }
         }
     }
