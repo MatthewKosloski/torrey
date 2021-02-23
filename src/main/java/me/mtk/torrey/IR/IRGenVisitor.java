@@ -97,10 +97,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
             // so rather than generating a temp address,
             // just generate a constant address.
             arg = new ConstAddress(childExpr.token().rawText());
-        else if (childExpr instanceof IdentifierExpr)
-            // Get the temp address of the argument from
-            // the symbol table.
-            arg = top.get(childExpr.token().rawText()).address();
         else
         {
             // The argument is a more complex sub-expression,
@@ -139,10 +135,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
             // so rather than generating a temp address,
             // just generate a constant address.
             arg1 = new ConstAddress(first.token().rawText());
-        else if (first instanceof IdentifierExpr)
-            // Get the temp address of the argument from
-            // the symbol table.
-            arg1 = top.get(first.token().rawText()).address();
         else
         {
             // The argument is a more complex sub-expression,
@@ -156,10 +148,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
             // so rather than generating a temp address,
             // just generate a constant address.
             arg2 = new ConstAddress(second.token().rawText());
-        else if (second instanceof IdentifierExpr)
-            // Get the temp address of the argument from
-            // the symbol table.
-            arg2 = top.get(second.token().rawText()).address();
         else
         {
             // The argument is a more complex sub-expression,
@@ -188,15 +176,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())
         {
-            TempAddress paramTemp;
-
-            if (child instanceof IdentifierExpr)
-                // Get the temp address of the argument from
-                // the symbol table.
-                paramTemp = top.get(child.token().rawText()).address();
-            else
-                paramTemp = child.accept(this);
-
+            TempAddress paramTemp = child.accept(this);
             params.add(new ParamInst(paramTemp));
         }
     
