@@ -84,22 +84,20 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
 
-        // Type check the operands and record the types in the AST.
-        first.setEvalType(first.accept(this));
-        second.setEvalType(second.accept(this));
+        // Type check the operands.
+        first.accept(this);
+        second.accept(this);
 
         final Token operator = expr.token();
 
-        if (first.evalType() != DataType.INTEGER 
-            && first.evalType() != DataType.UNDEFINED)
+        if (first.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
             reporter.error(first.token(), ErrorMessages.UnexpectedOperand, 
                 operator.rawText(), DataType.INTEGER, first.evalType());
         } 
 
-        if (second.evalType() != DataType.INTEGER 
-            && second.evalType() != DataType.UNDEFINED)
+        if (second.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
             reporter.error(second.token(), ErrorMessages.UnexpectedOperand, 
