@@ -1,5 +1,6 @@
 package me.mtk.torrey.ast;
 
+import me.mtk.torrey.analysis.DataType;
 import me.mtk.torrey.lexer.Token;
 
 public class UnaryExpr extends Expr implements ConstantConvertable
@@ -7,7 +8,7 @@ public class UnaryExpr extends Expr implements ConstantConvertable
     public UnaryExpr(Token unaryOp, Expr operand) 
     { 
         // "-"
-        super(unaryOp); 
+        super(unaryOp, DataType.INTEGER); 
 
         addChild(operand);
     }

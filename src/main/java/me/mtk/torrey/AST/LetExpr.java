@@ -1,6 +1,8 @@
 package me.mtk.torrey.ast;
 
 import java.util.List;
+
+import me.mtk.torrey.analysis.DataType;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.symbols.Env;
 
@@ -11,7 +13,7 @@ public class LetExpr extends Expr
     public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
     {
         // "let"
-        super(letTok);
+        super(letTok, DataType.UNDEFINED);
 
         // The environment doesn't get created until semantic analysis.
         environment = null;

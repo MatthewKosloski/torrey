@@ -116,7 +116,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             operator.rawText());   
         }
 
-        expr.setEvalType(DataType.INTEGER);
         return expr.evalType();
     }
 
@@ -129,7 +128,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      */
     public DataType visit(IntegerExpr expr)
     {
-        expr.setEvalType(DataType.INTEGER);
         return expr.evalType();
     }
 
@@ -163,7 +161,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             } 
         }
         
-        expr.setEvalType(DataType.UNDEFINED);
         return expr.evalType();
     }
 
@@ -190,7 +187,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
                 operator.rawText(), DataType.INTEGER, operand.evalType());
         } 
 
-        expr.setEvalType(DataType.INTEGER);
         return expr.evalType();
     }
 
@@ -204,11 +200,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // in the lexical scope chain.
             expr.setEvalType(sym.type());
         else
-        {
             // The identifier isn't bounded to a symbol
             reporter.error(expr.token(), ErrorMessages.UndefinedId, id);
-            expr.setEvalType(DataType.UNDEFINED);
-        }
 
         return expr.evalType();
     }
@@ -217,12 +210,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
 
         if (expr.children().size() == 0)
-        {
             // The expression has no bindings or expressions
             // in its body (e.g., (let []) ).
-            expr.setEvalType(DataType.UNDEFINED);
             return expr.evalType();
-        }
         else if (expr.children().size() == 1)
         {
             // The expression has one or more bindings but
@@ -243,7 +233,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // Restore the previous environment.
             top = prevEnv;
 
-            expr.setEvalType(DataType.UNDEFINED);
             return expr.evalType();
         }
         else

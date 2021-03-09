@@ -18,8 +18,20 @@ public abstract class Expr extends ASTNode
      */
     public Expr(Token t)
     { 
-        super(t);
-        evalType = null; 
+        this(t, null);
+    }
+
+    /**
+     * Constructs a new expression AST node from the given token,
+     * setting its evaluation type to the given data type.
+     * 
+     * @param tok A token from which this AST node is derived.
+     * @param type the data type for which the AST evaluates.
+     */
+    public Expr(Token tok, DataType type)
+    {
+        super(tok);
+        evalType = type;
     }
 
     /**

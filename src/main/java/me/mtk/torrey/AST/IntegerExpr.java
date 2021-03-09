@@ -1,18 +1,19 @@
 package me.mtk.torrey.ast;
 
+import me.mtk.torrey.analysis.DataType;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.TokenType;
 
 public class IntegerExpr extends Expr implements ConstantConvertable
 {
-    public IntegerExpr(Token t) 
-    { 
-        super(t); 
+    public IntegerExpr(Token t)
+    {
+        super(t, DataType.INTEGER);
     }
 
     public IntegerExpr(int constant)
     {
-        super(new Token(TokenType.INTEGER, constant + ""));
+        this(new Token(TokenType.INTEGER, constant + ""));
     }
 
     @Override

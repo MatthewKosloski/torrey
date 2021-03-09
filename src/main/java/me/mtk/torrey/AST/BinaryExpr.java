@@ -1,5 +1,6 @@
 package me.mtk.torrey.ast;
 
+import me.mtk.torrey.analysis.DataType;
 import me.mtk.torrey.lexer.Token;
 
 public class BinaryExpr extends Expr
@@ -7,7 +8,7 @@ public class BinaryExpr extends Expr
     public BinaryExpr(Token binOp, Expr first, Expr second)
     {
         // "+" | "-" | "*" | "/"
-        super(binOp);
+        super(binOp, DataType.INTEGER);
         
         addChild(first);
         addChild(second);
