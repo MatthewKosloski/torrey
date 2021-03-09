@@ -26,6 +26,10 @@ public final class ErrorMessages
     public static final String DivisionByZero = "Division by zero";
     public static final String ExpectedIdentifier = "Expected an identifier"
         + " but found '%s' instead";
-    public static final String UndefinedId = "Identifier '%s' is not defined in this environment";
-    public static final String AlreadyDeclared = "Identifier '%s' has already been declared in this scope";
+    public static final String UndefinedId = "Identifier '%s' is not defined"
+        + " in this environment";
+    public static final String AlreadyDeclared = "Identifier '%s' has already"
+        + " been declared in this scope";
+    public static final String UnexpectedBoundedExprType = "The expression bounded to"
+        + " identifier '%s' cannot be of type '%s'";
 }

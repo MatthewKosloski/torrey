@@ -290,6 +290,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         // Type check the bounded expression.
         boundedExpr.accept(this);
+
+        if (boundedExpr.evalType() == DataType.UNDEFINED)
+        {
+            reporter.error(idExpr.token(), 
+                ErrorMessages.UnexpectedBoundedExprType,
+                idExpr.token().rawText(),
+                boundedExpr.evalType());
+        }
         
         final String id = idExpr.token().rawText();
         final Symbol sym = new Symbol(id, boundedExpr.evalType(),
