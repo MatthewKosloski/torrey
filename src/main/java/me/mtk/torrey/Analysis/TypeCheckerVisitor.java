@@ -179,8 +179,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // Type check the operand.
         operand.accept(this);
 
-        if (operand.evalType() != DataType.INTEGER 
-            && operand.evalType() != DataType.UNDEFINED)
+        if (operand.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
             reporter.error(operand.token(), ErrorMessages.UnexpectedOperand,
