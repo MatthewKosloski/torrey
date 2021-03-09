@@ -148,7 +148,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         {
             final Expr childExpr = (Expr) child;
 
-            childExpr.setEvalType(childExpr.accept(this));
+            // Type check child expression.
+            childExpr.accept(this);
 
             if (childExpr.evalType() != DataType.INTEGER 
                 && childExpr.evalType() != DataType.UNDEFINED)
@@ -178,8 +179,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         final Token operator = expr.token();
         final Expr operand = (Expr) expr.first();
         
-        // Type check the operand and record the type in the AST.
-        operand.setEvalType(operand.accept(this));
+        // Type check the operand.
+        operand.accept(this);
 
         if (operand.evalType() != DataType.INTEGER 
             && operand.evalType() != DataType.UNDEFINED)
@@ -299,8 +300,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
         final Expr boundedExpr = (Expr) binding.second();
 
-        // Type check the bounded expression and record it in the AST.
-        boundedExpr.setEvalType(boundedExpr.accept(this));
+        // Type check the bounded expression.
+        boundedExpr.accept(this);
         
         final String id = idExpr.token().rawText();
         final Symbol sym = new Symbol(id, boundedExpr.evalType(),
