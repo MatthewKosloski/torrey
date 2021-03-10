@@ -79,9 +79,9 @@ When using flags `-L`, `-p`, `-ir`, or `-S`, to send the compiler output to the 
 
 ## Grammar
 
-The following grammar describes the syntax of a syntactically valid Torrey program. Note that _syntactic validity_ does not imply _semantic validity_. That is, a Torrey program can look right while also have no meaning.  For example, the Torrey program `(+ (print 3) 5)` is _syntactically_ valid because it can be derived from applying zero or more grammar rules.  However, it is _semantically_ invalid as the operands to the `+` operator must be integers.  See `src/main/java/me/mtk/torrey/analysis/TypeCheckerVisitor.java` for the implementation of such a semantic check.
+The following grammar describes the syntax of a syntactically valid Torrey program. Note that _syntactic validity_ does not imply _semantic validity_. That is, a Torrey program can look right while also have no meaning.  For example, the Torrey program `(+ (print 3) 5)` is _syntactically_ valid because it can be derived from applying zero or more grammar rules.  However, it is _semantically_ invalid as the operands to the `+` operator must be integers.  See [TypeCheckerVisitor.java](https://github.com/MatthewKosloski/torrey/blob/c02/src/main/java/me/mtk/torrey/Analysis/TypeCheckerVisitor.java) for the implementation of such a semantic check.
 
-The following grammar is implemented by the compiler's parser.  See `src/main/java/me/mtk/torrey/parser/Grammar.java` for the implementation of this grammar.
+The following grammar is implemented by the compiler's parser.  See [Grammar.java](https://github.com/MatthewKosloski/torrey/blob/c02/src/main/java/me/mtk/torrey/Parser/Grammar.java) for the implementation of this grammar.
 
 ```
 program       -> expr* ;
