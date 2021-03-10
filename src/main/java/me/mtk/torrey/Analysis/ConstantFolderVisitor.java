@@ -45,9 +45,22 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         expr.children().set(0, firstFolded);
         expr.children().set(1, secondFolded);
 
-        if (firstFolded instanceof ConstantConvertable
+        if (firstFolded instanceof ConstantConvertable 
             && secondFolded instanceof ConstantConvertable)
         {
+
+            // If the folded expression is a unary expression
+            // whose operand is a let expression, then don't attempt
+            // constant fold.
+            if (firstFolded instanceof UnaryExpr 
+                && firstFolded.first() instanceof LetExpr)
+                return expr;
+
+            if (secondFolded instanceof UnaryExpr 
+                && secondFolded.first() instanceof LetExpr)
+                return expr;
+
+
             // Both folded children can be converted to constants,
             // so we can reduce this binary expression to an integer expression.
 
