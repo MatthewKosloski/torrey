@@ -1,6 +1,6 @@
 # The Torrey Programming Language
 
-This is the source code of the second compiler of the Torrey programming language.  [Here](https://github.com/MatthewKosloski/torrey/tree/c01) is the source code of the first compiler.
+This is the source code of the third compiler of the Torrey programming language.  [Here](https://github.com/MatthewKosloski/torrey/tree/c02) is the source code of the second compiler.
 
 ## What is Torrey?
 
@@ -48,7 +48,7 @@ The input string must come from exactly one of two places: the standard input st
 To run the compiler with input from standard input, pipe the input into `java` like so:
 
 ```
-$ echo "(println 42 (* (/ 12 2) (+ 3 4)) (- 42))" | java -jar torreyc-2.0.0.jar && ./a.out
+$ echo "(println 42 (* (/ 12 2) (+ 3 4)) (- 42))" | java -jar torreyc-3.0.0.jar && ./a.out
 $ 42
 $ 42
 $ -42
@@ -67,7 +67,7 @@ To run the compiler with a file on the file system, provide the `-i` or `--in` f
 ```
 
 ```
-$ java -jar torreyc-2.0.0.jar -i foo.torrey && ./a.out
+$ java -jar torreyc-3.0.0.jar -i foo.torrey && ./a.out
 $ 5
 $ 45
 ```
