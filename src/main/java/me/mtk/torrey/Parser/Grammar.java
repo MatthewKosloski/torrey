@@ -9,6 +9,7 @@ import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.CompareExpr;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.ast.LetBinding;
 import me.mtk.torrey.ast.Program;
@@ -59,7 +60,8 @@ public class Grammar extends Parser
     //              | unary
     //              | binary
     //              | print 
-    //              | let ;
+    //              | let 
+    //              | compare ;
     private Expr expression() throws SyntaxError
     {
 
@@ -89,6 +91,12 @@ public class Grammar extends Parser
             {
                 // expression -> let ;
                 return let();
+            }
+            else if (peekNext(TokenType.EQUAL, TokenType.LT, 
+                TokenType.LTE, TokenType.GT, TokenType.GTE))
+            {
+                // expression -> compare ;
+                return compare();
             }
             else
             {
@@ -239,6 +247,27 @@ public class Grammar extends Parser
         consumeRightParen();
 
         return new LetExpr(tok, new LetBindings(bindings), exprList);
+    }
+
+    // compare -> "(" ("==" | "<" | "<=" | ">" | ">=") expr expr ")" ;
+    private CompareExpr compare() throws SyntaxError
+    {
+        // "("
+        consumeLeftParen();
+ 
+        // "==" | "<" | "<=" | ">" | ">="
+        final Token tok = nextToken();
+
+        // expr
+        final Expr first = expression();
+
+        // expr
+        final Expr second = expression();
+
+        // ")"
+        consumeRightParen();
+
+        return new CompareExpr(tok, first, second);
     }
 
     // integer -> [0-9]+ ;
