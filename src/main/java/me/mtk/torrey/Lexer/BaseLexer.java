@@ -205,6 +205,26 @@ public abstract class BaseLexer
     }
 
     /**
+     * If the first character of lookahead is the provided
+     * character, then consume it and return true. Else,
+     * return false.
+     * 
+     * @param c A character.
+     * @return True if c is the next character of lookahead; 
+     * False otherwise.
+     */
+    public boolean match(char c)
+    {
+        if (peek() == c)
+        {
+            nextChar();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Indicates if the provided character is a digit as
      * specified by the regular expression [0-9].
      * 
