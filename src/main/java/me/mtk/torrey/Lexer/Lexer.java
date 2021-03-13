@@ -55,6 +55,17 @@ public final class Lexer extends BaseLexer
             case '*': addToken(TokenType.STAR); break;
             case '/': addToken(TokenType.SLASH); break;
 
+            case '=':
+                if (match('='))
+                    addToken(TokenType.EQUAL);
+                break;
+
+            case '<': addToken(match('=') 
+                ? TokenType.LTE : TokenType.LT); break;
+
+            case '>': addToken(match('=') 
+                ? TokenType.GTE : TokenType.GT); break;
+
             default:
                 if (isDigit(currentChar))
                     addIntegerToken();
