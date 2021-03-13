@@ -1,6 +1,5 @@
 package me.mtk.torrey;
 
-import java.io.IOException;
 import me.mtk.torrey.ast.PrettyPrinterVisitor;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.error_reporter.ErrorReporter;
