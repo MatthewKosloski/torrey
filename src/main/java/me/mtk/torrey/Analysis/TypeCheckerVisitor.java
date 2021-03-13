@@ -9,6 +9,7 @@ import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.ASTNode;
 import me.mtk.torrey.ast.ASTNodeVisitor;
 import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.CompareExpr;
 import me.mtk.torrey.ast.IntegerExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
@@ -93,14 +94,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         if (first.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
-            reporter.error(first.token(), ErrorMessages.UnexpectedOperand, 
+            reporter.error(first.token(), ErrorMessages.UnexpectedOperandToBe, 
                 operator.rawText(), DataType.INTEGER, first.evalType());
         } 
 
         if (second.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
-            reporter.error(second.token(), ErrorMessages.UnexpectedOperand, 
+            reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
                 operator.rawText(), DataType.INTEGER, second.evalType());
         }
 
@@ -154,7 +155,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             {
                 // expected type DataType.INTEGER
                 reporter.error(childExpr.token(), 
-                    ErrorMessages.UnexpectedOperand,
+                    ErrorMessages.UnexpectedOperandToBe,
                     operator.rawText(), 
                     DataType.INTEGER, 
                     childExpr.evalType());
@@ -182,7 +183,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         if (operand.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
-            reporter.error(operand.token(), ErrorMessages.UnexpectedOperand,
+            reporter.error(operand.token(), ErrorMessages.UnexpectedOperandToBe,
                 operator.rawText(), DataType.INTEGER, operand.evalType());
         } 
 
@@ -313,5 +314,52 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.
         return DataType.UNDEFINED;
+    }
+
+    public DataType visit(CompareExpr expr)
+    {
+        final Expr first = (Expr) expr.first();
+        final Expr second = (Expr) expr.second();
+
+        // Type check the operands.
+        first.accept(this);
+        second.accept(this);
+
+        final Token operator = expr.token();
+
+        final boolean areInts = first.evalType() == DataType.INTEGER
+            && second.evalType() == DataType.INTEGER;
+        final boolean areBools = first.evalType() == DataType.BOOLEAN
+            && second.evalType() == DataType.BOOLEAN;
+        final boolean onlyFirstIsInt = first.evalType() == DataType.INTEGER 
+            && second.evalType() != DataType.INTEGER;
+        final boolean onlyFirstIsBool = first.evalType() == DataType.BOOLEAN
+            && second.evalType() != DataType.BOOLEAN;
+
+        if (onlyFirstIsInt)
+        {
+            // The first operand is an integer. Expected the second 
+            // operand to also be an integer.
+            reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
+                operator.rawText(), DataType.INTEGER, second.evalType());
+        }
+        else if (onlyFirstIsBool)
+        {
+            // The first operand is a boolean. Expected the second 
+            // operand to also be a boolean.
+            reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe,
+                operator.rawText(), DataType.BOOLEAN, second.evalType());
+        }
+        else if (!(areInts || areBools))
+        {
+            // Either both operands are not integers or
+            // both operands are not booleans.
+            reporter.error(first.token(), 
+                ErrorMessages.UnexpectedOperandToBeEither, 
+                operator.rawText(), DataType.INTEGER, 
+                DataType.BOOLEAN, first.evalType());
+        }
+
+        return expr.evalType();
     }
 }

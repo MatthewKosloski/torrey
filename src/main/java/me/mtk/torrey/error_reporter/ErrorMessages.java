@@ -21,8 +21,11 @@ public final class ErrorMessages
     public static final String ExpectedClosingParen = "Expected a closing parenthesis ')'";
     public static final String ExpectedOpeningBracket = "Expected an opening bracket '['";
     public static final String ExpectedClosingBracket = "Expected a closing bracket ']'";
-    public static final String UnexpectedOperand = "Expected operand to operator '%s' to be " 
+    public static final String UnexpectedOperandToBe = "Expected operand to operator '%s' to be " 
         + "type '%s' but found type '%s' instead";
+    public static final String UnexpectedOperandToBeEither = "Expected"
+        + " operand to operator '%s' to be of type '%s' or '%s' but"
+        + " found type '%s' instead";
     public static final String DivisionByZero = "Division by zero";
     public static final String ExpectedIdentifier = "Expected an identifier"
         + " but found '%s' instead";

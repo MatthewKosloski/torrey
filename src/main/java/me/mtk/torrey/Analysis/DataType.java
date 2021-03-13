@@ -7,5 +7,6 @@ public enum DataType
 {
     INTEGER,
     PRINT,
+    BOOLEAN,
     UNDEFINED
 }

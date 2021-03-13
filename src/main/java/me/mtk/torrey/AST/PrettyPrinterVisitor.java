@@ -26,6 +26,7 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
     public JSONObject visit(LetBindings bindings) { return parse(bindings); }
     public JSONObject visit(IdentifierExpr expr) { return parse(expr); }
     public JSONObject visit(BinaryExpr expr) { return parse(expr); }
+    public JSONObject visit(CompareExpr expr) { return parse(expr); }
     public JSONObject visit(UnaryExpr expr) { return parse(expr); }
     public JSONObject visit(PrintExpr expr) { return parse(expr); }
     public JSONObject visit(IntegerExpr expr) { return parse(expr); }
