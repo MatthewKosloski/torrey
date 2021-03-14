@@ -1,4 +1,4 @@
-package me.mtk.torrey.x86;
+package me.mtk.torrey.targets.x86_64.pc.linux;
 
 import me.mtk.torrey.TorreyCompiler;
 import me.mtk.torrey.TorreyConfig;
