@@ -1,4 +1,4 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.gen;
 
 import java.util.Map;
 import java.util.Queue;
@@ -35,7 +35,7 @@ import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Negq;
  * a collection of quadruples of the form
  * (op, arg1, arg2, result).
  */
-public final class X86Generator 
+public final class Generator 
 {
     
     // The IR program from which x86 code will be generated.
@@ -47,7 +47,7 @@ public final class X86Generator
     // The temp names pointing to parameters of subsequent call instructions.
     private Queue<String> params;
 
-    public X86Generator(IRProgram ir)
+    public Generator(IRProgram ir)
     {
         this.ir = ir;
         this.x86 = new X86Program(ir.temps().size() * 8);

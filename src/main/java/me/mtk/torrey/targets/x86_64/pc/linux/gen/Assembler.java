@@ -1,4 +1,4 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.gen;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +13,7 @@ import me.mtk.torrey.TorreyIOUtils;
  * code and linking it with the generated x86-64
  * assembly.
  */
-public final class X86Assembler extends TorreyCompiler
+public final class Assembler extends TorreyCompiler
 {
     // If the user does not provide an output file name for the 
     // executable via the command-line, use this as a default.
@@ -34,10 +34,8 @@ public final class X86Assembler extends TorreyCompiler
 
     private X86Program x86;
 
-    public X86Assembler(TorreyConfig config, String input, 
-        X86Program x86Program)
+    public Assembler(X86Program x86Program)
     {
-        super(config, input);
         x86 = x86Program;
     }
 

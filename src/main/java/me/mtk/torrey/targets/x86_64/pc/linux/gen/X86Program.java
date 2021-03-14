@@ -1,10 +1,12 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.gen;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.mtk.torrey.targets.TargetProgram;
 import me.mtk.torrey.targets.x86_64.pc.linux.instructions.X86Inst;
 
-public final class X86Program 
+public final class X86Program implements TargetProgram
 {
     private List<X86Inst> instrs;
 
