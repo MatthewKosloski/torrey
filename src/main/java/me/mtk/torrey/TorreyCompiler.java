@@ -10,17 +10,25 @@ public abstract class TorreyCompiler
     // The input program.
     protected String input;
 
-    public TorreyCompiler(TorreyConfig config, String input)
+    /**
+     * Sets the config.
+     * 
+     * @param config A config.
+     */
+    public void setConfig(TorreyConfig config)
     {
-        this.config = new TorreyConfig(config);
-        this.input = input;
+        this.config = config;
     }
 
     /**
-     * Runs the compiler.
-     * @return The output of this compiler.
+     * Sets the input program.
+     * 
+     * @param input The input program.
      */
-    public abstract Object run();
+    public void setInput(String input)
+    {
+        this.input = input;
+    }
 
     /**
      * Sends the string to standard output unless the user specifies 

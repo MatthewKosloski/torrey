@@ -3,7 +3,6 @@ package me.mtk.torrey;
 import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import me.mtk.torrey.targets.x86_64.pc.linux.Backend;
 import me.mtk.torrey.ir.IRProgram;
 import me.mtk.torrey.targets.Targets;
 
@@ -64,19 +63,22 @@ public final class Torrey
             }
 
             // The compiler front-end.
-            final TorreyFrontEnd fe = new TorreyFrontEnd(config, input);
+            final TorreyFrontEnd fe = new TorreyFrontEnd();
+            fe.setConfig(new TorreyConfig(config));
+            fe.setInput(input);
             final IRProgram irProgram = fe.run();
             
-            // The compiler back-end. This can be swapped
-            // out with another back-end very easily.
-            final Backend be = new Backend(config, input, irProgram);
-            
-            // Generate x86 assembly code.
-            be.run();
+            // Search for the appropriate target triple in the registry to
+            // find the compiler back-end.
+            final TorreyBackend be = Targets.registry.get(
+                config.target().toString()).backend();
 
-            // Build the object code and link it with the x86 assembly code,
-            // producing an executable.
-            be.assemble();
+            be.setConfig(new TorreyConfig(config));
+            be.setInput(input);
+            
+            // Generate the target program from the intermediate representation
+            // and then (optionally) assemble it into a native executable.
+            be.assemble(be.generate(irProgram));
         }
         catch (IOException e)
         {
@@ -88,6 +90,10 @@ public final class Torrey
         {
             System.err.println(e.getMessage());
             System.exit(1);
+        }
+        catch (Error e)
+        {
+            System.err.println(e.getMessage());
         }
     }
 
@@ -107,7 +113,7 @@ public final class Torrey
         final StringBuilder sb = new StringBuilder();
         sb.append("Usage: --target=<triple>,")
             .append("\n\twhere <triple> is of the form ")
-            .append("<arch>-<vendor>-<sys>.\n");
+            .append("<arch>-<vendor>-<sys>.\n\n");
         sb.append("Registered targets (triples):\n");
         Targets.registry.forEach((k, v) -> sb.append("\t").append(k));
         System.out.println(sb.toString());

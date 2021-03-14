@@ -30,7 +30,7 @@ public class TorreyConfig
         names = {"--target", "-t"}, 
         description = "Generate code for the given target.",
         order = 3)
-    private String target = "x86_64-pc-linux-gnu";
+    private String target = "x86_64-pc-linux";
 
     @Parameter(
         names = {"--target-list"}, 

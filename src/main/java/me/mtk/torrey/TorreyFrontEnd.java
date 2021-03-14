@@ -22,11 +22,6 @@ import me.mtk.torrey.ir.IRProgram;
  */
 public final class TorreyFrontEnd extends TorreyCompiler
 {
-    public TorreyFrontEnd(TorreyConfig config, String input)
-    {
-        super(config, input);
-    }
-
     public IRProgram run()
     {
         debug("Program (input to compiler): \n%s", input);
