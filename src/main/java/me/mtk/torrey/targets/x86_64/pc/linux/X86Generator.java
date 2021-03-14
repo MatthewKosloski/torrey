@@ -14,6 +14,20 @@ import me.mtk.torrey.ir.Address;
 import me.mtk.torrey.ir.TempAddress;
 import me.mtk.torrey.ir.ConstAddress;
 import me.mtk.torrey.ir.IRProgram;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.AddressingMode;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.BaseRelative;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.Register;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.Temporary;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.X86Address;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.Immediate;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.Global;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.X86Inst;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Callq;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Cqo;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Idivq;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Imulq;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Movq;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.Negq;
 
 /**
  * Generates 64-bit x86 assembly code

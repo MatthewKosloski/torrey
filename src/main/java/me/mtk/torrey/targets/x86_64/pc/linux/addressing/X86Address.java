@@ -1,4 +1,4 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.addressing;
 
 /**
  * Represents an x86 argument to an instruction,

@@ -2,6 +2,7 @@ package me.mtk.torrey.targets.x86_64.pc.linux;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.mtk.torrey.targets.x86_64.pc.linux.instructions.X86Inst;
 
 public final class X86Program 
 {

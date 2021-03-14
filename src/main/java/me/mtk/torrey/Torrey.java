@@ -3,7 +3,7 @@ package me.mtk.torrey;
 import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import me.mtk.torrey.targets.x86_64.pc.linux.X86Backend;
+import me.mtk.torrey.targets.x86_64.pc.linux.Backend;
 import me.mtk.torrey.ir.IRProgram;
 import me.mtk.torrey.targets.Targets;
 
@@ -69,7 +69,7 @@ public final class Torrey
             
             // The compiler back-end. This can be swapped
             // out with another back-end very easily.
-            final X86Backend be = new X86Backend(config, input, irProgram);
+            final Backend be = new Backend(config, input, irProgram);
             
             // Generate x86 assembly code.
             be.run();

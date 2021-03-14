@@ -1,4 +1,6 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.instructions;
+
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.X86Address;
 
 public final class Movq extends X86Inst 
 {

@@ -1,4 +1,4 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.instructions;
 
 public final class Cqo extends X86Inst 
 {

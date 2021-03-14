@@ -1,4 +1,7 @@
-package me.mtk.torrey.targets.x86_64.pc.linux;
+package me.mtk.torrey.targets.x86_64.pc.linux.instructions;
+
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.X86Address;
+import me.mtk.torrey.targets.x86_64.pc.linux.addressing.AddressingMode;
 
 public class X86Inst 
 {

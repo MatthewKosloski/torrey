@@ -4,12 +4,12 @@ import me.mtk.torrey.TorreyCompiler;
 import me.mtk.torrey.TorreyConfig;
 import me.mtk.torrey.ir.IRProgram;
 
-public final class X86Backend extends TorreyCompiler
+public final class Backend extends TorreyCompiler
 {
     private IRProgram ir;
     private X86Program x86;
 
-    public X86Backend(TorreyConfig config, String input, IRProgram irProgram)
+    public Backend(TorreyConfig config, String input, IRProgram irProgram)
     {
         super(config, input);
         ir = irProgram;
