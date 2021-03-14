@@ -70,8 +70,8 @@ public final class Torrey
             
             // Search for the appropriate target triple in the registry to
             // find the compiler back-end.
-            final TorreyBackend be = Targets.registry.get(
-                config.target().toString()).backend();
+            final String triple = config.target().toString();
+            final TorreyBackend be = Targets.registry.get(triple).backend();
 
             be.setConfig(new TorreyConfig(config));
             be.setInput(input);
