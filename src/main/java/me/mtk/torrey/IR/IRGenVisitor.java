@@ -92,21 +92,23 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     {
         final TempAddress result = new TempAddress();
 
+        ConstAddress rhs;
+
         if (expr instanceof IntegerExpr)
-        {
-            final ConstAddress constant = new ConstAddress(
-                Integer.parseInt(expr.token().rawText()));
-                irProgram.addQuad(new CopyInst(result, constant));
-        }
+            rhs = new ConstAddress(expr.token().rawText());
         else if (expr instanceof BooleanExpr)
         {
-            // TODO: Handle IR gen of boolean expr.
+            final String rawText = expr.token().rawText();
+            final boolean constant = rawText.equals("true");            
+            rhs = new ConstAddress(constant);
         }
         else
         {
             throw new Error("IRGenVisitor.visit(PrimitiveExpr):"
             + " Unhandled primitive");
         }
+
+        irProgram.addQuad(new CopyInst(result, rhs));
 
         return result;
     }

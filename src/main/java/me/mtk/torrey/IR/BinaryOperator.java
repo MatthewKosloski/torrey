@@ -18,6 +18,11 @@ public final class BinaryOperator extends Operator
         store.put(BinaryOpType.SUB, "-");
         store.put(BinaryOpType.MULT, "*");
         store.put(BinaryOpType.DIV, "/");
+        store.put(BinaryOpType.EQUAL, "==");
+        store.put(BinaryOpType.LT, "<");
+        store.put(BinaryOpType.LTE, "<=");
+        store.put(BinaryOpType.GT, ">");
+        store.put(BinaryOpType.GTE, ">=");
     }
 
     public BinaryOperator(BinaryOpType op) {
