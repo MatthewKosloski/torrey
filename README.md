@@ -109,25 +109,25 @@ The following grammar is implemented by the compiler's parser.  See [Grammar.jav
 ```
 program       -> expr* ;
 
-expr          -> integer
+expr          -> primitive
                | identifier
                | unary
                | binary
                | print
                | let
-               | boolean
                | not
-               | and 
+               | and
                | or
                | if ;
 
+boolean       -> "true" | "false" ;
 integer       -> [0-9]+ ;
 identifier    -> [a-zA-Z_$]+ [a-zA-Z0-9_$!?-]* ;
+primitive     -> integer | boolean ;
 unary         -> "(" "-" expr ")" ;
 binary        -> "(" ("+" | "-" | "*" | "/" | "==" | "<" | "<=" | ">" | ">=") expr expr ")" ;
 print         -> "(" ("print" | "println") expr+ ")" ;
 let           -> "(" "let" "[" (identifier expr)* "]" expr* ")" ;
-boolean       -> "true" | "false" ;
 not           -> "(" "not" expr ")" ;
 and           -> "(" "and" expr expr+ ")" ;
 or            -> "(" "or" expr expr+ ")" ;
