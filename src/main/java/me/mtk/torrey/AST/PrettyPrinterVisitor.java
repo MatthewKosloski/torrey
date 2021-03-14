@@ -140,7 +140,9 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
             table.put(id, parse(sym)));
         
         jo.put("node_type", env.getClass().getSimpleName())
-            .put("parent", env.parent() == null ? "null" : parse(env.parent()))
+            .put("parent", env.parent() == null 
+                ? "null" 
+                : parse(env.parent()))
             .put("table", table);
 
         return jo;
