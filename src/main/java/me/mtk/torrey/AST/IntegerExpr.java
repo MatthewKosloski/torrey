@@ -4,7 +4,11 @@ import me.mtk.torrey.analysis.DataType;
 import me.mtk.torrey.lexer.Token;
 import me.mtk.torrey.lexer.TokenType;
 
-public class IntegerExpr extends Expr implements ConstantConvertable
+/**
+ * Represents an integer literal expression.
+ */
+public final class IntegerExpr extends PrimitiveExpr 
+    implements ConstantConvertable
 {
     public IntegerExpr(Token t)
     {
@@ -14,12 +18,6 @@ public class IntegerExpr extends Expr implements ConstantConvertable
     public IntegerExpr(int constant)
     {
         this(new Token(TokenType.INTEGER, constant + ""));
-    }
-
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
     }
 
     public int toConstant()

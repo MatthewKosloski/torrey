@@ -17,6 +17,7 @@ import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.Expr;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.LetExpr;
+import me.mtk.torrey.ast.PrimitiveExpr;
 import me.mtk.torrey.ast.LetBinding;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.symbols.Env;
@@ -167,13 +168,13 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     }
 
     /**
-     * Type checks an integer literal expression by simply returning
-     * the integer data type.
+     * Type checks primitive literal expressions by simply returning
+     * the eval type of the expression.
      * 
-     * @param expr The integer literal expression to be type checked.
-     * @return DataType INTEGER.
+     * @param expr The primitive literal expression to be type checked.
+     * @return The data type of the primitive.
      */
-    public DataType visit(IntegerExpr expr)
+    public DataType visit(PrimitiveExpr expr)
     {
         return expr.evalType();
     }

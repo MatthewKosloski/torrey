@@ -6,10 +6,12 @@ import me.mtk.torrey.ast.Expr;
 import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.IntegerExpr;
 import me.mtk.torrey.ast.LetExpr;
+import me.mtk.torrey.ast.PrimitiveExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.ArithmeticExpr;
 import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.BooleanExpr;
 import me.mtk.torrey.ast.CompareExpr;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.ast.LetBinding;
@@ -56,16 +58,14 @@ public class Grammar extends Parser
         return new Program(exprs);
     }
 
-    // expression   -> integer
+    // expression   -> primitive
     //              | identifier
     //              | unary
     //              | binary
     //              | print 
-    //              | let 
-    //              | compare ;
+    //              | let ;
     private Expr expression() throws SyntaxError
     {
-
         if (peek(TokenType.LPAREN))
         {
             // Predicted the beginning of a fully parenthesized expression.
@@ -101,11 +101,12 @@ public class Grammar extends Parser
                     ErrorMessages.ExpectedUnaryBinaryPrint,
                     peekNext().rawText());
             }
-        } 
-        else if (peek(TokenType.INTEGER))
+        }
+        else if (peek(TokenType.TRUE, TokenType.FALSE, 
+        TokenType.INTEGER))
         {
-            // expression -> integer ;
-            return integer();
+            // expression -> primitive ;
+            return primitive();
         }
         else if (peek(TokenType.IDENTIFIER))
         {
@@ -254,10 +255,17 @@ public class Grammar extends Parser
             return new CompareExpr(tok, first, second);
     }
 
-    // integer -> [0-9]+ ;
-    private IntegerExpr integer()
+    // primitive -> "true" | "false" | [0-9]+ ;
+    private PrimitiveExpr primitive()
     {
-        return new IntegerExpr(nextToken());
+        final Token tok = nextToken();
+
+        if (tok.isType(TokenType.TRUE, TokenType.FALSE))
+            return new BooleanExpr(tok);
+        else if (tok.isType(TokenType.INTEGER))
+            return new IntegerExpr(tok);
+        else
+            throw new Error("Grammar.primitive(): Unhandled primitive");
     }
 
     // identifier -> [a-zA-Z_$]+ [a-zA-Z0-9_$!?-]* ;

@@ -11,6 +11,7 @@ import me.mtk.torrey.ast.IntegerExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
 import me.mtk.torrey.ast.LetExpr;
+import me.mtk.torrey.ast.PrimitiveExpr;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.ast.LetBinding;
 
@@ -143,7 +144,7 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         return expr;
     }
 
-    public Expr visit(IntegerExpr expr) 
+    public Expr visit(PrimitiveExpr expr)
     { 
         return expr; 
     }

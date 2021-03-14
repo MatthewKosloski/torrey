@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import me.mtk.torrey.ast.ASTNode;
 import me.mtk.torrey.ast.ASTNodeVisitor;
 import me.mtk.torrey.ast.BinaryExpr;
+import me.mtk.torrey.ast.BooleanExpr;
 import me.mtk.torrey.ast.Expr;
 import me.mtk.torrey.ast.IdentifierExpr;
 import me.mtk.torrey.ast.IntegerExpr;
 import me.mtk.torrey.ast.LetBinding;
 import me.mtk.torrey.ast.LetBindings;
 import me.mtk.torrey.ast.LetExpr;
+import me.mtk.torrey.ast.PrimitiveExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.Program;
 import me.mtk.torrey.ast.UnaryExpr;
@@ -80,18 +82,32 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
 
     /**
      * Generates one or more IR instructions for the 
-     * given integer AST node.
+     * given primitive AST node.
      * 
-     * @param expr An integer AST node.
+     * @param expr A primitive AST node.
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public TempAddress visit(IntegerExpr expr)
+    public TempAddress visit(PrimitiveExpr expr)
     {
         final TempAddress result = new TempAddress();
-        final ConstAddress constant = new ConstAddress(
-            Integer.parseInt(expr.token().rawText()));
-        irProgram.addQuad(new CopyInst(result, constant));
+
+        if (expr instanceof IntegerExpr)
+        {
+            final ConstAddress constant = new ConstAddress(
+                Integer.parseInt(expr.token().rawText()));
+                irProgram.addQuad(new CopyInst(result, constant));
+        }
+        else if (expr instanceof BooleanExpr)
+        {
+            // TODO: Handle IR gen of boolean expr.
+        }
+        else
+        {
+            throw new Error("IRGenVisitor.visit(PrimitiveExpr):"
+            + " Unhandled primitive");
+        }
+
         return result;
     }
 
