@@ -40,7 +40,8 @@ public final class TargetTriple
 
     public String toString()
     {
-        return String.format("%s-%s-%s\n", arch, vendor, sys);
+        return String.format("%s-%s-%s", arch, vendor, sys)
+            .toLowerCase();
     }
 
 }
