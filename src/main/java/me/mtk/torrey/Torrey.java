@@ -32,21 +32,17 @@ public final class Torrey
             if (config.help())
                 jcmdr.usage();
 
-            String input = ""; 
-            if (System.in.available() != 0)
+            // Check stdin first.
+            String input = TorreyIOUtils.readFromStdin();
+
+            if (input == null && config.inPath() != null)
             {
-                // We have bytes that can be read from stdin,
-                // so use it as the source of the input program.
-                input = TorreyIOUtils.readFromStdin();
+                // No bytes were read from stdin and the user
+                // supplied a path to a file on the file system,
+                // so try to read from that file.
+                input = TorreyIOUtils.read(config.inPath());
             }
-            else if (config.inPath() != null)
-            {
-                // Read the contents from the file at the
-                // given path and run the compiler using that
-                // as its input.
-                input = TorreyIOUtils.read(config.inPath().trim());
-            }
-            else if (!config.help())
+            else if (input == null && !config.help())
             {
                 // No input from stdin was detected, no
                 // path to an input file was provided, and

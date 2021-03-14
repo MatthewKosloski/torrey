@@ -40,34 +40,45 @@ public final class TorreyIOUtils
      * @return A string containing the contents of the file.
      * @throws IOException If an I/O error occurs.
      */
-    public static String read(final String path) throws IOException
+    public static String read(String path) throws IOException
     {
+        path = path.trim();
         final byte[] bytes = Files.readAllBytes(Paths.get(path));   
-        return new String(bytes, Charset.defaultCharset());
+        return new String(bytes, Charset.defaultCharset()).trim();
     }
 
     /**
      * Reads from standard input, returning it
-     * as a string.
+     * as a string or null if there are no bytes
+     * to be read from stdin.
      * 
-     * @return A string of the standard input.
+     * @return A string of the standard input or null
+     * if the standard input stream is empty.
      * @throws IOException
      */
     public static String readFromStdin() throws IOException
     {
-        // System.in is a byte stream, so we wrap it in an 
-        // InputStreamReader to convert it to a character 
-        // stream. We then buffer the input to reduce the 
-        // cost of every read() from the byte stream.
-        final BufferedReader in = 
+        if (System.in.available() != 0)
+        {
+            // System.in is a byte stream, so we wrap it in an 
+            // InputStreamReader to convert it to a character 
+            // stream. We then buffer the input to reduce the 
+            // cost of every read() from the byte stream.
+            final BufferedReader in = 
             new BufferedReader(new InputStreamReader(System.in));
         
-        // Read characters from stdin until EOF.
-        final StringBuffer sb = new StringBuffer();
-        int ascii;
-        while ((ascii = in.read()) != -1)
-            sb.append((char) ascii);
-        
-        return sb.toString();
+            // Read characters from stdin until EOF.
+            final StringBuffer sb = new StringBuffer();
+            int ascii;
+            while ((ascii = in.read()) != -1)
+                sb.append((char) ascii);
+            
+            return sb.toString();
+        }
+
+        // The estimated number of bytes that can be read
+        // from stdin is 0, so return null, indicating
+        // that no bytes from stdin have been read.
+        return null;
     }
 }
