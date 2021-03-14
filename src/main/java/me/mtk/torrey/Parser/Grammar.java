@@ -8,6 +8,7 @@ import me.mtk.torrey.ast.IntegerExpr;
 import me.mtk.torrey.ast.LetExpr;
 import me.mtk.torrey.ast.PrintExpr;
 import me.mtk.torrey.ast.UnaryExpr;
+import me.mtk.torrey.ast.ArithmeticExpr;
 import me.mtk.torrey.ast.BinaryExpr;
 import me.mtk.torrey.ast.CompareExpr;
 import me.mtk.torrey.ast.LetBindings;
@@ -69,7 +70,9 @@ public class Grammar extends Parser
         {
             // Predicted the beginning of a fully parenthesized expression.
 
-            if (peekNext(TokenType.PLUS, TokenType.STAR, TokenType.SLASH))
+            if (peekNext(TokenType.PLUS, TokenType.STAR, TokenType.SLASH, 
+            TokenType.EQUAL, TokenType.LT, TokenType.LTE, TokenType.GT, 
+            TokenType.GTE))
             {
                 // expression -> binary ;
                 return binary();
@@ -91,12 +94,6 @@ public class Grammar extends Parser
             {
                 // expression -> let ;
                 return let();
-            }
-            else if (peekNext(TokenType.EQUAL, TokenType.LT, 
-                TokenType.LTE, TokenType.GT, TokenType.GTE))
-            {
-                // expression -> compare ;
-                return compare();
             }
             else
             {
@@ -122,23 +119,6 @@ public class Grammar extends Parser
         return null;
     }
 
-    // binary -> "(" binOp expression expression ")" ;
-    private BinaryExpr binary() throws SyntaxError
-    {
-        consumeLeftParen();
-
-        // binOp -> "+" | "*" | "/" ;
-        final Token binOp = nextToken();
-        
-        // parse the two operands
-        final Expr first = expression();
-        final Expr second = expression();
-
-        consumeRightParen();
-
-        return new BinaryExpr(binOp, first, second);
-    }
-
     private Expr binaryOrUnary() throws SyntaxError
     {
         consumeLeftParen();
@@ -156,7 +136,7 @@ public class Grammar extends Parser
         try
         {
             second = expression();
-            result = new BinaryExpr(operator, first, second);
+            result = new ArithmeticExpr(operator, first, second);
         }
         catch (SyntaxError e)
         {
@@ -249,13 +229,14 @@ public class Grammar extends Parser
         return new LetExpr(tok, new LetBindings(bindings), exprList);
     }
 
-    // compare -> "(" ("==" | "<" | "<=" | ">" | ">=") expr expr ")" ;
-    private CompareExpr compare() throws SyntaxError
+    // binary -> "(" ("+" | "-" | "*" | "/" | "==" 
+    //        | "<" | "<=" | ">" | ">=") expr expr ")" ;
+    private BinaryExpr binary() throws SyntaxError
     {
         // "("
         consumeLeftParen();
  
-        // "==" | "<" | "<=" | ">" | ">="
+        // "==" | "<" | ... | ">="
         final Token tok = nextToken();
 
         // expr
@@ -267,7 +248,10 @@ public class Grammar extends Parser
         // ")"
         consumeRightParen();
 
-        return new CompareExpr(tok, first, second);
+        if (tok.isType(TokenType.PLUS, TokenType.STAR, TokenType.SLASH))
+            return new ArithmeticExpr(tok, first, second);
+        else
+            return new CompareExpr(tok, first, second);
     }
 
     // integer -> [0-9]+ ;

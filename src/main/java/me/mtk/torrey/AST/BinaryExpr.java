@@ -5,11 +5,9 @@ import me.mtk.torrey.lexer.Token;
 
 public class BinaryExpr extends Expr
 {
-    public BinaryExpr(Token binOp, Expr first, Expr second)
+    public BinaryExpr(Token tok, Expr first, Expr second, DataType evalType)
     {
-        // "+" | "-" | "*" | "/"
-        super(binOp, DataType.INTEGER);
-        
+        super(tok, evalType);
         addChild(first);
         addChild(second);
     }

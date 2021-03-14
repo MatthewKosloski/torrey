@@ -116,7 +116,6 @@ expr          -> integer
                | print
                | let
                | boolean
-               | compare 
                | not
                | and 
                | or
@@ -125,11 +124,10 @@ expr          -> integer
 integer       -> [0-9]+ ;
 identifier    -> [a-zA-Z_$]+ [a-zA-Z0-9_$!?-]* ;
 unary         -> "(" "-" expr ")" ;
-binary        -> "(" ("+" | "-" | "*" | "/") expr expr ")" ;
+binary        -> "(" ("+" | "-" | "*" | "/" | "==" | "<" | "<=" | ">" | ">=") expr expr ")" ;
 print         -> "(" ("print" | "println") expr+ ")" ;
 let           -> "(" "let" "[" (identifier expr)* "]" expr* ")" ;
 boolean       -> "true" | "false" ;
-compare       -> "(" ("==" | "<" | "<=" | ">" | ">=") expr expr ")" ;
 not           -> "(" "not" expr ")" ;
 and           -> "(" "and" expr expr+ ")" ;
 or            -> "(" "or" expr expr+ ")" ;
