@@ -164,7 +164,7 @@ quadruple    -> copy
 
 copy         -> temp "=" addr ;
 unary        -> temp "=" "-" addr ;
-binary       -> temp "=" addr ("+" | "-" | "*" | "/") addr ;
+binary       -> temp "=" addr ("+" | "-" | "*" | "/" | "==" | "<" | "<=" | ">" | ">=") addr ;
 param        -> "param" addr ;
 call         -> "call" name "," constant ;
 
