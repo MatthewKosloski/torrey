@@ -20,6 +20,8 @@ public final class Keywords
         store.put("and", TokenType.AND);
         store.put("or", TokenType.OR);
         store.put("if", TokenType.IF);
+        store.put("true", TokenType.TRUE);
+        store.put("false", TokenType.FALSE);
     }
 
     /**
