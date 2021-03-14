@@ -68,6 +68,25 @@ public final class Token
         this(TokenType.UNIDENTIFIED, "");
     }
 
+    /**
+     * Indicates whether the type of this token is
+     * one of the specified types.
+     * 
+     * @param types One or more token types.
+     * @return True if the type is one of the given 
+     * token types; False otherwise.
+     */
+    public boolean isType(TokenType ... types)
+    {
+        for (TokenType t : types)
+        {
+            if (t == type) 
+                return true;
+        }
+
+        return false;
+    }
+
     public TokenType type()
     {
         return type;
