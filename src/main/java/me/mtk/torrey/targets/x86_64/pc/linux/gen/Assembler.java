@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import me.mtk.torrey.TorreyCompiler;
-import me.mtk.torrey.TorreyConfig;
 import me.mtk.torrey.TorreyIOUtils;
 
 /**

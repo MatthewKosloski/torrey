@@ -1,7 +1,6 @@
 package me.mtk.torrey.targets.x86_64.pc.linux;
 
 import me.mtk.torrey.TorreyBackend;
-import me.mtk.torrey.TorreyCompiler;
 import me.mtk.torrey.TorreyConfig;
 import me.mtk.torrey.ir.IRProgram;
 import me.mtk.torrey.targets.x86_64.pc.linux.gen.X86Program;
