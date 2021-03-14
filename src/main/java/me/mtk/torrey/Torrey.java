@@ -3,8 +3,9 @@ package me.mtk.torrey;
 import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import me.mtk.torrey.x86.X86Backend;
+import me.mtk.torrey.targets.x86_64.pc.linux.X86Backend;
 import me.mtk.torrey.ir.IRProgram;
+import me.mtk.torrey.targets.Targets;
 
 public final class Torrey
 {
@@ -28,9 +29,19 @@ public final class Torrey
 
             if (config.version())
                 torrey.showVersionInfo();
+
+            if (config.targetList())
+                torrey.showRegisteredTargets();
     
             if (config.help())
                 jcmdr.usage();
+
+            if (config.target() == null)
+            {
+                throw new Error(String.format("%s is not a registered target."
+                    + " To view the registered targets, supply the"
+                    + " '--target-list' flag.\n", config.target()));
+            }
 
             // Check stdin first.
             String input = TorreyIOUtils.readFromStdin();
@@ -88,6 +99,18 @@ public final class Torrey
         System.out.format("torreyc %s\n", SEMANTIC_VERSION);
         System.out.println("This is free and open source software available at:");
         System.out.println("https://github.com/MatthewKosloski/torrey/");
+        System.exit(0);
+    }
+
+    public void showRegisteredTargets()
+    {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Usage: --target=<triple>,")
+            .append("\n\twhere <triple> is of the form ")
+            .append("<arch>-<vendor>-<sys>.\n");
+        sb.append("Registered targets (triples):\n");
+        Targets.registry.forEach((k, v) -> sb.append("\t").append(k));
+        System.out.println(sb.toString());
         System.exit(0);
     }
 }
