@@ -6,6 +6,7 @@ import me.mtk.torrey.ir.IRProgram;
 import me.mtk.torrey.targets.x86_64.pc.linux.gen.X86Program;
 import me.mtk.torrey.targets.x86_64.pc.linux.gen.Generator;
 import me.mtk.torrey.targets.TargetProgram;
+import me.mtk.torrey.targets.TargetTriple;
 import me.mtk.torrey.targets.x86_64.pc.linux.gen.Assembler;
 
 /**
@@ -13,6 +14,12 @@ import me.mtk.torrey.targets.x86_64.pc.linux.gen.Assembler;
  */
 public final class X8664PCLinuxBackend extends TorreyBackend
 {
+
+    public X8664PCLinuxBackend(TargetTriple triple)
+    {
+        super(triple);
+    }
+
     public X86Program generate(IRProgram ir)
     {
         final Generator x86Gen = new Generator(ir);

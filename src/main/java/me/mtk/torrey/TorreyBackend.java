@@ -2,9 +2,27 @@ package me.mtk.torrey;
 
 import me.mtk.torrey.ir.IRProgram;
 import me.mtk.torrey.targets.TargetProgram;
+import me.mtk.torrey.targets.TargetTriple;
 
 public abstract class TorreyBackend extends TorreyCompiler
 {
+    private TargetTriple triple;
+
+    public TorreyBackend(TargetTriple triple)
+    {
+        this.triple = triple;
+    }
+
+    /**
+     * Returns the target triple of this backend.
+     * 
+     * @return A target triple.
+     */
+    public TargetTriple triple()
+    {
+        return triple;
+    }
+
     /**
      * Generates the target program.
      * 

@@ -109,7 +109,7 @@ public class TorreyConfig
     
     public TargetTriple target() 
     {
-        return Targets.registry.get(target);
+        return Targets.registry.get(target).triple();
     }
 
     public TorreyConfig()

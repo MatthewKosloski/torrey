@@ -68,10 +68,9 @@ public final class Torrey
             fe.setInput(input);
             final IRProgram irProgram = fe.run();
             
-            // Search for the appropriate target triple in the registry to
-            // find the compiler back-end.
+            // Get the backend from the target registry.
             final String triple = config.target().toString();
-            final TorreyBackend be = Targets.registry.get(triple).backend();
+            final TorreyBackend be = Targets.registry.get(triple);
 
             be.setConfig(new TorreyConfig(config));
             be.setInput(input);
