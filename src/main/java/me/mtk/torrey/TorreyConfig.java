@@ -2,8 +2,8 @@ package me.mtk.torrey;
 
 import com.beust.jcommander.Parameter;
 
-import me.mtk.torrey.targets.TargetTriple;
-import me.mtk.torrey.targets.Targets;
+import me.mtk.torrey.backend.targets.TargetTriple;
+import me.mtk.torrey.backend.targets.Targets;
 
 public class TorreyConfig 
 {
