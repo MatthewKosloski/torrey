@@ -1,9 +1,9 @@
 package me.mtk.torrey.frontend.symbols;
 
 import me.mtk.torrey.frontend.analysis.DataType;
-import me.mtk.torrey.frontend.ir.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.TempAddress;
 
-public class Symbol 
+public class Symbol
 {
     private String name;
     private DataType type;

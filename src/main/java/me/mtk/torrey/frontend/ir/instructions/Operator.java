@@ -1,4 +1,4 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.instructions;
 
 /**
  * To be extended by all intermediate language

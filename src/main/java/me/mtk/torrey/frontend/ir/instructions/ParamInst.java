@@ -1,4 +1,6 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.instructions;
+
+import me.mtk.torrey.frontend.ir.addressing.Address;
 
 /**
  * Represents a parameter IR instruction.

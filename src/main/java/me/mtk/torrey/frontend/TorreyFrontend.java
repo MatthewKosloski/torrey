@@ -11,8 +11,8 @@ import me.mtk.torrey.frontend.lexer.TokenList;
 import me.mtk.torrey.frontend.parser.Grammar;
 import me.mtk.torrey.frontend.analysis.ConstantFolderVisitor;
 import me.mtk.torrey.frontend.analysis.TypeChecker;
-import me.mtk.torrey.frontend.ir.IRGenVisitor;
-import me.mtk.torrey.frontend.ir.IRProgram;
+import me.mtk.torrey.frontend.ir.gen.IRGenVisitor;
+import me.mtk.torrey.frontend.ir.gen.IRProgram;
 
 /**
  * The front-end of the compiler: lexical analysis, 

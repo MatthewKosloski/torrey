@@ -1,4 +1,8 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.instructions;
+
+import me.mtk.torrey.frontend.ir.addressing.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.NameAddress;
+import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
 
 public final class CallInst extends Quadruple
 {

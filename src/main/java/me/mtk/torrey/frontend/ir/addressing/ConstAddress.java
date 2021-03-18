@@ -1,4 +1,4 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.addressing;
 
 /**
  * Represents an address with CONSTANT addressing mode.

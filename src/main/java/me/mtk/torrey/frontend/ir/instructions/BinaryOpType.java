@@ -1,4 +1,4 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.instructions;
 
 public enum BinaryOpType
 {

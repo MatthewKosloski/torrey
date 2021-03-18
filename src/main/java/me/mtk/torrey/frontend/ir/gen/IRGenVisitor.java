@@ -1,4 +1,4 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.gen;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,6 +17,18 @@ import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.symbols.Env;
+import me.mtk.torrey.frontend.ir.addressing.Address;
+import me.mtk.torrey.frontend.ir.addressing.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.NameAddress;
+import me.mtk.torrey.frontend.ir.instructions.BinaryInst;
+import me.mtk.torrey.frontend.ir.instructions.Quadruple;
+import me.mtk.torrey.frontend.ir.instructions.CallInst;
+import me.mtk.torrey.frontend.ir.instructions.CopyInst;
+import me.mtk.torrey.frontend.ir.instructions.ParamInst;
+import me.mtk.torrey.frontend.ir.instructions.UnaryInst;
+import me.mtk.torrey.frontend.ir.instructions.UnaryOpType;
+import me.mtk.torrey.frontend.ir.instructions.BinaryOpType;
 
 /**
  * Converts the given abstract syntax tree to a more low-level,

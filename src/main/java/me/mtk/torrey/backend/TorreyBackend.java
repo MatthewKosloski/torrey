@@ -1,7 +1,7 @@
 package me.mtk.torrey.backend;
 
 import me.mtk.torrey.TorreyCompiler;
-import me.mtk.torrey.frontend.ir.IRProgram;
+import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.targets.TargetProgram;
 import me.mtk.torrey.backend.targets.TargetTriple;
 

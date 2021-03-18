@@ -1,4 +1,7 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.gen;
+
+import me.mtk.torrey.frontend.ir.instructions.Quadruple;
+import me.mtk.torrey.frontend.ir.addressing.AddressingMode;
 
 import java.util.ArrayList;
 import java.util.List;

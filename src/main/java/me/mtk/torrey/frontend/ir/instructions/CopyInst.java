@@ -1,4 +1,7 @@
-package me.mtk.torrey.frontend.ir;
+package me.mtk.torrey.frontend.ir.instructions;
+
+import me.mtk.torrey.frontend.ir.addressing.Address;
+import me.mtk.torrey.frontend.ir.addressing.TempAddress;
 
 /**
  * Represents a simply "x = y" copy instruction,

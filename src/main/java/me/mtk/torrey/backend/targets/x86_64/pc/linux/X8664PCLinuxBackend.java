@@ -1,7 +1,7 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux;
 
 import me.mtk.torrey.TorreyConfig;
-import me.mtk.torrey.frontend.ir.IRProgram;
+import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.TorreyBackend;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.Generator;

@@ -3,7 +3,7 @@ package me.mtk.torrey;
 import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import me.mtk.torrey.frontend.ir.IRProgram;
+import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.TorreyFrontend;
 import me.mtk.torrey.backend.TorreyBackend;
 import me.mtk.torrey.backend.targets.Targets;
