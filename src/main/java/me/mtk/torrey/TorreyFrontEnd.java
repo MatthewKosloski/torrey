@@ -20,7 +20,7 @@ import me.mtk.torrey.ir.IRProgram;
  * intermediate program. This intermediate program can then
  * be translated to literally anything (x86, LLVM, etc.).
  */
-public final class TorreyFrontEnd extends TorreyCompiler
+public final class TorreyFrontend extends TorreyCompiler
 {
     public IRProgram run()
     {

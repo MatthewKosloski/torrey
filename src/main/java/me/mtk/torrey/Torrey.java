@@ -63,7 +63,7 @@ public final class Torrey
             }
 
             // The compiler front-end.
-            final TorreyFrontEnd fe = new TorreyFrontEnd();
+            final TorreyFrontend fe = new TorreyFrontend();
             fe.setConfig(new TorreyConfig(config));
             fe.setInput(input);
             final IRProgram irProgram = fe.run();
