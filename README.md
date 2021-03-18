@@ -102,9 +102,9 @@ When using flags `-L`, `-p`, `-ir`, or `-S`, to send the compiler output to the 
 
 ## Grammar
 
-The following grammar describes the syntax of a syntactically valid Torrey program. Note that _syntactic validity_ does not imply _semantic validity_. That is, a Torrey program can look right while also have no meaning.  For example, the Torrey program `(+ (print 3) 5)` is _syntactically_ valid because it can be derived from applying zero or more grammar rules.  However, it is _semantically_ invalid as the operands to the `+` operator must be integers.  See [TypeCheckerVisitor.java](https://github.com/MatthewKosloski/torrey/blob/c02/src/main/java/me/mtk/torrey/Analysis/TypeCheckerVisitor.java) for the implementation of such a semantic check.
+The following grammar describes the syntax of a syntactically valid Torrey program. Note that _syntactic validity_ does not imply _semantic validity_. That is, a Torrey program can look right while also have no meaning.  For example, the Torrey program `(+ (print 3) 5)` is _syntactically_ valid because it can be derived from applying zero or more grammar rules.  However, it is _semantically_ invalid as the operands to the `+` operator must be integers.  See [TypeCheckerVisitor.java](https://github.com/MatthewKosloski/torrey/blob/c03/src/main/java/me/mtk/torrey/frontend/analysis/TypeCheckerVisitor.java) for the implementation of such a semantic check.
 
-The following grammar is implemented by the compiler's parser.  See [Grammar.java](https://github.com/MatthewKosloski/torrey/blob/c02/src/main/java/me/mtk/torrey/Parser/Grammar.java) for the implementation of this grammar.
+The following grammar is implemented by the compiler's parser.  See [Grammar.java](https://github.com/MatthewKosloski/torrey/blob/c03/src/main/java/me/mtk/torrey/frontend/parser/Grammar.java) for the implementation of this grammar.
 
 ```
 program       -> expr* ;
@@ -171,14 +171,14 @@ call         -> "call" name "," constant ;
 addr         -> temp | name | constant ;
 ```
 
-## Creating New Backends
+## Adding Additional Backends
 
-At a high level, a compiler has two parts: a front-end and a back-end.  The _front-end_ is responsible for performing lexical analysis, syntax analysis, semantic analysis, and intermediate code generation. The _back-end_ translates this intermediate code to another language, either a high-level one (e.g., C++, Java, JavaScript, etc.) or a low-level one (e.g., x86, ARM, MIPS, etc.).  As alluded to previously, an intermediate representation makes it easier to compile down to more than one target language. For each target language that a compiler compiles down to, there is a separate backend. Currently, the Torrey compiler only supports, or _targets_, x86-64 assembly.  Thus, at this moment, there is only one backend and its source code is [here](https://github.com/MatthewKosloski/torrey/tree/c03/src/main/java/me/mtk/torrey/targets/x86_64/pc/linux).  
+At a high level, a compiler has two parts: a front-end and a back-end.  The _front-end_ is responsible for performing lexical analysis, syntax analysis, semantic analysis, and intermediate code generation. The _back-end_ translates this intermediate code to another language, either a high-level one (e.g., C++, Java, JavaScript, etc.) or a low-level one (e.g., x86, ARM, MIPS, etc.).  As alluded to previously, an intermediate representation makes it easier to compile down to more than one target language. For each target language that a compiler compiles down to, there is a separate backend. Currently, the Torrey compiler only supports, or _targets_, x86-64 assembly.  Thus, at this moment, there is only one backend and its source code is [here](https://github.com/MatthewKosloski/torrey/tree/c03/src/main/java/me/mtk/torrey/backend/targets/x86_64/pc/linux).  
 
 It is incredibly easy to add additional backends to support more target languages.  Here are the steps to do so:
 
 1. Create a new directory within `targets` of the form `arch/vendor/sys`.  If the target language does not depend on a vendor or operating system (e.g., it is a high-level language), then name these folders `unknown`.
 2. Within `arch/vendor/sys`, create a new class named `ArchVendorSysBackend` that extends the `TorreyBackend` abstract class.  As required by the inheritance of `TorreyBackend`, two methods must be implemented: `generate()` and `assemble()`.  The `generate()` method generates the target program. Its input is the intermediate program produced by the compiler front-end, and its output is a program that implements `TargetProgram`.  The `assemble()` method (optionally) assembles the target program into a native executable specific to the target's architecture. This is optional because not every target language needs to be assembled into an executable (e.g., a high-level language).  The output of the `generate()` method serves as the input to the `assemble()` method.
-3. Add a new target triple to the `Targets` registry (see [here](https://github.com/MatthewKosloski/torrey/blob/c03/src/main/java/me/mtk/torrey/targets/Targets.java)) and bind an instance of the back-end to that triple.  The `Targets` registry is simply a key-value store.  The key is a string representation of the triple and is of the form `<arch>-<vendor>-<sys>`.  The value is the new target triple instance.
+3. Add a new target triple to the `Targets` registry (see [here](https://github.com/MatthewKosloski/torrey/blob/c03/src/main/java/me/mtk/torrey/backend/targets/Targets.java)) and bind an instance of the back-end to that triple.  The `Targets` registry is simply a key-value store.  The key is a string representation of the triple and is of the form `<arch>-<vendor>-<sys>`.  The value is the new target triple instance.
 
 Once the back-end has been created and "registered", it can then be set as the target of compilation via the `--target` flag.  To view a list of the supported targets, supply the `--target-list` flag.
