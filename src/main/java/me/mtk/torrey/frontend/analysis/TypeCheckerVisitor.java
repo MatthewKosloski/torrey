@@ -12,9 +12,10 @@ import me.mtk.torrey.frontend.ast.ArithmeticExpr;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.CompareExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
-import me.mtk.torrey.frontend.ast.PrintExpr;
+import me.mtk.torrey.frontend.ast.PrintStmt;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.ast.Expr;
+import me.mtk.torrey.frontend.ast.ExprStmt;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
@@ -59,7 +60,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         try
         {
             for (ASTNode child : program.children())
-                ((Expr) child).accept(this);
+                child.accept(this);
 
             reporter.reportSemanticErrors("Encountered one or more semantic"
                 + " errors during type checking:");
@@ -186,11 +187,11 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * @param expr The print expression to be type checked.
      * @return DataType PRINT.
      */
-    public DataType visit(PrintExpr expr)
+    public DataType visit(PrintStmt stmt)
     {
-        final Token operator = expr.token();
+        final Token operator = stmt.token();
 
-        for (ASTNode child : expr.children())
+        for (ASTNode child : stmt.children())
         {
             final Expr childExpr = (Expr) child;
 
@@ -209,7 +210,13 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             } 
         }
         
-        return expr.evalType();
+        return DataType.UNDEFINED;
+    }
+
+    public DataType visit(ExprStmt stmt)
+    {
+        stmt.expr().accept(this);
+        return DataType.UNDEFINED;
     }
 
     /**

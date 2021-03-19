@@ -7,13 +7,14 @@ import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.Expr;
+import me.mtk.torrey.frontend.ast.ExprStmt;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.LetBinding;
 import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
-import me.mtk.torrey.frontend.ast.PrintExpr;
+import me.mtk.torrey.frontend.ast.PrintStmt;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.symbols.Env;
@@ -87,7 +88,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         // visit() method to generate the IR instruction
         // corresponding to that node.
         for (ASTNode child : program.children())
-            ((Expr) child).accept(this);
+            child.accept(this);
 
         return null;
     }
@@ -170,33 +171,38 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
 
     /**
      * Generates one or more IR instructions for the 
-     * given print expression.
+     * given print statement.
      * 
-     * @param expr An print expression.
-     * @return The destination address of the 
-     * result of the given print expression.
+     * @param stmt A print statement.
+     * @return null.
      */
-    public TempAddress visit(PrintExpr expr)
+    public TempAddress visit(PrintStmt stmt)
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
         final List<Quadruple> params = new ArrayList<>();
                 
         // Generate the instructions for the parameters.
-        for (ASTNode child : expr.children())
+        for (ASTNode child : stmt.children())
         {
             TempAddress paramTemp = child.accept(this);
             params.add(new ParamInst(paramTemp));
         }
     
         final NameAddress procName = new NameAddress(
-            expr.token().rawText());
+            stmt.token().rawText());
         final ConstAddress numParams = new ConstAddress(
-            expr.children().size());
+            stmt.children().size());
 
         irProgram.addQuads(params);
         irProgram.addQuad(new CallInst(procName, numParams));
 
+        return null;
+    }
+
+    public TempAddress visit(ExprStmt stmt)
+    {
+        stmt.expr().accept(this);
         return null;
     }
 

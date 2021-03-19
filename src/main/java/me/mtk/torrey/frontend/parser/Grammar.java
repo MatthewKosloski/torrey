@@ -3,11 +3,12 @@ package me.mtk.torrey.frontend.parser;
 import java.util.List;
 import java.util.ArrayList;
 import me.mtk.torrey.frontend.ast.Expr;
+import me.mtk.torrey.frontend.ast.ExprStmt;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
-import me.mtk.torrey.frontend.ast.PrintExpr;
+import me.mtk.torrey.frontend.ast.PrintStmt;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.ast.ArithmeticExpr;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
@@ -16,6 +17,7 @@ import me.mtk.torrey.frontend.ast.CompareExpr;
 import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.ast.LetBinding;
 import me.mtk.torrey.frontend.ast.Program;
+import me.mtk.torrey.frontend.ast.Stmt;
 import me.mtk.torrey.frontend.error_reporter.ErrorReporter;
 import me.mtk.torrey.frontend.error_reporter.SyntaxError;
 import me.mtk.torrey.frontend.lexer.Token;
@@ -38,16 +40,16 @@ public class Grammar extends Parser
         super(reporter, tokens);
     }
    
-    // program -> expression* ;
+    // program -> stmt* ;
     protected Program program()
     {
-        final List<Expr> exprs = new ArrayList<>();
+        final List<Stmt> stmts = new ArrayList<>();
 
         while (hasTokens())
         {
             try
             {
-                exprs.add(expression());
+                stmts.add(stmt());
             }
             catch (SyntaxError e)
             {
@@ -55,15 +57,35 @@ public class Grammar extends Parser
             }
         }
 
-        return new Program(exprs);
+        return new Program(stmts);
     }
 
-    // expression   -> primitive
-    //              | identifier
-    //              | unary
-    //              | binary
-    //              | print 
-    //              | let ;
+    // stmt -> printStmt | ifStmt | exprStmt ;
+    private Stmt stmt() throws SyntaxError
+    {
+        if (peek(TokenType.LPAREN) && peekNext(TokenType.PRINT,
+            TokenType.PRINTLN))
+            return printStmt();
+        else if (peek(TokenType.LPAREN) && peekNext(TokenType.IF))
+            // return ifStmt();
+            throw new Error("TODO: Implement if statement");
+        else
+            return exprStmt();
+    }
+
+    private ExprStmt exprStmt() throws SyntaxError
+    {
+        return new ExprStmt(expression());
+    }
+
+    // exprStmt      -> primitive
+    //                 | identifier
+    //                 | unary
+    //                 | binary
+    //                 | let
+    //                 | not
+    //                 | and
+    //                 | or ;
     private Expr expression() throws SyntaxError
     {
         if (peek(TokenType.LPAREN))
@@ -84,11 +106,6 @@ public class Grammar extends Parser
 
                 // expression -> binary | unary ;
                 return binaryOrUnary();
-            }
-            else if (peekNext(TokenType.PRINT, TokenType.PRINTLN))
-            {
-                // expression -> print ;
-                return print();
             }
             else if (peekNext(TokenType.LET))
             {
@@ -156,8 +173,8 @@ public class Grammar extends Parser
         return result;
     }
 
-    // print -> "(" printOp exprlist ")" ;
-    private PrintExpr print() throws SyntaxError
+    // printStmt -> "(" printOp exprlist ")" ;
+    private PrintStmt printStmt() throws SyntaxError
     {
         consumeLeftParen();
  
@@ -174,7 +191,7 @@ public class Grammar extends Parser
 
         consumeRightParen();
 
-        return new PrintExpr(printOp, exprList);
+        return new PrintStmt(printOp, exprList);
     }
 
     // let -> "(" "let" "[" (identifier expr)* "]" expr* ")" ;
