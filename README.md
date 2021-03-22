@@ -131,7 +131,7 @@ let           -> "(" "let" "[" (identifier expr)* "]" expr* ")" ;
 not           -> "(" "not" expr ")" ;
 and           -> "(" "and" expr expr+ ")" ;
 or            -> "(" "or" expr expr+ ")" ;
-if            -> "(" "if" expr expr expr ")" | "(" "if" expr expr ")" ;
+if            -> "(" "if" expr expr expr? ")" ;
 ```
 
 ## Intermediate Representation (IR) Grammar
