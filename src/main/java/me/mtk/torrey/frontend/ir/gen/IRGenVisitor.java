@@ -8,6 +8,7 @@ import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.Expr;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
+import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.LetBinding;
 import me.mtk.torrey.frontend.ast.LetBindings;
@@ -298,6 +299,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
     public TempAddress visit(IdentifierExpr expr)
     {
         return top.get(expr.token().rawText()).address();
+    }
+
+    public TempAddress visit(IfExpr expr)
+    {
+        // TODO
+        return null;
     }
 
     /*

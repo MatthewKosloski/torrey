@@ -6,6 +6,7 @@ import me.mtk.torrey.frontend.error_reporter.SemanticError;
 import me.mtk.torrey.frontend.lexer.Token;
 import me.mtk.torrey.frontend.lexer.TokenType;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
+import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.ASTNode;
 import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
 import me.mtk.torrey.frontend.ast.ArithmeticExpr;
@@ -361,6 +362,12 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.
         return DataType.UNDEFINED;
+    }
+
+    public DataType visit(IfExpr expr)
+    {
+        // TODO
+        return null;
     }
 
 }

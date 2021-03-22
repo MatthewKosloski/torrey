@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import me.mtk.torrey.frontend.ast.Expr;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
+import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
@@ -63,7 +64,8 @@ public class Grammar extends Parser
     //              | unary
     //              | binary
     //              | print 
-    //              | let ;
+    //              | let 
+    //              | if ;
     private Expr expression() throws SyntaxError
     {
         if (peek(TokenType.LPAREN))
@@ -95,6 +97,11 @@ public class Grammar extends Parser
                 // expression -> let ;
                 return let();
             }
+            else if (peekNext(TokenType.IF))
+            {
+                // expression -> if ;
+                return ifExpr();
+            }
             else
             {
                 reporter.throwSyntaxError(peekNext(), 
@@ -118,6 +125,42 @@ public class Grammar extends Parser
             peek().rawText());
         
         return null;
+    }
+
+    // if -> "(" "if" expr expr expr? ")" ;
+    private Expr ifExpr() throws SyntaxError
+    {
+        // "("
+        consumeLeftParen();
+
+        // "if"
+        final Token tok = nextToken();
+
+        // expr
+        final Expr test = expression();
+
+        // expr
+        final Expr consequent = expression();
+
+        Expr expr;
+
+        // expr?
+        Expr alternative = null;
+        if (!peek(TokenType.RPAREN, TokenType.EOF))
+        {
+            // The next token is not a closing paren,
+            // so try to parse an if-then-else.
+            alternative = expression();
+            expr = new IfExpr(tok, test, consequent, alternative);
+        }
+        else
+            // Try to parse an if-then.
+            expr = new IfExpr(tok, test, consequent);
+
+        // ")"
+        consumeRightParen();
+
+        return expr;
     }
 
     private Expr binaryOrUnary() throws SyntaxError

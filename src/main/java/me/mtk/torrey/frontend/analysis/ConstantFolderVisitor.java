@@ -7,6 +7,7 @@ import me.mtk.torrey.frontend.ast.ConstantConvertable;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.Expr;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
+import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
@@ -76,7 +77,7 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
                 case MINUS: return new IntegerExpr(c1 - c2);
                 case STAR: return new IntegerExpr(c1 * c2);
                 case SLASH: return new IntegerExpr(c1 / c2);
-                default: return null;
+                default: return expr;
             }
         }
         else
@@ -137,6 +138,12 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         expr.children().set(1, foldedExpr);
 
         return expr;
+    }
+
+    public ASTNode visit(IfExpr expr)
+    {
+        // TODO
+        return null;
     }
 
     public Expr visit(IdentifierExpr expr)

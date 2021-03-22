@@ -11,4 +11,5 @@ public interface ASTNodeVisitor<T>
     public T visit(UnaryExpr expr);
     public T visit(IdentifierExpr expr);
     public T visit(PrimitiveExpr expr);
+    public T visit(IfExpr expr);
 }
