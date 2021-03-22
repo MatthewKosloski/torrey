@@ -177,18 +177,4 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     { 
         return expr; 
     }
-
-    // private class Scope
-    // {
-    //     private Map<IdentifierExpr, Expr> map;
-    //     private Scope parent;
-
-    //     public Scope(Scope parent)
-    //     {
-    //         this.parent = parent;
-    //     }
-
-    //     public void get(IdentifierExpr identifier)
-
-    // }
 }
