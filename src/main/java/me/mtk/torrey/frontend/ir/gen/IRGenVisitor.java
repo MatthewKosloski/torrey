@@ -7,7 +7,6 @@ import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.ExprStmt;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
@@ -15,7 +14,7 @@ import me.mtk.torrey.frontend.ast.LetBinding;
 import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
-import me.mtk.torrey.frontend.ast.PrintStmt;
+import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.symbols.Env;
@@ -177,7 +176,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @param stmt A print statement.
      * @return null.
      */
-    public TempAddress visit(PrintStmt stmt)
+    public TempAddress visit(PrintExpr stmt)
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
@@ -198,12 +197,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         irProgram.addQuads(params);
         irProgram.addQuad(new CallInst(procName, numParams));
 
-        return null;
-    }
-
-    public TempAddress visit(ExprStmt stmt)
-    {
-        stmt.expr().accept(this);
         return null;
     }
 

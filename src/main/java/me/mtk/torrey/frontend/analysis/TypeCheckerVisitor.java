@@ -13,13 +13,12 @@ import me.mtk.torrey.frontend.ast.ArithmeticExpr;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.CompareExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
-import me.mtk.torrey.frontend.ast.PrintStmt;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.ExprStmt;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
+import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.LetBinding;
 import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.symbols.Env;
@@ -188,11 +187,11 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * @param expr The print expression to be type checked.
      * @return DataType PRINT.
      */
-    public DataType visit(PrintStmt stmt)
+    public DataType visit(PrintExpr expr)
     {
-        final Token operator = stmt.token();
+        final Token operator = expr.token();
 
-        for (ASTNode child : stmt.children())
+        for (ASTNode child : expr.children())
         {
             final Expr childExpr = (Expr) child;
 
@@ -211,12 +210,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             } 
         }
         
-        return DataType.UNDEFINED;
-    }
-
-    public DataType visit(ExprStmt stmt)
-    {
-        stmt.expr().accept(this);
         return DataType.UNDEFINED;
     }
 

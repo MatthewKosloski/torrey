@@ -7,12 +7,12 @@ import java.util.List;
  */
 public class Program extends ASTNode
 {
-    public Program(List<Stmt> stmts) 
+    public Program(List<Expr> exprs) 
     {
         super(null);
 
-        for (Stmt stmt : stmts)
-            addChild(stmt);
+        for (Expr expr : exprs)
+            addChild(expr);
     }
 
     @Override

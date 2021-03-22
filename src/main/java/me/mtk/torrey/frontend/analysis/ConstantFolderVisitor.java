@@ -6,14 +6,13 @@ import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.ConstantConvertable;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.ExprStmt;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
-import me.mtk.torrey.frontend.ast.PrintStmt;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
+import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.ast.LetBinding;
 
@@ -34,24 +33,6 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         for (ASTNode child : program.children())
             child.accept(this);
         return program;
-    }
-
-    public PrintStmt visit(PrintStmt stmt) 
-    {
-        for (int i = 0; i < stmt.children().size(); i++)
-        {
-            final Expr child  = (Expr) stmt.children().get(i);
-            final Expr newExpr = (Expr) child.accept(this);
-            stmt.children().set(i, newExpr);
-        }
-        return stmt;
-    }
-
-    public ExprStmt visit(ExprStmt stmt)
-    {
-        final Expr newExpr = (Expr) stmt.expr().accept(this);
-        stmt.children().set(0, newExpr);
-        return stmt;
     }
 
     public Expr visit(BinaryExpr expr)
@@ -107,6 +88,17 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     {
         final Expr foldedChild = (Expr) ((Expr) expr.first()).accept(this);
         expr.children().set(0, foldedChild);
+        return expr;
+    }
+
+    public Expr visit(PrintExpr expr) 
+    {
+        for (int i = 0; i < expr.children().size(); i++)
+        {
+            final Expr child  = (Expr) expr.children().get(i);
+            final Expr newExpr = (Expr) child.accept(this);
+            expr.children().set(i, newExpr);
+        }
         return expr;
     }
 
