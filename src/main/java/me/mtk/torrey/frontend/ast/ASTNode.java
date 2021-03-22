@@ -73,13 +73,31 @@ public abstract class ASTNode
     }
 
     /**
+     * Returns the expression at the specified
+     * position in the child list. If no child
+     * expression is at the specified position,
+     * then null is returned.
+     * 
+     * @param i An index into the child list.
+     * @return The expression at the specified position
+     * or null.
+     */
+    public ASTNode get(int i)
+    {
+        if (i < children.size())
+            return children.get(i);
+        else
+            return null;
+    }
+
+    /**
      * A convenience method to retrieve the first child.
      * 
      * @return The first child of this node.
      */
     public ASTNode first()
     {
-        return children.get(0);
+        return get(0);
     }
 
     /**
@@ -89,7 +107,7 @@ public abstract class ASTNode
      */
     public ASTNode second()
     {
-        return children.get(1);
+        return get(1);
     }
 
     /**
@@ -99,7 +117,7 @@ public abstract class ASTNode
      */
     public ASTNode last()
     {
-        return children.get(children.size() - 1);
+        return get(children.size() - 1);
     }
 
     /**
