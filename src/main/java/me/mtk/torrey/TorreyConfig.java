@@ -80,17 +80,11 @@ public class TorreyConfig
         description = "Keep the assembly source file after assembly.",
         order = 11)
     private boolean keepSource = false;
-
-    @Parameter(
-        names = {"--no-hl-opt"}, 
-        description = "Disable high-level compiler optimizations.",
-        order = 12)
-    private boolean disableHlOpts = false;
     
     @Parameter(
         names = {"--no-stdout"}, 
         description = "Suppress all output to the standard output stream.",
-        order = 13)
+        order = 12)
     private boolean noStdOut = false;
 
     public boolean help() { return help; }
@@ -104,7 +98,6 @@ public class TorreyConfig
     public boolean stopAtIr() { return stopAtIr; }
     public boolean stopAtCompile() { return stopAtCompile; }
     public boolean keepSource() { return keepSource; }
-    public boolean disableHlOpts() { return disableHlOpts; }
     public boolean noStdOut() { return noStdOut; }
     
     public TargetTriple target() 
@@ -126,7 +119,6 @@ public class TorreyConfig
         stopAtParse = original.stopAtParse;
         stopAtCompile = original.stopAtCompile;
         keepSource = original.keepSource;
-        disableHlOpts = original.disableHlOpts;
         noStdOut = original.noStdOut;
         inPath = new String(original.inPath);
         outFileName = original.outFileName != null 

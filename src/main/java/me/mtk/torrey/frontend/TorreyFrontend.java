@@ -130,14 +130,11 @@ public final class TorreyFrontend extends TorreyCompiler
             ppVisitor.visit(ast));
 
         // High-level optimizations (on AST)
-        if (!config.disableHlOpts())
-        {
-            final ConstantFolderVisitor cfVistor = 
-                new ConstantFolderVisitor();
-            cfVistor.visit(ast);
-        }
+        final ConstantFolderVisitor cfVistor = 
+            new ConstantFolderVisitor();
+        cfVistor.visit(ast);
 
-        if (config.debug() && !config.disableHlOpts())
+        if (config.debug())
             debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
                 ppVisitor.visit(ast));
 
