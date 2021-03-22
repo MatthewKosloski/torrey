@@ -35,4 +35,6 @@ public final class ErrorMessages
         + " been declared in this scope";
     public static final String UnexpectedBoundedExprType = "The expression bounded to"
         + " identifier '%s' cannot be of type '%s'";
+    public static final String ExpectedExprOrStmt = "Expected the start of an"
+        + " expression or statement but found '%s' instead";
 }
