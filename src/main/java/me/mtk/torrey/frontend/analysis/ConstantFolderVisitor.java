@@ -10,6 +10,7 @@ import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
+import me.mtk.torrey.frontend.symbols.Env;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
 import me.mtk.torrey.frontend.ast.PrintExpr;
@@ -28,6 +29,15 @@ import me.mtk.torrey.frontend.ast.LetBinding;
  */
 public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 {
+
+    // The current environment.
+    private Env top;
+
+    public ConstantFolderVisitor()
+    {
+        top = new Env(null);
+    }
+
     public ASTNode visit(Program program)
     {
         for (ASTNode child : program.children())
@@ -44,8 +54,8 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         final Expr firstFolded = (Expr) first.accept(this);
         final Expr secondFolded = (Expr) second.accept(this);
 
-        expr.children().set(0, firstFolded);
-        expr.children().set(1, secondFolded);
+        first.setFoldedExpr(firstFolded);
+        second.setFoldedExpr(secondFolded);
 
         if (firstFolded instanceof ConstantConvertable 
             && secondFolded instanceof ConstantConvertable)
@@ -86,8 +96,8 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public Expr visit(UnaryExpr expr) 
     {
-        final Expr foldedChild = (Expr) ((Expr) expr.first()).accept(this);
-        expr.children().set(0, foldedChild);
+        final Expr folded = (Expr) ((Expr) expr.first()).accept(this);
+        expr.setFoldedExpr(folded);
         return expr;
     }
 
@@ -96,8 +106,8 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         for (int i = 0; i < expr.children().size(); i++)
         {
             final Expr child  = (Expr) expr.children().get(i);
-            final Expr newExpr = (Expr) child.accept(this);
-            expr.children().set(i, newExpr);
+            final Expr folded = (Expr) child.accept(this);
+            expr.setFoldedExpr(folded);
         }
         return expr;
     }
@@ -109,35 +119,42 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         {
             // The expression has one or more bindings and
             // zero or more expressions in its body.
+
+            // Cache the previous environment and set
+            // the current environment.
+            final Env prevEnv = top;
+            top = expr.environment();
+
+            // Fold the bounded expressions.
             ((LetBindings) expr.first()).accept(this);
+
+            // Fold the body expression.
+            final Expr foldedBody = (Expr) expr.second().accept(this);
+            expr.setFoldedExpr(foldedBody);
+
+            // Restore the previous environment.
+            top = prevEnv;
         }
         
         return expr;
     }
 
-    public ASTNode visit(LetBindings expr)
+    public ASTNode visit(LetBindings node)
     {
-        for (int i = 0; i < expr.children().size(); i++)
+        for (int i = 0; i < node.children().size(); i++)
         {
-            final LetBinding child = (LetBinding) expr.children().get(i);
-            final LetBinding foldedChild = (LetBinding) child.accept(this);
-            expr.children().set(i, foldedChild);
+            final LetBinding child = (LetBinding) node.children().get(i);
+            child.accept(this);
         }
-        return expr;
+        return node;
     }
 
-    public ASTNode visit(LetBinding expr)
+    public ASTNode visit(LetBinding node)
     {
-        final IdentifierExpr id = (IdentifierExpr) expr.first();
-        final Expr boundedExpr = (Expr) expr.second();
-
-        final IdentifierExpr foldedId = (IdentifierExpr) id.accept(this);
+        final Expr boundedExpr = (Expr) node.second();
         final Expr foldedExpr = (Expr) boundedExpr.accept(this);
-        
-        expr.children().set(0, foldedId);
-        expr.children().set(1, foldedExpr);
-
-        return expr;
+        boundedExpr.setFoldedExpr(foldedExpr);
+        return node;
     }
 
     public ASTNode visit(IfExpr expr)
@@ -148,11 +165,30 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public Expr visit(IdentifierExpr expr)
     {
-        return expr;
+        final Expr boundedExpr = top.get(expr.token().rawText()).expr();
+        
+        if (boundedExpr.folded() != null)
+            return boundedExpr.folded();
+        else
+            return boundedExpr;
     }
 
     public Expr visit(PrimitiveExpr expr)
     { 
         return expr; 
     }
+
+    // private class Scope
+    // {
+    //     private Map<IdentifierExpr, Expr> map;
+    //     private Scope parent;
+
+    //     public Scope(Scope parent)
+    //     {
+    //         this.parent = parent;
+    //     }
+
+    //     public void get(IdentifierExpr identifier)
+
+    // }
 }

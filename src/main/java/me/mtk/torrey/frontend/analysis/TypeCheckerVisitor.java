@@ -350,7 +350,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         
         final String id = idExpr.token().rawText();
         final Symbol sym = new Symbol(id, boundedExpr.evalType(),
-            SymCategory.VARIABLE);
+            SymCategory.VARIABLE, (Expr) binding.second());
 
         if (!top.has(id))
             top.put(id, sym);

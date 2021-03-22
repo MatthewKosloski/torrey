@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.symbols;
 
 import me.mtk.torrey.frontend.analysis.DataType;
+import me.mtk.torrey.frontend.ast.Expr;
 import me.mtk.torrey.frontend.ir.addressing.TempAddress;
 
 public class Symbol
@@ -9,12 +10,14 @@ public class Symbol
     private DataType type;
     private SymCategory category;
     private TempAddress address;
+    private Expr expr;
 
-    public Symbol(String name, DataType type, SymCategory category)
+    public Symbol(String name, DataType type, SymCategory category, Expr expr)
     {
         this.name = name;
         this.type = type;
         this.category = category;
+        this.expr = expr;
     }
 
     public String name()
@@ -30,6 +33,11 @@ public class Symbol
     public SymCategory category()
     {
         return category;
+    }
+
+    public Expr expr()
+    {
+        return expr;
     }
 
     public void setAddress(TempAddress address)
