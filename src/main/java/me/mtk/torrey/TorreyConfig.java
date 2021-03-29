@@ -117,6 +117,7 @@ public class TorreyConfig
         debug = original.debug;
         stopAtLex = original.stopAtLex;
         stopAtParse = original.stopAtParse;
+        stopAtIr = original.stopAtIr;
         stopAtCompile = original.stopAtCompile;
         keepSource = original.keepSource;
         noStdOut = original.noStdOut;
