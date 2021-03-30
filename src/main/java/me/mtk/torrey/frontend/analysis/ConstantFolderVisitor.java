@@ -133,9 +133,13 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             // Fold the bounded expressions.
             ((LetBindings) expr.first()).accept(this);
 
-            // Fold the body expression.
-            final Expr foldedBody = (Expr) expr.second().accept(this);
-            expr.setFoldedExpr(foldedBody);
+            // Fold the body expressions
+            for (int i = 1; i < expr.children().size(); i++)
+            {
+                final Expr child = (Expr) expr.children().get(i);
+                final Expr foldedChild = (Expr) child.accept(this);
+                child.setFoldedExpr(foldedChild);
+            }
 
             // Restore the previous environment.
             top = prevEnv;
