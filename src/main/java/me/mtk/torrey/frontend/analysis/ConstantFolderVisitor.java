@@ -3,6 +3,7 @@ package me.mtk.torrey.frontend.analysis;
 import me.mtk.torrey.frontend.ast.ASTNode;
 import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
+import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.ConstantConvertable;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.Expr;
@@ -57,41 +58,37 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         first.setFoldedExpr(firstFolded);
         second.setFoldedExpr(secondFolded);
 
-        if (firstFolded instanceof ConstantConvertable 
+        if (firstFolded instanceof ConstantConvertable
             && secondFolded instanceof ConstantConvertable)
         {
+            final int c1 = ((ConstantConvertable) firstFolded).toConstant();
+            final int c2 = ((ConstantConvertable) secondFolded).toConstant();
 
             // If the folded expression is a unary expression
             // whose operand is a let expression, then don't attempt
             // constant fold.
-            if (firstFolded instanceof UnaryExpr 
-                && firstFolded.first() instanceof LetExpr)
+            if ((firstFolded instanceof UnaryExpr 
+                && firstFolded.first() instanceof LetExpr) ||
+                (secondFolded instanceof UnaryExpr 
+                && secondFolded.first() instanceof LetExpr))
                 return expr;
-
-            if (secondFolded instanceof UnaryExpr 
-                && secondFolded.first() instanceof LetExpr)
-                return expr;
-
-
-            // Both folded children can be converted to constants,
-            // so we can reduce this binary expression to an integer expression.
-
-            // Get the constants of the operands to the
-            // arthmetic expression.
-            final int c1 = ((ConstantConvertable) firstFolded).toConstant();
-            final int c2 = ((ConstantConvertable) secondFolded).toConstant();
-
+            
             switch (expr.token().type())
             {
                 case PLUS: return new IntegerExpr(c1 + c2);
                 case MINUS: return new IntegerExpr(c1 - c2);
                 case STAR: return new IntegerExpr(c1 * c2);
                 case SLASH: return new IntegerExpr(c1 / c2);
+                case LT: return new BooleanExpr(c1 < c2);
+                case LTE: return new BooleanExpr(c1 <= c2);
+                case GT: return new BooleanExpr(c1 > c2);
+                case GTE: return new BooleanExpr(c1 >= c2);
+                case EQUAL: return new BooleanExpr(c1 == c2);
                 default: return expr;
             }
         }
-        else
-            return expr;
+
+        return expr;
     }
 
     public Expr visit(UnaryExpr expr) 
