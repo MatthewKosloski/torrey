@@ -159,8 +159,13 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public ASTNode visit(IfExpr expr)
     {
-        // TODO
-        return null;
+        final Expr testFolded = (Expr) expr.test().accept(this);
+        final Expr consequentFolded = (Expr) expr.consequent().accept(this);
+        final Expr alternativeFolded = (Expr) expr.alternative().accept(this);
+        expr.test().setFoldedExpr(testFolded);
+        expr.consequent().setFoldedExpr(consequentFolded);
+        expr.alternative().setFoldedExpr(alternativeFolded);
+        return expr;
     }
 
     public Expr visit(IdentifierExpr expr)
