@@ -84,4 +84,28 @@ public abstract class Expr extends ASTNode
         return folded;
     }
 
+    /**
+     * Indicates whether this expression has been folded by
+     * the constant folder.
+     * 
+     * @return True if this expression has been folded; 
+     * False otherwise.
+     */
+    public boolean isFolded()
+    {
+        return folded != null;
+    }
+
+    /**
+     * Indicates whether this expression has been folded
+     * to an integer expression.
+     * 
+     * @return True if this expression has been folded
+     * to an integer expression; False otherwise.
+     */
+    public boolean hasIntegerFold()
+    {
+        return isFolded() && folded instanceof IntegerExpr;
+    }
+
 }
