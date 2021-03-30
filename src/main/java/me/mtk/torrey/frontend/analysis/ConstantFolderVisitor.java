@@ -11,6 +11,7 @@ import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
+import me.mtk.torrey.frontend.lexer.TokenType;
 import me.mtk.torrey.frontend.symbols.Env;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
@@ -174,6 +175,18 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         expr.test().setFoldedExpr(testFolded);
         expr.consequent().setFoldedExpr(consequentFolded);
         expr.alternative().setFoldedExpr(alternativeFolded);
+
+        if (testFolded.token().type() == TokenType.TRUE)
+        {
+            expr.setFoldedExpr(consequentFolded);
+            expr.setEvalType(consequentFolded.evalType());
+        }
+        else
+        {
+            expr.setFoldedExpr(alternativeFolded);
+            expr.setEvalType(alternativeFolded.evalType());
+        }
+
         return expr;
     }
 
