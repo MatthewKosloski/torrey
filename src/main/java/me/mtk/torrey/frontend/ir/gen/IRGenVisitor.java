@@ -160,11 +160,19 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         final TempAddress result = new TempAddress();
         final BinaryOpType op = BinaryOpType.transBinaryOp(
             expr.token().rawText());
-        
-        final Address arg1 = getDestinationAddr(expr.first());
-        final Address arg2 = getDestinationAddr(expr.second());
 
-        irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
+        if (expr.hasIntegerFold())
+        {
+            final String foldedConstant = expr.folded().token().rawText();
+            final ConstAddress rhs = new ConstAddress(foldedConstant);
+            irProgram.addQuad(new CopyInst(result, rhs));
+        }
+        else
+        {
+            final Address arg1 = getDestinationAddr(expr.first());
+            final Address arg2 = getDestinationAddr(expr.second());
+            irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
+        }
 
         return result;
     }
