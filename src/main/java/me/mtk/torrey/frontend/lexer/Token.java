@@ -59,13 +59,18 @@ public final class Token
         this(type, rawText, -1, -1, -1, null, null);
     }
 
+    public Token(TokenType type)
+    {
+        this(type, null);
+    }
+
     /**
      * Constructs an "empty" token with no location 
      * information or raw text.
      */
     public Token()
     {
-        this(TokenType.UNIDENTIFIED, "");
+        this(TokenType.UNIDENTIFIED, null);
     }
 
     /**
