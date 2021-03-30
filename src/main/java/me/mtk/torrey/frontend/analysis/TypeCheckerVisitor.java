@@ -189,25 +189,12 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      */
     public DataType visit(PrintExpr expr)
     {
-        final Token operator = expr.token();
-
         for (ASTNode child : expr.children())
         {
             final Expr childExpr = (Expr) child;
 
             // Type check child expression.
             childExpr.accept(this);
-
-            if (childExpr.evalType() != DataType.INTEGER 
-                && childExpr.evalType() != DataType.UNDEFINED)
-            {
-                // expected type DataType.INTEGER
-                reporter.error(childExpr.token(), 
-                    ErrorMessages.UnexpectedOperandToBe,
-                    operator.rawText(), 
-                    DataType.INTEGER, 
-                    childExpr.evalType());
-            } 
         }
         
         return DataType.UNDEFINED;
