@@ -93,8 +93,16 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public Expr visit(UnaryExpr expr) 
     {
-        final Expr folded = (Expr) ((Expr) expr.first()).accept(this);
-        expr.setFoldedExpr(folded);
+        final Expr operand = (Expr) expr.first();
+
+        // Don't perform constant folding if
+        // the operand is an integer.
+        if (!(operand instanceof IntegerExpr))
+        {
+            final Expr foldedOperand = (Expr) operand.accept(this);
+            operand.setFoldedExpr(foldedOperand);
+        }
+
         return expr;
     }
 
