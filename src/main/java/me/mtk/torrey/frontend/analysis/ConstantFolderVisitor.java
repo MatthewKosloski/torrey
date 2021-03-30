@@ -107,7 +107,7 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         {
             final Expr child  = (Expr) expr.children().get(i);
             final Expr folded = (Expr) child.accept(this);
-            expr.setFoldedExpr(folded);
+            child.setFoldedExpr(folded);
         }
         return expr;
     }
