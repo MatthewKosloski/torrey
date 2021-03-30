@@ -75,10 +75,10 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             
             switch (expr.token().type())
             {
-                case PLUS: return new IntegerExpr(c1 + c2);
-                case MINUS: return new IntegerExpr(c1 - c2);
-                case STAR: return new IntegerExpr(c1 * c2);
-                case SLASH: return new IntegerExpr(c1 / c2);
+                case PLUS: return (Expr) Expr.makeConstantExpr(c1 + c2);
+                case MINUS: return (Expr) Expr.makeConstantExpr(c1 - c2);
+                case STAR: return (Expr) Expr.makeConstantExpr(c1 * c2);
+                case SLASH: return (Expr) Expr.makeConstantExpr(c1 / c2);
                 case LT: return new BooleanExpr(c1 < c2);
                 case LTE: return new BooleanExpr(c1 <= c2);
                 case GT: return new BooleanExpr(c1 > c2);
