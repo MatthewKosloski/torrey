@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.ast;
 
 import me.mtk.torrey.frontend.lexer.Token;
+import me.mtk.torrey.frontend.lexer.TokenType;
 import me.mtk.torrey.frontend.analysis.DataType;
 
 /**
@@ -36,6 +37,15 @@ public abstract class Expr extends ASTNode
         super(tok);
         evalType = type;
         folded = null;
+    }
+
+    public static ConstantConvertable makeConstantExpr(int constant)
+    {
+        if (constant < 0)
+            return new UnaryExpr(new Token(TokenType.MINUS, "-"), 
+                new IntegerExpr(constant * -1));
+        else 
+            return new IntegerExpr(constant);
     }
 
     /**
