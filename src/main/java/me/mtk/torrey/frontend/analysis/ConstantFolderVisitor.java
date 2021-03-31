@@ -176,16 +176,13 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         expr.consequent().setFoldedExpr(consequentFolded);
         expr.alternative().setFoldedExpr(alternativeFolded);
 
+        // We've reduced the test condition to a primitive,
+        // so we know which branch will be taken and thus
+        // the type of value this expression evaluates to.
         if (testFolded.token().type() == TokenType.TRUE)
-        {
-            expr.setFoldedExpr(consequentFolded);
             expr.setEvalType(consequentFolded.evalType());
-        }
         else
-        {
-            expr.setFoldedExpr(alternativeFolded);
             expr.setEvalType(alternativeFolded.evalType());
-        }
 
         return expr;
     }
