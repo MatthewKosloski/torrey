@@ -5,9 +5,10 @@ import me.mtk.torrey.frontend.analysis.DataType;
 import me.mtk.torrey.frontend.lexer.Token;
 import me.mtk.torrey.frontend.symbols.Env;
 
-public class LetExpr extends Expr
+public class LetExpr extends Expr implements EvaluatesToAnother
 {
     private Env environment;
+    private Expr evaluatesTo;
 
     public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
     {
@@ -29,6 +30,16 @@ public class LetExpr extends Expr
     public <T> T accept(ASTNodeVisitor<T> visitor)
     {
         return visitor.visit(this);
+    }
+
+    public Expr evaluatesTo()
+    {
+        return evaluatesTo;
+    }
+
+    public void setEval(Expr expr)
+    {
+        evaluatesTo = expr;
     }
 
     public void setEnv(Env e)
