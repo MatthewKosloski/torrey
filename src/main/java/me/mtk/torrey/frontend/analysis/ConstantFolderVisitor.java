@@ -7,6 +7,7 @@ import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.ConstantConvertable;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.Expr;
+import me.mtk.torrey.frontend.ast.Foldable;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
@@ -54,12 +55,8 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
 
-        // Perform constant folding on the two children.
-        final Expr firstFolded = (Expr) first.accept(this);
-        final Expr secondFolded = (Expr) second.accept(this);
-
-        first.setFoldedExpr(firstFolded);
-        second.setFoldedExpr(secondFolded);
+        final ASTNode firstFolded = fold(first);
+        final ASTNode secondFolded = fold(second);
 
         if (firstFolded instanceof ConstantConvertable
             && secondFolded instanceof ConstantConvertable)
@@ -98,25 +95,17 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     {
         final Expr operand = (Expr) expr.first();
 
-        // Don't perform constant folding if
+        // Don't perform folding if
         // the operand is an integer.
         if (!(operand instanceof IntegerExpr))
-        {
-            final Expr foldedOperand = (Expr) operand.accept(this);
-            operand.setFoldedExpr(foldedOperand);
-        }
+            fold(operand);
 
         return expr;
     }
 
     public Expr visit(PrintExpr expr) 
     {
-        for (int i = 0; i < expr.children().size(); i++)
-        {
-            final Expr child  = (Expr) expr.children().get(i);
-            final Expr folded = (Expr) child.accept(this);
-            child.setFoldedExpr(folded);
-        }
+        foldChildren(expr);
         return expr;
     }
 
@@ -133,16 +122,18 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             final Env prevEnv = top;
             top = expr.environment();
 
-            // Fold the bounded expressions.
-            ((LetBindings) expr.first()).accept(this);
+            // Fold the child expressioms.
+            foldChildren(expr);
 
-            // Fold the body expressions
-            for (int i = 1; i < expr.children().size(); i++)
-            {
-                final Expr child = (Expr) expr.children().get(i);
-                final Expr foldedChild = (Expr) child.accept(this);
-                child.setFoldedExpr(foldedChild);
-            }
+            final Expr lastExpr = (Expr) expr.last();
+
+            // Set the expression to which this let expression
+            // evaluates (i.e., the last expression in the body).
+            expr.setEval(lastExpr);
+
+            // The let expression evaluates to whatever the type
+            // of the last expression is.
+            expr.setEvalType(lastExpr.evalType());
 
             // Restore the previous environment.
             top = prevEnv;
@@ -153,48 +144,44 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public ASTNode visit(LetBindings node)
     {
-        for (int i = 0; i < node.children().size(); i++)
-        {
-            final LetBinding child = (LetBinding) node.children().get(i);
-            child.accept(this);
-        }
+        foldChildren(node);
         return node;
     }
 
     public ASTNode visit(LetBinding node)
     {
-        final Expr boundedExpr = (Expr) node.second();
-        final Expr foldedExpr = (Expr) boundedExpr.accept(this);
-        boundedExpr.setFoldedExpr(foldedExpr);
+        fold(node.second());
         return node;
     }
 
     public ASTNode visit(IfExpr expr)
     {
-        final Expr testFolded = (Expr) expr.test().accept(this);
-        final Expr consequentFolded = (Expr) expr.consequent().accept(this);
-        final Expr alternativeFolded = (Expr) expr.alternative().accept(this);
-        expr.test().setFoldedExpr(testFolded);
-        expr.consequent().setFoldedExpr(consequentFolded);
-        expr.alternative().setFoldedExpr(alternativeFolded);
+        foldChildren(expr);
 
         // We've reduced the test condition to a primitive,
         // so we know which branch will be taken and thus
         // the type of value this expression evaluates to.
-        if (testFolded.token().type() == TokenType.TRUE)
-            expr.setEvalType(consequentFolded.evalType());
+        if (expr.test().token().type() == TokenType.TRUE)
+        {
+            expr.setEvalType(expr.consequent().evalType());
+            expr.setEval(expr.consequent());
+        }
         else
-            expr.setEvalType(alternativeFolded.evalType());
+        {
+            expr.setEvalType(expr.alternative().evalType());
+            expr.setEval(expr.alternative());
+        }
 
         return expr;
     }
 
     public Expr visit(IdentifierExpr expr)
     {
-        final Expr boundedExpr = top.get(expr.token().rawText()).expr();
+        final String id = expr.token().rawText();
+        final Expr boundedExpr = top.get(id).expr();
         
-        if (boundedExpr.folded() != null)
-            return boundedExpr.folded();
+        if (boundedExpr instanceof Foldable)
+            return ((Foldable) boundedExpr).getFold();
         else
             return boundedExpr;
     }
@@ -202,5 +189,32 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     public Expr visit(PrimitiveExpr expr)
     { 
         return expr; 
+    }
+
+    /*
+     * Visits the given expression and potentially
+     * sets its fold iff the expression is foldable.
+     * 
+     * @param expr An expression to (potentially)
+     * @return The expression or a reference to
+     * the expression to which it folds.
+     */
+    private ASTNode fold(ASTNode node)
+    {
+        final ASTNode fold = node.accept(this);
+        if (node instanceof Foldable)
+            ((Foldable) node).setFold((Expr) fold);
+        return fold;
+    }
+
+    /**
+     * Folds every child belonging to the parent expression.
+     * 
+     * @param parent A parent expression.
+     */
+    private void foldChildren(ASTNode parent)
+    {
+        for (ASTNode child : parent.children())
+            fold(child);
     }
 }
