@@ -39,6 +39,15 @@ public abstract class Expr extends ASTNode
         folded = null;
     }
 
+    /**
+     * Returns the appropriate ConstantConvertable object depending
+     * on the type of constant. If the constant is non-negative, then
+     * an integer expression is returned. Else, an integer expression
+     * wrapped in a unary expression is returned.
+     * 
+     * @param constant An integer.
+     * @return An IntegerExpr if constant is non-negative; Else an UnaryExpr.
+     */
     public static ConstantConvertable makeConstantExpr(int constant)
     {
         if (constant < 0)
