@@ -21,7 +21,14 @@ public class UnaryExpr extends Expr implements ConstantConvertable
     
     public int toConstant()
     {
-        return Integer.parseInt(first().token().rawText()) * -1;
+        String rawText;
+
+        if (first() instanceof Foldable)
+            rawText = ((Foldable) first()).getFold().token().rawText();
+        else
+            rawText = first().token().rawText();
+
+        return Integer.parseInt(rawText) * -1;
     }
 
 }
