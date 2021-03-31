@@ -12,9 +12,6 @@ public abstract class Expr extends ASTNode
     // The type that this expression evaluates to.
     private DataType evalType;
 
-    // The folded expression.
-    private Expr folded;
-
     /**
      * Constructs a new expression AST node from the given token.
      * 
@@ -36,7 +33,6 @@ public abstract class Expr extends ASTNode
     {
         super(tok);
         evalType = type;
-        folded = null;
     }
 
     /**
@@ -68,20 +64,6 @@ public abstract class Expr extends ASTNode
     }
 
     /**
-     * Sets the constant folded expression.
-     * 
-     * @param expr The constant folded version of this expression.
-     */
-    public void setFoldedExpr(Expr expr)
-    {
-        // Check to make sure that the given
-        // expression is not a refererence to
-        // this expression. 
-        if (expr != this)
-            folded = expr;
-    }
-
-    /**
      * Returns the data type that this expression evaluates to.
      * 
      * @return The data type of this expression.
@@ -90,41 +72,4 @@ public abstract class Expr extends ASTNode
     {
         return evalType;
     }
-
-    /**
-     * Returns the constant folded version of this expression if
-     * this expression can be constant folded. If this expression
-     * cannot be constant folded, then null will be retuned.
-     * 
-     * @return The constant folded version of this expression.
-     */
-    public Expr folded()
-    {
-        return folded;
-    }
-
-    /**
-     * Indicates whether this expression has been folded by
-     * the constant folder.
-     * 
-     * @return True if this expression has been folded; 
-     * False otherwise.
-     */
-    public boolean isFolded()
-    {
-        return folded != null;
-    }
-
-    /**
-     * Indicates whether this expression has been folded
-     * to an integer expression.
-     * 
-     * @return True if this expression has been folded
-     * to an integer expression; False otherwise.
-     */
-    public boolean hasIntegerFold()
-    {
-        return isFolded() && folded instanceof IntegerExpr;
-    }
-
 }
