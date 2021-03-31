@@ -23,11 +23,13 @@ import me.mtk.torrey.frontend.ast.LetBinding;
  * Constant folding is a type of high-level
  * compiler optimization that combines multiple
  * constants into a single constant. It performs
- * a post-order traversal of the AST, visiting
- * every binary expression. If both operands
- * to the binary expression are constants, then
- * the binary expression node can be reduced to
- * a single integer expression node.
+ * a post-order traversal of the AST. More generally,
+ * this compiler pass reduces complex arithmetic and
+ * logical expression to their primitives.
+ * 
+ * Examples:
+ *  (+ 2 3) -> 5
+ *  (< 2 3) -> false
  */
 public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 {
