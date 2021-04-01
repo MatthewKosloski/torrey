@@ -7,5 +7,6 @@ public enum AddressingMode
 {
     CONSTANT,
     TEMP,
-    NAME 
+    NAME,
+    LABEL
 }

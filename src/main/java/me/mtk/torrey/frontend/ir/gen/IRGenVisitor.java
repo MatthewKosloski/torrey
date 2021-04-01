@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.ArrayList;
 import me.mtk.torrey.frontend.ast.ASTNode;
 import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
+import me.mtk.torrey.frontend.ast.ArithmeticExpr;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.BooleanExpr;
+import me.mtk.torrey.frontend.ast.CompareExpr;
 import me.mtk.torrey.frontend.ast.Expr;
+import me.mtk.torrey.frontend.ast.Foldable;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
@@ -21,11 +24,15 @@ import me.mtk.torrey.frontend.symbols.Env;
 import me.mtk.torrey.frontend.ir.addressing.Address;
 import me.mtk.torrey.frontend.ir.addressing.TempAddress;
 import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.LabelAddress;
 import me.mtk.torrey.frontend.ir.addressing.NameAddress;
 import me.mtk.torrey.frontend.ir.instructions.BinaryInst;
 import me.mtk.torrey.frontend.ir.instructions.Quadruple;
 import me.mtk.torrey.frontend.ir.instructions.CallInst;
 import me.mtk.torrey.frontend.ir.instructions.CopyInst;
+import me.mtk.torrey.frontend.ir.instructions.GotoInst;
+import me.mtk.torrey.frontend.ir.instructions.IfInst;
+import me.mtk.torrey.frontend.ir.instructions.LabelInst;
 import me.mtk.torrey.frontend.ir.instructions.ParamInst;
 import me.mtk.torrey.frontend.ir.instructions.UnaryInst;
 import me.mtk.torrey.frontend.ir.instructions.UnaryOpType;
@@ -37,7 +44,7 @@ import me.mtk.torrey.frontend.ir.instructions.BinaryOpType;
  * of three-address code represented as a collection of quadruples
  * of the form (operator, argument1, argument2, result).
  */
-public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
+public final class IRGenVisitor implements ASTNodeVisitor<Address>
 {
     // The IR Program being generated.
     private IRProgram irProgram;
@@ -82,7 +89,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @param Program The root AST node.
      * @return null.
      */
-    public TempAddress visit(Program program)
+    public Address visit(Program program)
     {
         // For every AST node, call the appropriate
         // visit() method to generate the IR instruction
@@ -101,7 +108,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public TempAddress visit(PrimitiveExpr expr)
+    public Address visit(PrimitiveExpr expr)
     {
         final TempAddress result = new TempAddress();
 
@@ -134,7 +141,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public TempAddress visit(UnaryExpr expr)
+    public Address visit(UnaryExpr expr)
     {
         final TempAddress result = new TempAddress();
         final UnaryOpType op = UnaryOpType.transUnaryOp(
@@ -155,26 +162,41 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public TempAddress visit(BinaryExpr expr)
+    public Address visit(BinaryExpr expr)
     {
-        final TempAddress result = new TempAddress();
-        final BinaryOpType op = BinaryOpType.transBinaryOp(
-            expr.token().rawText());
-
-        if (expr.hasIntegerFold())
+        if (expr instanceof ArithmeticExpr)
         {
-            final String foldedConstant = expr.folded().token().rawText();
+            final TempAddress result = new TempAddress();
+            final BinaryOpType op = BinaryOpType.transBinaryOp(
+                expr.token().rawText());
+
+            final String foldedConstant = expr.getFold().token().rawText();
             final ConstAddress rhs = new ConstAddress(foldedConstant);
             irProgram.addQuad(new CopyInst(result, rhs));
+            return result;
         }
-        else
+        else if (expr instanceof CompareExpr)
         {
+            final LabelAddress label = new LabelAddress();
             final Address arg1 = getDestinationAddr(expr.first());
             final Address arg2 = getDestinationAddr(expr.second());
-            irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
+            // only goto label if condition is false, so we 
+            // negate the condition.
+            final String rawText = expr.token().rawText();
+            BinaryOpType op = null;
+            if (rawText.equals("<"))
+                op = BinaryOpType.GTE;
+            else if (rawText.equals("<="))
+                op = BinaryOpType.GT;
+            else if (rawText.equals(">"))
+                op = BinaryOpType.LTE;
+            else if (rawText.equals(">="))
+                op = BinaryOpType.LT;
+            irProgram.addQuad(new IfInst(op, arg1, arg2, label));
+            return label;
         }
 
-        return result;
+        return null;
     }
 
     /**
@@ -184,7 +206,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @param stmt A print statement.
      * @return null.
      */
-    public TempAddress visit(PrintExpr stmt)
+    public Address visit(PrintExpr stmt)
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
@@ -193,7 +215,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
         // Generate the instructions for the parameters.
         for (ASTNode child : stmt.children())
         {
-            TempAddress paramTemp = child.accept(this);
+            Address paramTemp = child.accept(this);
             params.add(new ParamInst(paramTemp));
         }
     
@@ -218,7 +240,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * of the last expression of the body is returned; null
      * otherwise.
      */
-    public TempAddress visit(LetExpr expr)
+    public Address visit(LetExpr expr)
     {
         // Cache the previous environment and activate
         // the environment of this expression.
@@ -238,7 +260,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
             for (int i = 1; i < expr.children().size(); i++)
             {
                 final Expr child = (Expr) expr.children().get(i);
-                final TempAddress addr = child.accept(this);
+                final Address addr = child.accept(this);
                 
                 // Return the destination address of the last
                 // expression of the body.
@@ -260,7 +282,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @param bindings A LetBindings AST node.
      * @return null.
      */
-    public TempAddress visit(LetBindings bindings)
+    public Address visit(LetBindings bindings)
     {
         for (ASTNode n : bindings.children())
             ((LetBinding) n).accept(this);
@@ -276,7 +298,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @param bindings A LetBinding AST node.
      * @return null.
      */
-    public TempAddress visit(LetBinding binding)
+    public Address visit(LetBinding binding)
     {
         final TempAddress result = new TempAddress();
         final String id = binding.first().token().rawText();
@@ -303,14 +325,32 @@ public final class IRGenVisitor implements ASTNodeVisitor<TempAddress>
      * @return The destination address of the expression
      * bound to the given identifier. 
      */
-    public TempAddress visit(IdentifierExpr expr)
+    public Address visit(IdentifierExpr expr)
     {
         return top.get(expr.token().rawText()).address();
     }
 
-    public TempAddress visit(IfExpr expr)
+    public Address visit(IfExpr expr)
     {
-        // TODO
+        // Generate IR instructions for the condition, returning
+        // the address of the else label.
+        final Address elseLabel = expr.test().accept(this);
+
+        final LabelAddress doneLabel = new LabelAddress();
+        
+        // Generate IR instructions for the consequent condition.
+        expr.consequent().accept(this);
+        
+        // After the consequent, generate an unconditional jump to
+        // the done label.
+        irProgram.addQuad(new GotoInst(doneLabel));
+
+        // Generate IR instructions for the alternative condition.
+        irProgram.addQuad(new LabelInst((LabelAddress) elseLabel));
+        expr.alternative().accept(this);
+
+        // Finally, generate the done label instruction.
+        irProgram.addQuad(new LabelInst((LabelAddress) doneLabel));
         return null;
     }
 

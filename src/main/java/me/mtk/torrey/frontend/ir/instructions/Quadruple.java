@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
 import me.mtk.torrey.frontend.ir.addressing.Address;
+import me.mtk.torrey.frontend.ir.addressing.LabelAddress;
 import me.mtk.torrey.frontend.ir.addressing.TempAddress;
 
 /**
@@ -19,7 +20,7 @@ public abstract class Quadruple
     
     // The address at which the result of the instruction 
     // is to be stored.
-    protected TempAddress result;
+    protected Address result;
     
     /**
      * Instantiates a new quadruple to hold the properties
@@ -32,6 +33,14 @@ public abstract class Quadruple
      * instruction.
      */
     public Quadruple(Operator op, Address arg1, Address arg2, TempAddress result)
+    {
+        this.op = op;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+        this.result = result;
+    }
+
+    public Quadruple(Operator op, Address arg1, Address arg2, LabelAddress result)
     {
         this.op = op;
         this.arg1 = arg1;
@@ -62,7 +71,7 @@ public abstract class Quadruple
         return arg2;
     }
 
-    public TempAddress result()
+    public Address result()
     {
         return result;
     }
