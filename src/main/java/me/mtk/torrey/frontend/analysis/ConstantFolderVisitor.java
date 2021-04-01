@@ -179,6 +179,9 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     {
         final String id = expr.token().rawText();
         final Expr boundedExpr = top.get(id).expr();
+
+        fold(boundedExpr);
+        expr.setEval(boundedExpr);
         
         if (boundedExpr instanceof Foldable)
             return ((Foldable) boundedExpr).getFold();
