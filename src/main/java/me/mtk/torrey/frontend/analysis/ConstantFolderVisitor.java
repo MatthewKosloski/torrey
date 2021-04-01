@@ -166,7 +166,7 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             expr.setEvalType(expr.consequent().evalType());
             expr.setEval(expr.consequent());
         }
-        else
+        else if (expr.alternative() != null)
         {
             expr.setEvalType(expr.alternative().evalType());
             expr.setEval(expr.alternative());
