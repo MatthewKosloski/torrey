@@ -12,7 +12,6 @@ import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
-import me.mtk.torrey.frontend.lexer.TokenType;
 import me.mtk.torrey.frontend.symbols.Env;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
@@ -26,7 +25,7 @@ import me.mtk.torrey.frontend.ast.LetBinding;
  * constants into a single constant. It performs
  * a post-order traversal of the AST. More generally,
  * this compiler pass reduces complex arithmetic and
- * logical expression to their primitives.
+ * logical expressions to their primitives.
  * 
  * Examples:
  *  (+ 2 3) -> 5
@@ -45,18 +44,18 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public ASTNode visit(Program program)
     {
+        // Perform constant folding on each child node.
         for (ASTNode child : program.children())
             child.accept(this);
+
         return program;
     }
 
     public Expr visit(BinaryExpr expr)
     {
-        final Expr first = (Expr) expr.first();
-        final Expr second = (Expr) expr.second();
-
-        final ASTNode firstFolded = fold(first);
-        final ASTNode secondFolded = fold(second);
+        // Perform constant folding on the two child nodes.
+        final ASTNode firstFolded = fold(expr.first());
+        final ASTNode secondFolded = fold(expr.second());
 
         if (firstFolded instanceof ConstantConvertable
             && secondFolded instanceof ConstantConvertable)
@@ -125,16 +124,6 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             // Fold the child expressioms.
             foldChildren(expr);
 
-            final Expr lastExpr = (Expr) expr.last();
-
-            // Set the expression to which this let expression
-            // evaluates (i.e., the last expression in the body).
-            expr.setEval(lastExpr);
-
-            // The let expression evaluates to whatever the type
-            // of the last expression is.
-            expr.setEvalType(lastExpr.evalType());
-
             // Restore the previous environment.
             top = prevEnv;
         }
@@ -157,21 +146,6 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     public ASTNode visit(IfExpr expr)
     {
         foldChildren(expr);
-
-        // We've reduced the test condition to a primitive,
-        // so we know which branch will be taken and thus
-        // the type of value this expression evaluates to.
-        if (expr.test().token().type() == TokenType.TRUE)
-        {
-            expr.setEvalType(expr.consequent().evalType());
-            expr.setEval(expr.consequent());
-        }
-        else if (expr.alternative() != null)
-        {
-            expr.setEvalType(expr.alternative().evalType());
-            expr.setEval(expr.alternative());
-        }
-
         return expr;
     }
 
@@ -181,7 +155,6 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         final Expr boundedExpr = top.get(id).expr();
 
         fold(boundedExpr);
-        expr.setEval(boundedExpr);
         
         if (boundedExpr instanceof Foldable)
             return ((Foldable) boundedExpr).getFold();
