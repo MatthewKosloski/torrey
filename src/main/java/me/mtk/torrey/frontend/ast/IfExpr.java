@@ -3,11 +3,8 @@ package me.mtk.torrey.frontend.ast;
 import me.mtk.torrey.frontend.analysis.DataType;
 import me.mtk.torrey.frontend.lexer.Token;
 
-public final class IfExpr extends Expr implements EvaluatesToAnother
+public final class IfExpr extends Expr
 {
-
-    private Expr evaluatesTo;
-
     public IfExpr(Token tok, Expr test, Expr consequent, Expr alternative)
     {
         super(tok, DataType.UNDEFINED);
@@ -38,16 +35,6 @@ public final class IfExpr extends Expr implements EvaluatesToAnother
     public Expr alternative()
     {
         return (Expr) get(2);
-    }
-
-    public Expr evaluatesTo()
-    {
-        return evaluatesTo;
-    }
-
-    public void setEval(Expr expr)
-    {
-        evaluatesTo = expr;
     }
 
     @Override
