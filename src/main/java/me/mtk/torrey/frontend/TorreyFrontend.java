@@ -10,7 +10,8 @@ import me.mtk.torrey.frontend.lexer.Lexer;
 import me.mtk.torrey.frontend.lexer.TokenList;
 import me.mtk.torrey.frontend.parser.Grammar;
 import me.mtk.torrey.frontend.analysis.ConstantFolderVisitor;
-import me.mtk.torrey.frontend.analysis.TypeChecker;
+import me.mtk.torrey.frontend.analysis.EnvBuilderVisitor;
+import me.mtk.torrey.frontend.analysis.TypeCheckerVisitor;
 import me.mtk.torrey.frontend.ir.gen.IRGenVisitor;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 
@@ -119,20 +120,27 @@ public final class TorreyFrontend extends TorreyCompiler
     {
         final PrettyPrinterVisitor ppVisitor = new PrettyPrinterVisitor();
 
-        // Type checks operands to expressions, decorates
-        // the AST with type information, and creates 
-        // environments for let expressions.
-        final TypeChecker typeChecker = new TypeChecker(
-            new ErrorReporter(input), ast);
-        typeChecker.check();
+        // Builds the let expression environments and reports 
+        // errors regarding the use of identifier names. No
+        // type checking happens here.
+        final EnvBuilderVisitor envBuilder = new EnvBuilderVisitor
+            (new ErrorReporter(input));
+            envBuilder.visit(ast);
+
+        // Reduces complex expressions (both arithmetic and logical).
+        final ConstantFolderVisitor constantFolder = 
+            new ConstantFolderVisitor();
+        constantFolder.visit(ast);
+
+        // Type-checks operands to expressions and decorates
+        // the AST with type information.
+        final TypeCheckerVisitor typeChecker = new TypeCheckerVisitor
+            (new ErrorReporter(input));
+        typeChecker.visit(ast);
+        System.out.println();
 
         debug("AST (output from TypeChecker): \n%s", 
             ppVisitor.visit(ast));
-
-        // High-level optimizations (on AST)
-        final ConstantFolderVisitor cfVistor = 
-            new ConstantFolderVisitor();
-        cfVistor.visit(ast);
 
         if (config.debug())
             debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
