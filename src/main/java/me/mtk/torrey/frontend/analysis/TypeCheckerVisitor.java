@@ -139,15 +139,22 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             {
                 // The first operand is an integer. Expected the second 
                 // operand to also be an integer.
-                reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
-                    operator.rawText(), DataType.INTEGER, second.evalType());
+                reporter.error(
+                    second.token(), 
+                    ErrorMessages.UnexpectedOperandToBe, 
+                    operator.rawText(), 
+                    DataType.INTEGER, 
+                    second.evalType());
             }
             else if (onlyFirstIsBool)
             {
                 // The first operand is a boolean. Expected the second 
                 // operand to also be a boolean.
-                reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe,
-                    operator.rawText(), DataType.BOOLEAN, second.evalType());
+                reporter.error(second.token(), 
+                ErrorMessages.UnexpectedOperandToBe,
+                    operator.rawText(), 
+                    DataType.BOOLEAN, 
+                    second.evalType());
             }
             else if (!(areInts || areBools))
             {
@@ -155,8 +162,10 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
                 // both operands are not booleans.
                 reporter.error(first.token(), 
                     ErrorMessages.UnexpectedOperandToBeEither, 
-                    operator.rawText(), DataType.INTEGER, 
-                    DataType.BOOLEAN, first.evalType());
+                    operator.rawText(), 
+                    DataType.INTEGER, 
+                    DataType.BOOLEAN, 
+                    first.evalType());
             }
         }
         else
@@ -219,8 +228,12 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         if (operand.evalType() != DataType.INTEGER)
         {
             // expected type DataType.INTEGER
-            reporter.error(operand.token(), ErrorMessages.UnexpectedOperandToBe,
-                operator.rawText(), DataType.INTEGER, operand.evalType());
+            reporter.error(
+                operand.token(), 
+                ErrorMessages.UnexpectedOperandToBe,
+                operator.rawText(), 
+                DataType.INTEGER, 
+                operand.evalType());
         } 
 
         return expr.evalType();
