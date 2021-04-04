@@ -137,7 +137,6 @@ public final class TorreyFrontend extends TorreyCompiler
         final TypeCheckerVisitor typeChecker = new TypeCheckerVisitor
             (new ErrorReporter(input));
         typeChecker.visit(ast);
-        System.out.println();
 
         debug("AST (output from TypeChecker): \n%s", 
             ppVisitor.visit(ast));
