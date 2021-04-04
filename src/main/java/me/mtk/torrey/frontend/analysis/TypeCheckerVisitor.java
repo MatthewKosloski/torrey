@@ -11,10 +11,12 @@ import me.mtk.torrey.frontend.ast.ASTNode;
 import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
 import me.mtk.torrey.frontend.ast.ArithmeticExpr;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
+import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.CompareExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.ast.Expr;
+import me.mtk.torrey.frontend.ast.Foldable;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.LetExpr;
 import me.mtk.torrey.frontend.ast.PrimitiveExpr;
@@ -301,8 +303,44 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
     public DataType visit(IfExpr expr)
     {
-        // TODO
-        return null;
+        // Type-check the test condition
+        // and its child nodes.
+        expr.test().accept(this);
+        
+        // Type-check the consequent and
+        // its child nodes.
+        expr.consequent().accept(this);
+
+        // If we have an alternative expression,
+        // then type check the alternative and
+        // its child nodes.
+        if (expr.alternative() != null)
+            expr.alternative().accept(this);
+
+        // The test condition will either be a 
+        // BooleanExpr or a CompareExpr that folds
+        // to a BooleanExpr.
+        BooleanExpr bool;
+        if (expr.test() instanceof Foldable)
+            bool = (BooleanExpr) ((Foldable) expr.test()).getFold();
+        else
+            bool = (BooleanExpr) expr.test();
+
+        if (bool.token().type() == TokenType.TRUE)
+            // The test condition is true, so the type of
+            // this if expression is the type of the consequent.
+            expr.setEvalType(expr.consequent().evalType());
+        else if (expr.alternative() != null)
+            // The test condition is false and we have an alternative,
+            // so the type of this if expression is the type of
+            // the alternative.
+            expr.setEvalType(expr.alternative().evalType());
+        else
+            // The test condition is false and we have no alternative,
+            // so the type of this if expression is undefined.
+            expr.setEvalType(DataType.UNDEFINED);
+
+        return expr.evalType();
     }
 
 }
