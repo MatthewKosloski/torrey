@@ -22,7 +22,6 @@ import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.LetBinding;
 import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.symbols.Env;
-import me.mtk.torrey.frontend.symbols.SymCategory;
 import me.mtk.torrey.frontend.symbols.Symbol;
 
 public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
@@ -229,82 +228,42 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
         final String id = expr.token().rawText();
         final Symbol sym = top.get(id);
-
-        if (sym != null)
-            // The identifier is bounded to a symbol
-            // in the lexical scope chain.
-            expr.setEvalType(sym.type());
-        else
-            // The identifier isn't bounded to a symbol
-            reporter.error(expr.token(), ErrorMessages.UndefinedId, id);
-
+        expr.setEvalType(sym.type());
         return expr.evalType();
     }
 
     public DataType visit(LetExpr expr)
     {
-
-        if (expr.children().size() == 0)
-            // The expression has no bindings or expressions
-            // in its body (e.g., (let []) ).
-            return expr.evalType();
-        else if (expr.children().size() == 1)
+        if (expr.children().size() > 1)
         {
-            // The expression has one or more bindings but
-            // no expressions in its body (e.g., (let [x 42]) ).
-
             // Cache the previous environment and create
             // a new environment.
             final Env prevEnv = top;
-            top = new Env(top);
+            top = expr.environment();
 
-            // Type check all bindings and store them
-            // in an environment.
+            // First, type-check the bindings before
+            // the body.
             ((LetBindings) expr.first()).accept(this);
 
-            // Save the environment in the AST.
-            expr.setEnv(top);
-
-            // Restore the previous environment.
-            top = prevEnv;
-
-            return expr.evalType();
-        }
-        else
-        {
-            // The expression has one or more bindings and
-            // one or more expressions in its body
-            // (e.g., (let [x 42] (print x)) ).
-            
-            // Cache the previous environment and create
-            // a new environment.
-            final Env prevEnv = top;
-            top = new Env(top);
-
-            // Type check all bindings and store them
-            // in an environment.
-            ((LetBindings) expr.first()).accept(this);
-
-            // Type check all expressions in the body
+            // Type-check all expressions in the body
             // and record the types in the AST.
-            // (body expressions start at index 1).
             for (int i = 1; i < expr.children().size(); i++)
             {
                 final Expr bodyExpr = (Expr) expr.children().get(i);
                 bodyExpr.setEvalType(bodyExpr.accept(this));
             }
 
-            // Save the environment in the AST.
-            expr.setEnv(top);
-
             // Restore the previous environment.
             top = prevEnv;
 
             // The type of this let expression is the same 
             // as the type of its last expression.
-            expr.setEvalType(((Expr) expr.last()).evalType());
+            final Expr lastExpr = (Expr) expr.last();
+            expr.setEvalType(lastExpr.evalType());
             return expr.evalType();
         }
+
+        return expr.evalType();
     }
 
     public DataType visit(LetBindings bindings)
@@ -335,17 +294,6 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
                 boundedExpr.evalType());
         }
         
-        final String id = idExpr.token().rawText();
-        final Symbol sym = new Symbol(id, boundedExpr.evalType(),
-            SymCategory.VARIABLE, (Expr) binding.second());
-
-        if (!top.has(id))
-            top.put(id, sym);
-        else
-            // The identifier id has already been declared in this scope.
-            reporter.error(idExpr.token(), 
-                ErrorMessages.AlreadyDeclared, id);
-
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.
         return DataType.UNDEFINED;
