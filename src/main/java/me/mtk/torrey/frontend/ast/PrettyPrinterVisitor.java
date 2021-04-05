@@ -156,7 +156,8 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
         jo.put("node_type", sym.getClass().getSimpleName())
             .put("name", sym.name())
             .put("type", sym.type())
-            .put("category", sym.category());
+            .put("category", sym.category())
+            .put("expr", parse(sym.expr()));
         
         return jo;
     }
