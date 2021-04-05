@@ -52,8 +52,7 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
         final JSONObject jo = new JSONObject();
         final JSONArray ja = new JSONArray();
 
-        jo.put("node_type", node.getClass().getSimpleName())
-            .put("token", node.token() == null 
+        jo.put("token", node.token() == null 
                 ? "null" 
                 : parse(node.token()));
 
@@ -66,7 +65,8 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
 
         // Node-specific properties here
         if (node instanceof Expr)
-            jo.put("evalType", ((Expr) node).evalType());
+            jo.put("evalType", ((Expr) node).evalType())
+                .put("node_type", node.getClass().getSimpleName());
         if (node instanceof LetExpr)
         {
             final LetExpr letExpr = (LetExpr) node;
