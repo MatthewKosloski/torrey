@@ -26,6 +26,11 @@ import me.mtk.torrey.frontend.ast.LetBindings;
 import me.mtk.torrey.frontend.symbols.Env;
 import me.mtk.torrey.frontend.symbols.Symbol;
 
+/**
+ * Traverses the AST, checking the types of expressions and 
+ * the operands to operators. Also, determines the evaluation
+ * types of identifiers, let expressions, and if expressions.
+ */
 public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 {
     // A reference to the error reporter that will
