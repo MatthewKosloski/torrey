@@ -128,10 +128,18 @@ public final class TorreyFrontend extends TorreyCompiler
             (new ErrorReporter(input));
             envBuilder.visit(ast);
 
+        if (config.debug())
+            debug("AST (output from EnvBuilderVisitor): \n%s",
+                ppVisitor.visit(ast));
+
         // Reduces complex expressions (both arithmetic and logical).
         final ConstantFolderVisitor constantFolder = 
             new ConstantFolderVisitor();
         constantFolder.visit(ast);
+
+        if (config.debug())
+            debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
+                ppVisitor.visit(ast));
 
         // Type-checks operands to expressions and decorates
         // the AST with type information.
@@ -139,11 +147,11 @@ public final class TorreyFrontend extends TorreyCompiler
             (new ErrorReporter(input));
         typeChecker.visit(ast);
 
-        debug("AST (output from TypeChecker): \n%s", 
+        debug("Optimized AST (output from TypeChecker): \n%s", 
             ppVisitor.visit(ast));
 
         if (config.debug())
-            debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
+            debug("Optimized AST (output from TypeCheckerVisitor): \n%s",
                 ppVisitor.visit(ast));
 
         return ast;
