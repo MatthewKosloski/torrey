@@ -282,8 +282,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
         // Call visit(LetBinding) to type check
         // all the bindings in this AST node.
-        for (ASTNode n : bindings.children())
-            ((LetBinding) n).accept(this);
+        for (ASTNode binding : bindings.children())
+            binding.accept(this);
 
         // A LetBindings AST does not evaluate to a 
         // data type as it's not an expression.
