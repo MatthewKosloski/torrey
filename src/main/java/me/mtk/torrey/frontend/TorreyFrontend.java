@@ -92,15 +92,16 @@ public final class TorreyFrontend extends TorreyCompiler
 
         final Grammar grammar = new Grammar(
                 new ErrorReporter(input), tokens.tokens());
-        final Program program = grammar.parse();
+        final Program ast = grammar.parse();
 
-        debug("AST (output from Grammar): \n%s", 
-            ppVisitor.visit(program));
+        final String prettyAST = ppVisitor.visit(ast);
+
+        debug("AST (output from Grammar): \n%s", prettyAST);
 
         if (config.stopAtParse())
-            writeAndExit(program.toString());
+            writeAndExit(prettyAST);
 
-        return program;
+        return ast;
     }
 
     /*
