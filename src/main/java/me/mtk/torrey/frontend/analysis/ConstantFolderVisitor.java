@@ -178,7 +178,10 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
     private ASTNode fold(ASTNode node)
     {
         final ASTNode fold = node.accept(this);
-        if (node instanceof Foldable)
+        // Only set fold if this node is foldable and
+        // this node's fold is not just a reference to
+        // itself.
+        if (node instanceof Foldable && !fold.equals(node))
             ((Foldable) node).setFold((Expr) fold);
         return fold;
     }
