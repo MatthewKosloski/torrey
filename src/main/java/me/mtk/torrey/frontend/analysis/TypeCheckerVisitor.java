@@ -261,17 +261,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             final Env prevEnv = top;
             top = expr.environment();
 
-            // First, type-check the bindings before
-            // the body.
-            ((LetBindings) expr.first()).accept(this);
-
-            // Type-check all expressions in the body
-            // and record the types in the AST.
-            for (int i = 1; i < expr.children().size(); i++)
-            {
-                final Expr bodyExpr = (Expr) expr.children().get(i);
-                bodyExpr.setEvalType(bodyExpr.accept(this));
-            }
+            // Type-check the child expressions.
+            for (ASTNode child : expr.children())
+                child.accept(this);
 
             // Restore the previous environment.
             top = prevEnv;
