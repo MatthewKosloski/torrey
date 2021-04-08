@@ -7,14 +7,21 @@ public enum BinaryOpType
     MULT,
     DIV,
     EQUAL,
+    NEQUAL,
     LT,
     LTE,
     GT,
     GTE;
 
-    public static BinaryOpType transBinaryOp(String rawText)
+    /**
+     * Translates a Torrey binary operator to an IR operator.
+     * 
+     * @param torreyOp The Torrey operator.
+     * @return The corresponding IR operator.
+     */
+    public static BinaryOpType transBinaryOp(String torreyOp)
     {
-        switch (rawText)
+        switch (torreyOp)
         {
             case "+": return BinaryOpType.ADD;
             case "-": return BinaryOpType.SUB;
