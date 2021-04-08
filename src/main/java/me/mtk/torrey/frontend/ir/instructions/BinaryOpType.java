@@ -39,4 +39,31 @@ public enum BinaryOpType
         }
     }
 
+    /**
+     * Negates the given IR operator, returning the inverse operator.
+     * 
+     * @param opType An IR operator.
+     * @return The inverse IR operator.
+     */
+    public static BinaryOpType negate(BinaryOpType opType)
+    {
+        switch (opType)
+        {
+            case ADD: return SUB;
+            case SUB: return ADD;
+            case MULT: return DIV;
+            case DIV: return MULT;
+            case EQUAL: return NEQUAL;
+            case NEQUAL: return EQUAL;
+            case LT: return GTE;
+            case LTE: return GT;
+            case GT: return LTE;
+            case GTE: return LT;
+            default:
+                throw new Error(String.format("BinaryOpType.negate(): "
+                    + " BinaryOpType %s has no corresponding negation.", 
+                    opType));
+        }
+    }
+
 }

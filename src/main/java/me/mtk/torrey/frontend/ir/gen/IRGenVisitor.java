@@ -214,21 +214,18 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(CompareExpr expr)
     {
         final LabelAddress label = new LabelAddress();
+        
         final Address arg1 = getDestinationAddr(expr.first());
         final Address arg2 = getDestinationAddr(expr.second());
-        // only goto label if condition is false, so we 
+        
+        final String torreyOp = expr.token().rawText();
+        final BinaryOpType irOp = BinaryOpType.transBinaryOp(torreyOp);
+
+        // Only go to label if condition is false, so we 
         // negate the condition.
-        final String rawText = expr.token().rawText();
-        BinaryOpType op = null;
-        if (rawText.equals("<"))
-            op = BinaryOpType.GTE;
-        else if (rawText.equals("<="))
-            op = BinaryOpType.GT;
-        else if (rawText.equals(">"))
-            op = BinaryOpType.LTE;
-        else if (rawText.equals(">="))
-            op = BinaryOpType.LT;
-        irProgram.addQuad(new IfInst(op, arg1, arg2, label));
+        final BinaryOpType negatedIrOp = BinaryOpType.negate(irOp);
+
+        irProgram.addQuad(new IfInst(negatedIrOp, arg1, arg2, label));
         return label;
     }
 
