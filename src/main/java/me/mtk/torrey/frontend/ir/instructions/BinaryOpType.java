@@ -19,7 +19,7 @@ public enum BinaryOpType
      * @param torreyOp The Torrey operator.
      * @return The corresponding IR operator.
      */
-    public static BinaryOpType transBinaryOp(String torreyOp)
+    public static BinaryOpType transTorreyOp(String torreyOp)
     {
         switch (torreyOp)
         {
@@ -34,7 +34,7 @@ public enum BinaryOpType
             case ">=": return BinaryOpType.GTE;
 
             default: 
-                throw new Error("BinaryOpType.transBinaryOp(): Cannot"
+                throw new Error("BinaryOpType.transTorreyOp(): Cannot"
                     + " translate raw text to an IR binary operator");
         }
     }

@@ -181,7 +181,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(ArithmeticExpr expr)
     {
         final TempAddress result = new TempAddress();
-        final BinaryOpType op = BinaryOpType.transBinaryOp(
+        final BinaryOpType op = BinaryOpType.transTorreyOp(
             expr.token().rawText());
 
         if (expr.getFold() != null)
@@ -219,7 +219,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
         final Address arg2 = getDestinationAddr(expr.second());
         
         final String torreyOp = expr.token().rawText();
-        final BinaryOpType irOp = BinaryOpType.transBinaryOp(torreyOp);
+        final BinaryOpType irOp = BinaryOpType.transTorreyOp(torreyOp);
 
         // Only go to label if condition is false, so we 
         // negate the condition.
