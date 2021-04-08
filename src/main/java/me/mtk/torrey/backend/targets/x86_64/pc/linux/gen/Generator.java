@@ -138,7 +138,7 @@ public final class Generator
     private void gen(CopyInst inst)
     {
         final Address srcAddr = inst.arg1();
-        final TempAddress destAddr = inst.result();
+        final Address destAddr = inst.result();
 
         X86Address src = null;
         final X86Address dest = new Temporary(destAddr.toString());
@@ -157,7 +157,7 @@ public final class Generator
     private void gen(UnaryInst inst)
     { 
         final Address srcAddr = inst.arg1();
-        final TempAddress destAddr = inst.result();
+        final Address destAddr = inst.result();
 
         X86Address src = null;
         final X86Address dest = new Temporary(destAddr.toString());
@@ -183,7 +183,7 @@ public final class Generator
         final String op = inst.op().opText();
         final Address arg1Addr = inst.arg1();
         final Address arg2Addr = inst.arg2();
-        final TempAddress destAddr = inst.result();
+        final Address destAddr = inst.result();
 
         X86Address arg1 = null, arg2 = null;
         final X86Address dest = new Temporary(destAddr.toString());
