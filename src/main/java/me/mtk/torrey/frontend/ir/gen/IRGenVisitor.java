@@ -372,7 +372,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
 
         final TempAddress result = new TempAddress();
 
-        if (expr.consequent() instanceof IdentifierExpr)
+        if (consequentAddr != null)
             irProgram.addQuad(new CopyInst(result, consequentAddr));
 
         // After the consequent, generate an unconditional jump to
@@ -383,7 +383,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
         irProgram.addQuad(new LabelInst((LabelAddress) elseLabel));
         final Address altAddr = expr.alternative().accept(this);
 
-        if (expr.alternative() instanceof IdentifierExpr)
+        if (altAddr != null)
             irProgram.addQuad(new CopyInst(result, altAddr));
 
         // Finally, generate the done label instruction.
