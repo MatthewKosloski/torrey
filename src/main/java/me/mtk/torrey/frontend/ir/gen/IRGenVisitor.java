@@ -9,7 +9,6 @@ import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.CompareExpr;
 import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.Foldable;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
 import me.mtk.torrey.frontend.ast.IntegerExpr;
