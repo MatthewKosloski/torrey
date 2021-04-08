@@ -36,6 +36,7 @@ import me.mtk.torrey.frontend.ir.instructions.LabelInst;
 import me.mtk.torrey.frontend.ir.instructions.ParamInst;
 import me.mtk.torrey.frontend.ir.instructions.UnaryInst;
 import me.mtk.torrey.frontend.ir.instructions.UnaryOpType;
+import me.mtk.torrey.frontend.lexer.TokenType;
 import me.mtk.torrey.frontend.ir.instructions.BinaryOpType;
 
 /**
@@ -117,11 +118,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
         if (expr instanceof IntegerExpr)
             rhs = new ConstAddress(expr.token().rawText());
         else if (expr instanceof BooleanExpr)
-        {
-            final String rawText = expr.token().rawText();
-            final boolean constant = rawText.equals("true");            
-            rhs = new ConstAddress(constant);
-        }
+            rhs = new ConstAddress(expr.token().type() 
+                == TokenType.TRUE);
         else
         {
             throw new Error("IRGenVisitor.visit(PrimitiveExpr):"
