@@ -345,26 +345,35 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
 
     public Address visit(IfExpr expr)
     {
-        // Generate IR instructions for the condition, returning
-        // the address of the else label.
+        // Generate IR instructions for the test condition, 
+        // returning the address of the else label.
         final Address elseLabel = expr.test().accept(this);
 
         final LabelAddress doneLabel = new LabelAddress();
         
         // Generate IR instructions for the consequent condition.
-        expr.consequent().accept(this);
-        
+        final Address consequentAddr = expr.consequent().accept(this);
+
+        final TempAddress result = new TempAddress();
+
+        if (expr.consequent() instanceof IdentifierExpr)
+            irProgram.addQuad(new CopyInst(result, consequentAddr));
+
         // After the consequent, generate an unconditional jump to
         // the done label.
         irProgram.addQuad(new GotoInst(doneLabel));
 
         // Generate IR instructions for the alternative condition.
         irProgram.addQuad(new LabelInst((LabelAddress) elseLabel));
-        expr.alternative().accept(this);
+        final Address altAddr = expr.alternative().accept(this);
+
+        if (expr.alternative() instanceof IdentifierExpr)
+            irProgram.addQuad(new CopyInst(result, altAddr));
 
         // Finally, generate the done label instruction.
         irProgram.addQuad(new LabelInst((LabelAddress) doneLabel));
-        return null;
+
+        return result;
     }
 
     /*
