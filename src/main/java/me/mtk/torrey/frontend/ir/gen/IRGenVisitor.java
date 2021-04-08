@@ -168,9 +168,24 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
             final BinaryOpType op = BinaryOpType.transBinaryOp(
                 expr.token().rawText());
 
-            final String foldedConstant = expr.getFold().token().rawText();
-            final ConstAddress rhs = new ConstAddress(foldedConstant);
-            irProgram.addQuad(new CopyInst(result, rhs));
+            if (expr.getFold() != null)
+            {
+                // The binary expression can be reduced to a constant
+                // expression, so create a constant address.
+                final String foldedConstant = expr.getFold().token().rawText();
+                final ConstAddress rhs = new ConstAddress(foldedConstant);
+                irProgram.addQuad(new CopyInst(result, rhs));
+            }
+            else 
+            {
+                // The binary expression cannot be reduced and thus
+                // an arithmetic instruction must be emitted.
+                final Address arg1 = getDestinationAddr(expr.first());
+                final Address arg2 = getDestinationAddr(expr.second());
+                irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
+    
+            }
+            
             return result;
         }
         else if (expr instanceof CompareExpr)
