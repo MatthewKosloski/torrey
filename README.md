@@ -160,15 +160,25 @@ quadruple    -> copy
               | unary 
               | binary 
               | param 
-              | call ;
+              | call 
+              | if
+              | label
+              | goto;
 
 copy         -> temp "=" addr ;
 unary        -> temp "=" "-" addr ;
-binary       -> temp "=" addr ("+" | "-" | "*" | "/" | "==" | "<" | "<=" | ">" | ">=") addr ;
+binary       -> temp "=" addr (arithOp | relOp) addr ;
 param        -> "param" addr ;
 call         -> "call" name "," constant ;
+if           -> "if" addr relOp addr goto ;
+label        -> "label" labelid ":" ;
+goto         -> "goto" labelid ;
 
 addr         -> temp | name | constant ;
+
+relOp       -> "==" | "<" | "<=" | ">" | ">=" ;
+arithOp     -> "+" | "-" | "*" | "/" ;
+labelid     -> "l0" | "l1" | "l2" | ... ;
 ```
 
 ## Adding Additional Backends
