@@ -163,53 +163,73 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(BinaryExpr expr)
     {
         if (expr instanceof ArithmeticExpr)
-        {
-            final TempAddress result = new TempAddress();
-            final BinaryOpType op = BinaryOpType.transBinaryOp(
-                expr.token().rawText());
-
-            if (expr.getFold() != null)
-            {
-                // The binary expression can be reduced to a constant
-                // expression, so create a constant address.
-                final String foldedConstant = expr.getFold().token().rawText();
-                final ConstAddress rhs = new ConstAddress(foldedConstant);
-                irProgram.addQuad(new CopyInst(result, rhs));
-            }
-            else 
-            {
-                // The binary expression cannot be reduced and thus
-                // an arithmetic instruction must be emitted.
-                final Address arg1 = getDestinationAddr(expr.first());
-                final Address arg2 = getDestinationAddr(expr.second());
-                irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
-    
-            }
-            
-            return result;
-        }
+            return visit((ArithmeticExpr) expr);
         else if (expr instanceof CompareExpr)
-        {
-            final LabelAddress label = new LabelAddress();
-            final Address arg1 = getDestinationAddr(expr.first());
-            final Address arg2 = getDestinationAddr(expr.second());
-            // only goto label if condition is false, so we 
-            // negate the condition.
-            final String rawText = expr.token().rawText();
-            BinaryOpType op = null;
-            if (rawText.equals("<"))
-                op = BinaryOpType.GTE;
-            else if (rawText.equals("<="))
-                op = BinaryOpType.GT;
-            else if (rawText.equals(">"))
-                op = BinaryOpType.LTE;
-            else if (rawText.equals(">="))
-                op = BinaryOpType.LT;
-            irProgram.addQuad(new IfInst(op, arg1, arg2, label));
-            return label;
-        }
+            return visit((CompareExpr) expr);
 
         return null;
+    }
+
+    /**
+     * Generates one or more IR instructions for the
+     * given arithmetic AST node.
+     * 
+     * @param expr An arithmetic AST node.
+     * @return The destination address of the
+     * result of the arithmetic instruction.
+     */
+    public Address visit(ArithmeticExpr expr)
+    {
+        final TempAddress result = new TempAddress();
+        final BinaryOpType op = BinaryOpType.transBinaryOp(
+            expr.token().rawText());
+
+        if (expr.getFold() != null)
+        {
+            // The binary expression can be reduced to a constant
+            // expression, so create a constant address.
+            final String foldedConstant = expr.getFold().token().rawText();
+            final ConstAddress rhs = new ConstAddress(foldedConstant);
+            irProgram.addQuad(new CopyInst(result, rhs));
+        }
+        else 
+        {
+            // The binary expression cannot be reduced and thus
+            // an arithmetic instruction must be emitted.
+            final Address arg1 = getDestinationAddr(expr.first());
+            final Address arg2 = getDestinationAddr(expr.second());
+            irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
+        }
+        
+        return result;
+    }
+
+    /**
+     * Generates one or more IR instructions for the
+     * given binary comparison AST node.
+     * 
+     * @param expr A binary comparison expression.
+     * @return The label of the false branch.
+     */
+    public Address visit(CompareExpr expr)
+    {
+        final LabelAddress label = new LabelAddress();
+        final Address arg1 = getDestinationAddr(expr.first());
+        final Address arg2 = getDestinationAddr(expr.second());
+        // only goto label if condition is false, so we 
+        // negate the condition.
+        final String rawText = expr.token().rawText();
+        BinaryOpType op = null;
+        if (rawText.equals("<"))
+            op = BinaryOpType.GTE;
+        else if (rawText.equals("<="))
+            op = BinaryOpType.GT;
+        else if (rawText.equals(">"))
+            op = BinaryOpType.LTE;
+        else if (rawText.equals(">="))
+            op = BinaryOpType.LT;
+        irProgram.addQuad(new IfInst(op, arg1, arg2, label));
+        return label;
     }
 
     /**
