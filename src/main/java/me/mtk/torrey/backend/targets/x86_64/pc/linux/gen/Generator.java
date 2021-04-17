@@ -20,6 +20,7 @@ import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.AddressingMode;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.BaseRelative;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Register;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Registers;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Temporary;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.X86Address;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Immediate;
@@ -140,11 +141,11 @@ public final class Generator
                 // so move arg1 to register %r10 before
                 // performing the instruction.
                 x86.instrs().add(i, new Movq(inst.arg1(), 
-                    new Register("%r10")));
+                    new Register(Registers.R10)));
 
                 // Update the arg1 of this instruction to
                 // be %r10
-                inst.setArg1(new Register("%r10"));
+                inst.setArg1(new Register(Registers.R10));
             }
         }
 
@@ -157,8 +158,8 @@ public final class Generator
         final X86Address arg1 = transAddress(inst.arg1());
         final X86Address arg2 = transAddress(inst.arg2());
         
-        final Register arg1Temp = new Register("%r10");
-        final Register arg2Temp = new Register("%r11");
+        final Register arg1Temp = new Register(Registers.R10);
+        final Register arg2Temp = new Register(Registers.R11);
         
         // move the operands to temporary registers to
         // perform the comparison.
@@ -235,22 +236,22 @@ public final class Generator
         else if (op == "*")
         {
             // move first argument to rax register
-            x86.addInst(new Movq(arg1, new Register("%rax")));
+            x86.addInst(new Movq(arg1, new Register(Registers.RAX)));
 
             // move second argument to rbx register
-            x86.addInst(new Movq(arg2, new Register("%rbx")));
+            x86.addInst(new Movq(arg2, new Register(Registers.RBX)));
 
             // multiply the contents of %rax by arg2, placing the low
             // 64 bits of the product in %rax.
-            x86.addInst(new Imulq(new Register("%rbx")));
+            x86.addInst(new Imulq(new Register(Registers.RBX)));
 
             // move the product, which is in %rax, to a temp location.
-            x86.addInst(new Movq(new Register("%rax"), dest));
+            x86.addInst(new Movq(new Register(Registers.RAX), dest));
         }
         else if (op == "/")
         {
             // move dividend to rax register
-            x86.addInst(new Movq(arg1, new Register("%rax")));
+            x86.addInst(new Movq(arg1, new Register(Registers.RAX)));
 
             // move divisor to temp destination
             x86.addInst(new Movq(arg2, dest));
@@ -264,7 +265,7 @@ public final class Generator
             x86.addInst(new Idivq(dest));
 
             // Move contents of %rax to destination.
-            x86.addInst(new Movq(new Register("%rax"), dest));
+            x86.addInst(new Movq(new Register(Registers.RAX), dest));
         }
         else 
             throw new Error("X86Generator.gen(BinaryInst):"
@@ -286,7 +287,7 @@ public final class Generator
             for (int i = 0; i < numParams; i++)
             {
                 String param = params.remove();
-                x86.addInst(new Movq(new Temporary(param), new Register("%rdi")));
+                x86.addInst(new Movq(new Temporary(param), new Register(Registers.RDI)));
                 x86.addInst(new Callq(new Global("print_int")));
                 if (procName.equals("println"))
                     x86.addInst(new Callq(new Global("print_nl")));
