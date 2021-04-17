@@ -141,8 +141,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(UnaryExpr expr)
     {
         final TempAddress result = new TempAddress();
-        final UnaryOpType op = UnaryOpType.transUnaryOp(
-            expr.token().rawText());
+        final UnaryOpType op = UnaryOpType.getUnaryOpType(
+            expr.token().type());
 
         final Address arg = getDestinationAddr(expr.first());
 
