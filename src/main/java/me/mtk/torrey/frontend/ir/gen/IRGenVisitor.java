@@ -180,8 +180,8 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(ArithmeticExpr expr)
     {
         final TempAddress result = new TempAddress();
-        final BinaryOpType op = BinaryOpType.transTorreyOp(
-            expr.token().rawText());
+        final BinaryOpType op = BinaryOpType.getBinaryOpType(
+            expr.token().type());
 
         if (expr.getFold() != null)
         {
