@@ -1,5 +1,7 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import me.mtk.torrey.frontend.lexer.TokenType;
+
 public enum BinaryOpType
 {
     ADD,
@@ -14,24 +16,25 @@ public enum BinaryOpType
     GTE;
 
     /**
-     * Translates a Torrey binary operator to an IR operator.
+     * Gets the IR binary operator type corresponding
+     * to the given Torrey token type.
      * 
      * @param torreyOp The Torrey operator.
      * @return The corresponding IR operator.
      */
-    public static BinaryOpType transTorreyOp(String torreyOp)
+    public static BinaryOpType getBinaryOpType(TokenType tokType)
     {
-        switch (torreyOp)
+        switch (tokType)
         {
-            case "+": return BinaryOpType.ADD;
-            case "-": return BinaryOpType.SUB;
-            case "*": return BinaryOpType.MULT;
-            case "/": return BinaryOpType.DIV;
-            case "==": return BinaryOpType.EQUAL;
-            case "<": return BinaryOpType.LT;
-            case "<=": return BinaryOpType.LTE;
-            case ">": return BinaryOpType.GT;
-            case ">=": return BinaryOpType.GTE;
+            case PLUS: return BinaryOpType.ADD;
+            case MINUS: return BinaryOpType.SUB;
+            case STAR: return BinaryOpType.MULT;
+            case SLASH: return BinaryOpType.DIV;
+            case EQUAL: return BinaryOpType.EQUAL;
+            case LT: return BinaryOpType.LT;
+            case LTE: return BinaryOpType.LTE;
+            case GT: return BinaryOpType.GT;
+            case GTE: return BinaryOpType.GTE;
 
             default: 
                 throw new Error("BinaryOpType.transTorreyOp(): Cannot"
@@ -40,10 +43,11 @@ public enum BinaryOpType
     }
 
     /**
-     * Negates the given IR operator, returning the inverse operator.
+     * Negates the given IR operator type, 
+     * returning the inverse operator type.
      * 
-     * @param opType An IR operator.
-     * @return The inverse IR operator.
+     * @param opType An IR operator type.
+     * @return The inverse IR operator type.
      */
     public static BinaryOpType negate(BinaryOpType opType)
     {

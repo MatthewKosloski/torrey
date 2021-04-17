@@ -217,14 +217,14 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
         final Address arg1 = getDestinationAddr(expr.first());
         final Address arg2 = getDestinationAddr(expr.second());
         
-        final String torreyOp = expr.token().rawText();
-        final BinaryOpType irOp = BinaryOpType.transTorreyOp(torreyOp);
+        final TokenType tokType = expr.token().type();
+        final BinaryOpType irOpType = BinaryOpType.getBinaryOpType(tokType);
 
         // Only go to label if condition is false, so we 
         // negate the condition.
-        final BinaryOpType negatedIrOp = BinaryOpType.negate(irOp);
+        final BinaryOpType negatedIrOpTye = BinaryOpType.negate(irOpType);
 
-        irProgram.addQuad(new IfInst(negatedIrOp, arg1, arg2, label));
+        irProgram.addQuad(new IfInst(negatedIrOpTye, arg1, arg2, label));
         return label;
     }
 
