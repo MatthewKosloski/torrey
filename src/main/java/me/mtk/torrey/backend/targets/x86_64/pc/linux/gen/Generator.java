@@ -192,16 +192,8 @@ public final class Generator
         final Address srcAddr = inst.arg1();
         final Address destAddr = inst.result();
 
-        X86Address src = null;
+        final X86Address src = transAddress(srcAddr);
         final X86Address dest = new Temporary(destAddr.toString());
-
-        if (srcAddr instanceof ConstAddress)
-            src = transConstAddress((ConstAddress) srcAddr);
-        else if (srcAddr instanceof TempAddress)
-            src = new Temporary(srcAddr.toString());
-        else
-            throw new Error("X86Generator.gen(CopyInst):"
-                + " Unhandled Address.");
 
         x86.addInst(new Movq(src, dest));
     }
@@ -211,16 +203,8 @@ public final class Generator
         final Address srcAddr = inst.arg1();
         final Address destAddr = inst.result();
 
-        X86Address src = null;
+        final X86Address src = transAddress(srcAddr);
         final X86Address dest = new Temporary(destAddr.toString());
-
-        if (srcAddr instanceof ConstAddress)
-            src = transConstAddress((ConstAddress) srcAddr);
-        else if (srcAddr instanceof TempAddress)
-            src = new Temporary(srcAddr.toString());
-        else
-            throw new Error("X86Generator.gen(UnaryInst):"
-                + " Unhandled Address.");
 
         x86.addInst(new Movq(src, dest));
         x86.addInst(new Negq(dest));
@@ -237,24 +221,9 @@ public final class Generator
         final Address arg2Addr = inst.arg2();
         final Address destAddr = inst.result();
 
-        X86Address arg1 = null, arg2 = null;
+        final X86Address arg1 = transAddress(arg1Addr);
+        final X86Address arg2 = transAddress(arg2Addr);
         final X86Address dest = new Temporary(destAddr.toString());
-
-        if (arg1Addr instanceof ConstAddress)
-            arg1 = transConstAddress((ConstAddress) arg1Addr);
-        else if (arg1Addr instanceof TempAddress)
-            arg1 = new Temporary(arg1Addr.toString());
-        else
-            throw new Error("X86Generator.gen(BinaryInst):"
-                + " Unhandled Address case.");
-
-        if (arg2Addr instanceof ConstAddress)
-            arg2 = transConstAddress((ConstAddress) arg2Addr);
-        else if (arg2Addr instanceof TempAddress)
-            arg2 = new Temporary(arg2Addr.toString());
-        else
-            throw new Error("X86Generator.gen(BinaryInst):"
-                + " Unhandled Address case.");
 
         if (op == "+" || op == "-")
         {
@@ -329,11 +298,6 @@ public final class Generator
         }
     }
 
-    private Immediate transConstAddress(ConstAddress addr)
-    {
-        return new Immediate(String.format("$%s", addr));
-    }
-
     /*
      * Converts the given IR address to an equivalent x86 address.
      * 
@@ -343,7 +307,7 @@ public final class Generator
     private X86Address transAddress(Address addr)
     {
         if (addr instanceof ConstAddress)
-            return transConstAddress((ConstAddress) addr);
+            return new Immediate(String.format("$%s", addr));
         else if (addr instanceof TempAddress)
             return new Temporary(addr.toString());
         else
