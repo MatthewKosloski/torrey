@@ -1,5 +1,6 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Optional;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
 public enum UnaryOpType
@@ -13,14 +14,12 @@ public enum UnaryOpType
      * @param torreyOp The Torrey operator.
      * @return The corresponding IR operator.
      */
-    public static UnaryOpType getUnaryOpType(TokenType tokType)
+    public static Optional<UnaryOpType> getUnaryOpType(TokenType tokType)
     {
         switch (tokType)
         {
-            case MINUS: return UnaryOpType.MINUS;
-            default: 
-                throw new Error("Error: Cannot translate raw"
-                    + " text to an IR unary operator");
+            case MINUS: return Optional.of(UnaryOpType.MINUS);
+            default: return Optional.empty();
         }
     }
 

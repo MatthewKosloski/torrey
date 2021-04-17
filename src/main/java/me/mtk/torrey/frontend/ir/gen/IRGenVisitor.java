@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.ir.gen;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 import me.mtk.torrey.frontend.ast.ASTNode;
 import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
@@ -141,12 +142,12 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(UnaryExpr expr)
     {
         final TempAddress result = new TempAddress();
-        final UnaryOpType op = UnaryOpType.getUnaryOpType(
+        final Optional<UnaryOpType> op = UnaryOpType.getUnaryOpType(
             expr.token().type());
 
         final Address arg = getDestinationAddr(expr.first());
 
-        irProgram.addQuad(new UnaryInst(op, arg, result));
+        irProgram.addQuad(new UnaryInst(op.get(), arg, result));
 
         return result;
     }
@@ -180,7 +181,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(ArithmeticExpr expr)
     {
         final TempAddress result = new TempAddress();
-        final BinaryOpType op = BinaryOpType.getBinaryOpType(
+        final Optional<BinaryOpType> op = BinaryOpType.getBinaryOpType(
             expr.token().type());
 
         if (expr.getFold() != null)
@@ -197,7 +198,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
             // an arithmetic instruction must be emitted.
             final Address arg1 = getDestinationAddr(expr.first());
             final Address arg2 = getDestinationAddr(expr.second());
-            irProgram.addQuad(new BinaryInst(op, arg1, arg2, result));
+            irProgram.addQuad(new BinaryInst(op.get(), arg1, arg2, result));
         }
         
         return result;
@@ -218,13 +219,16 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
         final Address arg2 = getDestinationAddr(expr.second());
         
         final TokenType tokType = expr.token().type();
-        final BinaryOpType irOpType = BinaryOpType.getBinaryOpType(tokType);
+        final Optional<BinaryOpType> irOpType = BinaryOpType.getBinaryOpType(
+            tokType);
 
         // Only go to label if condition is false, so we 
         // negate the condition.
-        final BinaryOpType negatedIrOpTye = BinaryOpType.negate(irOpType);
+        final Optional<BinaryOpType> negatedIrOpType = BinaryOpType.negate(
+            irOpType.get());
 
-        irProgram.addQuad(new IfInst(negatedIrOpTye, arg1, arg2, label));
+        irProgram.addQuad(new IfInst(negatedIrOpType.get(), arg1, 
+            arg2, label));
         return label;
     }
 

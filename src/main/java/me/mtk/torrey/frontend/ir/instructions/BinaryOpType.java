@@ -1,5 +1,7 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Optional;
+
 import me.mtk.torrey.frontend.lexer.TokenType;
 
 public enum BinaryOpType
@@ -16,29 +18,26 @@ public enum BinaryOpType
     GTE;
 
     /**
-     * Gets the IR binary operator type corresponding
+     * Gets the binary IR operator type corresponding
      * to the given Torrey token type.
      * 
-     * @param torreyOp The Torrey operator.
-     * @return The corresponding IR operator.
+     * @param tokType A Torrey token type.
+     * @return The corresponding binary IR operator type.
      */
-    public static BinaryOpType getBinaryOpType(TokenType tokType)
+    public static Optional<BinaryOpType> getBinaryOpType(TokenType tokType)
     {
         switch (tokType)
         {
-            case PLUS: return BinaryOpType.ADD;
-            case MINUS: return BinaryOpType.SUB;
-            case STAR: return BinaryOpType.MULT;
-            case SLASH: return BinaryOpType.DIV;
-            case EQUAL: return BinaryOpType.EQUAL;
-            case LT: return BinaryOpType.LT;
-            case LTE: return BinaryOpType.LTE;
-            case GT: return BinaryOpType.GT;
-            case GTE: return BinaryOpType.GTE;
-
-            default: 
-                throw new Error("BinaryOpType.transTorreyOp(): Cannot"
-                    + " translate raw text to an IR binary operator");
+            case PLUS: return Optional.of(BinaryOpType.ADD);
+            case MINUS: return Optional.of(BinaryOpType.SUB);
+            case STAR: return Optional.of(BinaryOpType.MULT);
+            case SLASH: return Optional.of(BinaryOpType.DIV);
+            case EQUAL: return Optional.of(BinaryOpType.EQUAL);
+            case LT: return Optional.of(BinaryOpType.LT);
+            case LTE: return Optional.of(BinaryOpType.LTE);
+            case GT: return Optional.of(BinaryOpType.GT);
+            case GTE: return Optional.of(BinaryOpType.GTE);
+            default: return Optional.empty();
         }
     }
 
@@ -49,24 +48,21 @@ public enum BinaryOpType
      * @param opType An IR operator type.
      * @return The inverse IR operator type.
      */
-    public static BinaryOpType negate(BinaryOpType opType)
+    public static Optional<BinaryOpType> negate(BinaryOpType opType)
     {
         switch (opType)
         {
-            case ADD: return SUB;
-            case SUB: return ADD;
-            case MULT: return DIV;
-            case DIV: return MULT;
-            case EQUAL: return NEQUAL;
-            case NEQUAL: return EQUAL;
-            case LT: return GTE;
-            case LTE: return GT;
-            case GT: return LTE;
-            case GTE: return LT;
-            default:
-                throw new Error(String.format("BinaryOpType.negate(): "
-                    + " BinaryOpType %s has no corresponding negation.", 
-                    opType));
+            case ADD: return Optional.of(SUB);
+            case SUB: return Optional.of(ADD);
+            case MULT: return Optional.of(DIV);
+            case DIV: return Optional.of(MULT);
+            case EQUAL: return Optional.of(NEQUAL);
+            case NEQUAL: return Optional.of(EQUAL);
+            case LT: return Optional.of(GTE);
+            case LTE: return Optional.of(GT);
+            case GT: return Optional.of(LTE);
+            case GTE: return Optional.of(LT);
+            default: return Optional.empty();
         }
     }
 
