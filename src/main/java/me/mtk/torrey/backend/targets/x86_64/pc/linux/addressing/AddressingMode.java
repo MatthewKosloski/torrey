@@ -30,5 +30,8 @@ public enum AddressingMode
     // A base-relative value, obtained by adding a signed
     // integer (an offset) to the name of a register (base)
     // (e.g., -8(%rbp)).
-    BASEREL
+    BASEREL,
+
+    // An x86 instruction label.
+    LABEL
 }
