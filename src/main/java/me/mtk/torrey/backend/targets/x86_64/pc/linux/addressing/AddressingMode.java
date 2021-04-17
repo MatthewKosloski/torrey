@@ -16,7 +16,9 @@ public enum AddressingMode
     // Not a real x86 addressing mode,
     // but we use it in our "pseudo-x86"
     // program that contains an infinite
-    // number of temporaries
+    // number of temporaries. Later on in compilation,
+    // these temporaries are replaced by either registers
+    // or stack locations.
     TEMP,
 
     // A global value in the .data segment of memory (e.g., 'x')
