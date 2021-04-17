@@ -208,10 +208,6 @@ public final class Generator
 
         x86.addInst(new Movq(src, dest));
         x86.addInst(new Negq(dest));
-
-        // TODO: The x86 instruction corresponding to the IR instruction
-        // `x = - y` is `negq y`, and thus the new destination is y. We
-        // need to replace all subsequent occurrences of x with y.
     }
 
     private void gen(BinaryInst inst)
