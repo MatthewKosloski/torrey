@@ -11,7 +11,7 @@ public final class GotoInst extends Quadruple
      */
     public GotoInst(LabelAddress label)
     {
-        super(new GotoOperator(), label);
+        super(new GotoOperator(), null, null, label);
     }
 
     /**
@@ -21,6 +21,6 @@ public final class GotoInst extends Quadruple
      */
     public String toString()
     {
-        return String.format("%s %s", op.opText(), arg1);
+        return String.format("%s %s", op.opText(), result);
     }
 }
