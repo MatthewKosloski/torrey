@@ -177,15 +177,12 @@ public final class Generator
 
     private void gen(LabelInst inst)
     {
-        System.out.println();
         x86.addInst(new Label(new LabelAddress(inst.arg1().toString())));
     }
 
     private void gen(GotoInst inst)
     {
-        System.out.println();
-        x86.addInst(new Jmp(new LabelAddress(inst.arg1().toString())));
-        // x86.addInst(new Label(inst.arg1()));
+        x86.addInst(new Jmp(new LabelAddress(inst.result().toString())));
     }
 
     private void gen(CopyInst inst)
