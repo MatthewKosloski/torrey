@@ -8,27 +8,27 @@ public final class Addq extends BinaryArithmetic
 {
     private static final String op = "addq";
 
-    private Addq(Register src, Register dest)
+    public Addq(Register src, Register dest)
     {
         super(op, src, dest);
     }  
 
-    private Addq(BaseRelative src, Register dest)
+    public Addq(BaseRelative src, Register dest)
     {
         super(op, src, dest);
     }  
 
-    private Addq(Register src, BaseRelative dest)
+    public Addq(Register src, BaseRelative dest)
     {
         super(op, src, dest);
     }  
 
-    private Addq(Immediate src, Register dest)
+    public Addq(Immediate src, Register dest)
     {
         super(op, src, dest);
     }  
 
-    private Addq(Immediate src, BaseRelative dest)
+    public Addq(Immediate src, BaseRelative dest)
     {
         super(op, src, dest);
     }  
