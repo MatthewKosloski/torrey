@@ -1,34 +1,12 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions;
 
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.BaseRelative;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Immediate;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Register;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.X86Address;
 
-public final class Addq extends BinaryArithmetic
+public final class Addq extends X86Inst
 {
     private static final String op = "addq";
 
-    public Addq(Register src, Register dest)
-    {
-        super(op, src, dest);
-    }  
-
-    public Addq(BaseRelative src, Register dest)
-    {
-        super(op, src, dest);
-    }  
-
-    public Addq(Register src, BaseRelative dest)
-    {
-        super(op, src, dest);
-    }  
-
-    public Addq(Immediate src, Register dest)
-    {
-        super(op, src, dest);
-    }  
-
-    public Addq(Immediate src, BaseRelative dest)
+    public Addq(X86Address src, X86Address dest)
     {
         super(op, src, dest);
     }  
