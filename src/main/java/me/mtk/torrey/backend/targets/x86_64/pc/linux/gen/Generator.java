@@ -250,10 +250,22 @@ public final class Generator
         // Perform the comparison.
         x86.addInst(new Cmp(arg2Temp, arg1Temp));
 
-        // Conditional jump if comparison is false.
-        if (inst.op().opText().equals(">="))
-            x86.addInst(new Jcc(ConditionCode.JGE, 
-                new LabelAddress(inst.result().toString())));
+
+    
+        final LabelAddress labelAddr = new LabelAddress(inst.result().toString());
+
+        // TODO: Fix this sloppiness.
+        ConditionCode cc;
+        switch(inst.op().opText())
+        {
+            case "<": cc = ConditionCode.JL; break;
+            case "<=": cc = ConditionCode.JLE; break;
+            case ">": cc = ConditionCode.JG; break;
+            case ">=": cc = ConditionCode.JGE; break;
+            default: cc = null;
+        }
+
+        x86.addInst(new Jcc(cc, labelAddr));
     }
 
     private void gen(LabelInst inst)
