@@ -300,7 +300,7 @@ public final class Generator
         final X86Address arg2 = transAddress(arg2Addr);
         final Temporary dest = new Temporary(destAddr.toString());
 
-        if (op == "+" || op == "-")
+        if (op.equals("+") || op.equals("-"))
         {
             // Store first argument in temp
             x86.addInst(new Movq(arg1, dest));
@@ -312,7 +312,7 @@ public final class Generator
             else
                 x86.addInst(new Subq(arg2, dest));
         }
-        else if (op == "*")
+        else if (op.equals("*"))
         {
             // move first argument to rax register
             x86.addInst(new Movq(arg1, new Register(Registers.RAX)));
@@ -327,7 +327,7 @@ public final class Generator
             // move the product, which is in %rax, to a temp location.
             x86.addInst(new Movq(new Register(Registers.RAX), dest));
         }
-        else if (op == "/")
+        else if (op.equals("/"))
         {
             // move dividend to rax register
             x86.addInst(new Movq(arg1, new Register(Registers.RAX)));
