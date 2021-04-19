@@ -24,11 +24,14 @@ public final class AssemblerDirective
         
         sb.append(type);
 
-        for (T datum : data)
+        if (data != null)
         {
-            sb.append("\t")
-                .append(datum)
-                .append("\n");
+            for (Object datum : data)
+            {
+                sb.append("\t")
+                    .append(datum)
+                    .append("\n");
+            }
         }
 
         return sb.toString();
