@@ -23,7 +23,7 @@ public final class AssemblerDirective
         final StringBuilder sb = new StringBuilder();
         
         sb.append(type)
-            .append("\s");
+            .append(" ");
 
         if (data != null)
         {

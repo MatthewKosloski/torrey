@@ -60,7 +60,7 @@ public final class X86Program implements TargetProgram
             // first. The first directive sets the 
             // start of the .text segment.
             if (i != 0)
-                sb.append("\s\s");       
+                sb.append("  ");       
 
             sb.append(textSegment.get(i));
             if (i != textSegment.size() - 1)
@@ -74,7 +74,7 @@ public final class X86Program implements TargetProgram
             // Indent every instruction except
             // for labels.
             if (!(inst instanceof Label))
-                sb.append("\s\s");
+                sb.append("  ");
 
             sb.append(inst);
 
