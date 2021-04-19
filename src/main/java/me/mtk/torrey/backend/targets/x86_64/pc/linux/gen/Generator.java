@@ -27,6 +27,7 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Immediate;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.LabelAddress;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Global;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.X86Inst;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Addq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Callq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Cmp;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.ConditionCode;
@@ -38,6 +39,7 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Idivq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Imulq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Movq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Negq;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Subq;
 
 /**
  * Generates 64-bit x86 assembly code
@@ -217,18 +219,19 @@ public final class Generator
 
         final X86Address arg1 = transAddress(arg1Addr);
         final X86Address arg2 = transAddress(arg2Addr);
-        final X86Address dest = new Temporary(destAddr.toString());
+        final Temporary dest = new Temporary(destAddr.toString());
 
         if (op == "+" || op == "-")
         {
             // Store first argument in temp
             x86.addInst(new Movq(arg1, dest));
 
-            final String opcode = op == "+" ? "addq" : "subq";
-
             // Add or subtract the second argument
             // by the first, storing the result in dest.
-            x86.addInst(new X86Inst(opcode, arg2, dest));
+            if (op.equals("+"))
+                x86.addInst(new Addq(arg2, dest));
+            else
+                x86.addInst(new Subq(arg2, dest));
         }
         else if (op == "*")
         {
