@@ -2,6 +2,7 @@ package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
 
 import java.util.Map;
 import java.util.Queue;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import me.mtk.torrey.frontend.ir.instructions.Quadruple;
@@ -39,6 +40,9 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Idivq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Imulq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Movq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Negq;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Popq;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Pushq;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Retq;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Subq;
 
 /**
@@ -49,6 +53,14 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Subq;
  */
 public final class Generator 
 {
+    // The name of the label of the program's prelude.
+    private static final String PRELUDE_LABEL_NAME = "main";
+
+    // The name of the label of the program's entry point.
+    private static final String ENTRY_LABEL_NAME = "start";
+
+    // The name of the label of the program's conclusion.
+    private static final String CONCLUSION_LABEL_NAME = "conclusion";
     
     // The IR program from which x86 code will be generated.
     private IRProgram ir;
@@ -59,15 +71,66 @@ public final class Generator
     // The temp names pointing to parameters of subsequent call instructions.
     private Queue<String> params;
 
+    // The program's stack size measured in bytes (a multiple of 16).
+    private final int stackSize;
+
     public Generator(IRProgram ir)
     {
         this.ir = ir;
-        this.x86 = new X86Program(ir.temps().size() * 8);
+        this.x86 = new X86Program();
         params = new LinkedList<>();
+
+        // By default, allocate 8 bytes per temp variable.
+        final int tempStackSize = ir.temps().size() * 8;
+
+        // Ensure the stack pointer is 16-bytes aligned
+        // by setting tempStackSize to the nearest
+        // multiple of 16.
+        if (tempStackSize % 16 != 0)
+            // tempStackSize isn't a multiple of 16,
+            // so set it to the nearest multiple of 16.
+            this.stackSize = closestMultiple(tempStackSize, 16);
+        else
+            this.stackSize = tempStackSize;
     }
 
     public X86Program gen()
     {
+        // Add assembler directives.
+        x86.addDirective(new AssemblerDirective(AssemblerDirectiveType.TEXT));
+        x86.addDirective(new AssemblerDirective(AssemblerDirectiveType.GLOBL, 
+            Arrays.asList(PRELUDE_LABEL_NAME)));
+
+        final LabelAddress preludeAddr = new LabelAddress(PRELUDE_LABEL_NAME);
+        final LabelAddress entryAddr = new LabelAddress(ENTRY_LABEL_NAME);
+        final LabelAddress concludeAddr = new LabelAddress(CONCLUSION_LABEL_NAME);
+
+        // Generate instructions for the program's entry point.
+        x86.addInst(new Label(preludeAddr))
+
+            // Save the caller's base pointer in our stack. The base
+            // pointer points to the beginning of a stack frame. This
+            // also aligns the stack pointer.
+            .addInst(new Pushq(Register.RBP))
+
+            // The top of the stack now contains the caller's (the OS's)
+            // base pointer (thus %rsp points to it). Change the base
+            // pointer so that it points to the location of the old
+            // base pointer.
+            .addInst(new Movq(Register.RSP, Register.RBP))
+
+            // Allocate the stack by moving the stack pointer down
+            // stackSize bytes (remember, the stack grows downward,
+            // so we must subtract to increase the stack size).
+            .addInst(new Subq(new Immediate(stackSize), Register.RSP))
+
+            // Unconditionally jump to the start of our program.
+            .addInst(new Jmp(entryAddr));
+
+        
+        // Generate the program's instructions by translating
+        // IR instructions to x86_64 instructions.
+        x86.addInst(new Label(entryAddr));
         for (Quadruple quad : ir.quads())
         {
             if (quad instanceof CopyInst)
@@ -89,6 +152,22 @@ public final class Generator
             else
                 throw new Error("Cannot generate x86 instruction");
         }
+
+        // Unconditionally jump to the conclusion of our program.
+        x86.addInst(new Jmp(concludeAddr));
+
+        x86.addInst(new Label(concludeAddr))
+            
+            // Move the stack pointer up stackSize bytes to 
+            // the old base pointer.
+            .addInst(new Addq(new Immediate(stackSize), Register.RSP))
+
+            // Pop the old base pointer off the stack, storing it in
+            // register %rbp.
+            .addInst(new Popq(Register.RBP))
+
+            // Pop the OS's return address off the stack and jump to it.
+            .addInst(new Retq());
 
         // At this point, we have a "pseudo-x86" program with a, potentially
         // infinite, amount of IR temporaries. We need to replace all temporaries 
@@ -173,8 +252,8 @@ public final class Generator
 
         // Conditional jump if comparison is false.
         if (inst.op().opText().equals(">="))
-         x86.addInst(new Jcc(ConditionCode.JGE, 
-            new LabelAddress(inst.result().toString())));
+            x86.addInst(new Jcc(ConditionCode.JGE, 
+                new LabelAddress(inst.result().toString())));
     }
 
     private void gen(LabelInst inst)
@@ -311,4 +390,13 @@ public final class Generator
             throw new Error("transAddress(Address): Cannot translate.");
     }
 
+    private int closestMultiple(int n, int x) 
+    {    
+        if (x > n) 
+           return x;
+
+        n = n + x / 2; 
+        n = n - (n % x); 
+        return n;
+    } 
 }
