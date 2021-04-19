@@ -8,13 +8,17 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.X86Inst;
 
 public final class X86Program implements TargetProgram
 {
-    private List<AssemblerDirective> directives;
+    // Holds the list of assembler directives that
+    // are part of the program's text (code) segment.
+    private List<AssemblerDirective> textSegment;
+
+    // Holds the list of x86 instructions of the program.
     private List<X86Inst> instrs;
 
     public X86Program()
     {
         instrs = new ArrayList<>();
-        directives = new ArrayList<>();
+        textSegment = new ArrayList<>();
     }
 
     public X86Program addInst(X86Inst inst)
@@ -23,9 +27,16 @@ public final class X86Program implements TargetProgram
         return this;
     }
 
-    public void addDirective(AssemblerDirective directive)
+    public void addTextSegmentDirective(AssemblerDirective directive)
     {
-        directives.add(directive);
+        // Before adding any directives to the text segment,
+        // we must first add a .text directive to define
+        // the current section as .text.
+        if (textSegment.isEmpty())
+            textSegment.add(new AssemblerDirective(
+                AssemblerDirectiveType.TEXT));
+
+        textSegment.add(directive);
     }
 
     public List<X86Inst> instrs()
@@ -33,19 +44,26 @@ public final class X86Program implements TargetProgram
         return instrs;
     }
 
-    public List<AssemblerDirective> directives()
+    public List<AssemblerDirective> textSegment()
     {
-        return directives;
+        return textSegment;
     }
 
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < directives.size(); i++)
-        {          
-            sb.append(directives.get(i));
-            if (i != directives.size() - 1)
+        // Output the text segment.
+        for (int i = 0; i < textSegment.size(); i++)
+        {   
+            // Indent every directive other than the 
+            // first. The first directive sets the 
+            // start of the .text segment.
+            if (i != 0)
+                sb.append("\s\s");       
+
+            sb.append(textSegment.get(i));
+            if (i != textSegment.size() - 1)
                 sb.append("\n");  
         }
 
