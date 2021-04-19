@@ -96,9 +96,9 @@ public final class Generator
 
     public X86Program gen()
     {
-        // Add assembler directives.
-        x86.addDirective(new AssemblerDirective(AssemblerDirectiveType.TEXT));
-        x86.addDirective(new AssemblerDirective(AssemblerDirectiveType.GLOBL, 
+        // Add assembler directives to the text segment.
+        x86.addTextSegmentDirective(new AssemblerDirective(
+            AssemblerDirectiveType.GLOBL, 
             Arrays.asList(PRELUDE_LABEL_NAME)));
 
         final LabelAddress preludeAddr = new LabelAddress(PRELUDE_LABEL_NAME);
