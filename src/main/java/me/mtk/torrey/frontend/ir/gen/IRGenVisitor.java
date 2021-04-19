@@ -366,29 +366,58 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
     public Address visit(IfExpr expr)
     {
         // Generate IR instructions for the test condition, 
-        // returning the address of the else label.
-        final Address elseLabel = expr.test().accept(this);
-
-        final LabelAddress doneLabel = new LabelAddress();
+        // returning the address of label of the alternate branch.
+        LabelAddress altBranchLabel = null;
+        if (expr.test() instanceof CompareExpr)
+            // The test condition is a comparison, so generate
+            // IR instructions for the comparison.
+            altBranchLabel = (LabelAddress) expr.test().accept(this);
+        else
+        {
+            // The test condition is not a comparison but rather
+            // a primitve boolean, so generate an if-then instruction.
+            final TokenType tokType = expr.test().token().type();
+            altBranchLabel = new LabelAddress();
+            irProgram.addQuad(new IfInst(
+                new ConstAddress(tokType != TokenType.TRUE),
+                altBranchLabel));
+        }
         
-        // Generate IR instructions for the consequent condition.
-        final Address consequentAddr = expr.consequent().accept(this);
+        // Generate IR instructions for the consequent branch.
+        final Address consequentBranchAddr = expr.consequent().accept(this);
 
+        // The result of this if expression will be stored in this temp.
         final TempAddress result = new TempAddress();
 
-        if (consequentAddr != null)
-            irProgram.addQuad(new CopyInst(result, consequentAddr));
+        // If we have an address of the last expression in the
+        // consequent branch, then store it in the temp.
+        if (consequentBranchAddr != null)
+            irProgram.addQuad(new CopyInst(result, consequentBranchAddr));
 
-        // After the consequent, generate an unconditional jump to
-        // the done label.
-        irProgram.addQuad(new GotoInst(doneLabel));
+        // Generate IR instructions for the alternative branch.
+        LabelAddress doneLabel;
+        if (expr.alternative() != null)
+        {
+            // Generate a new label and go to that label if
+            // the test condition is true.
+            doneLabel = new LabelAddress();
+            irProgram.addQuad(new GotoInst(doneLabel));
 
-        // Generate IR instructions for the alternative condition.
-        irProgram.addQuad(new LabelInst((LabelAddress) elseLabel));
-        final Address altAddr = expr.alternative().accept(this);
-
-        if (altAddr != null)
-            irProgram.addQuad(new CopyInst(result, altAddr));
+            irProgram.addQuad(new LabelInst((LabelAddress) altBranchLabel));
+            final Address alternativeBranchAddr = expr.alternative()
+                .accept(this);
+            
+            // If we have an address of the last expression in the
+            // alternative branch, then store it in the temp.
+            if (alternativeBranchAddr != null)
+                irProgram.addQuad(new CopyInst(result, 
+                    alternativeBranchAddr));
+        }
+        else
+            // There is no alternative branch, so make the
+            // done label the same as the label generated
+            // by the if instruction.
+            doneLabel = altBranchLabel;
 
         // Finally, generate the done label instruction.
         irProgram.addQuad(new LabelInst((LabelAddress) doneLabel));
