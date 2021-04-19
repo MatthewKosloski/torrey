@@ -13,6 +13,11 @@ public final class AssemblerDirective
         this.data = data;
     }
 
+    public AssemblerDirective(AssemblerDirectiveType type)
+    {
+        this(type, null);
+    }
+
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
