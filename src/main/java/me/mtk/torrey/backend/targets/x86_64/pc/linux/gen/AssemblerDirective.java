@@ -22,14 +22,14 @@ public final class AssemblerDirective
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append(type);
+        sb.append(type)
+            .append("\s");
 
         if (data != null)
         {
             for (Object datum : data)
             {
-                sb.append("\t")
-                    .append(datum)
+                sb.append(datum)
                     .append("\n");
             }
         }
