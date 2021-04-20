@@ -7,7 +7,9 @@ public enum ConditionCode
     JL,
     JLE,
     JG,
-    JGE;
+    JGE,
+    JE,
+    JNE;
     
     /**
      * Translates an IR binary operator to an x86 condition code.
@@ -23,6 +25,8 @@ public enum ConditionCode
             case LTE: return ConditionCode.JLE;
             case GT: return ConditionCode.JG;
             case GTE: return ConditionCode.JGE;
+            case EQUAL: return ConditionCode.JE;
+            case NEQUAL: return ConditionCode.JNE;
 
             default: 
                 throw new Error("ConditionCode.transIrOp(BinaryOpType):"
