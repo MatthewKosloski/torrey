@@ -121,7 +121,9 @@ public class TorreyConfig
         stopAtCompile = original.stopAtCompile;
         keepSource = original.keepSource;
         noStdOut = original.noStdOut;
-        inPath = new String(original.inPath);
+        inPath = original.inPath != null
+            ? new String(original.inPath)
+            : null;
         outFileName = original.outFileName != null 
             ? new String(original.outFileName)
             : null;
