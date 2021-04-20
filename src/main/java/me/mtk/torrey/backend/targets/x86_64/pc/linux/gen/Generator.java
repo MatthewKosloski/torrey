@@ -235,37 +235,48 @@ public final class Generator
 
     private void gen(IfInst inst)
     {
-        // Convert the IR operands to x86 addresses.
-        final X86Address arg1 = transAddress(inst.arg1());
-        final X86Address arg2 = transAddress(inst.arg2());
-        
-        final Register arg1Temp = new Register(Registers.R10);
-        final Register arg2Temp = new Register(Registers.R11);
-        
-        // move the operands to temporary registers to
-        // perform the comparison.
-        x86.addInst(new Movq(arg1, arg1Temp));
-        x86.addInst(new Movq(arg2, arg2Temp));
 
-        // Perform the comparison.
-        x86.addInst(new Cmp(arg2Temp, arg1Temp));
-
-
-    
         final LabelAddress labelAddr = new LabelAddress(inst.result().toString());
 
-        // TODO: Fix this sloppiness.
-        ConditionCode cc;
-        switch(inst.op().opText())
+        if (inst.op() != null)
         {
-            case "<": cc = ConditionCode.JL; break;
-            case "<=": cc = ConditionCode.JLE; break;
-            case ">": cc = ConditionCode.JG; break;
-            case ">=": cc = ConditionCode.JGE; break;
-            default: cc = null;
-        }
+            // The test condition is a comparison expression.
+            
+            // Convert the IR operands to x86 addresses.
+            final X86Address arg1 = transAddress(inst.arg1());
+            final X86Address arg2 = transAddress(inst.arg2());
+            
+            // move the operands to temporary registers to
+            // perform the comparison.
+            x86.addInst(new Movq(arg1, Register.R10));
+            x86.addInst(new Movq(arg2, Register.R11));
 
-        x86.addInst(new Jcc(cc, labelAddr));
+            // Perform the comparison.
+            x86.addInst(new Cmp(Register.R11, Register.R10));
+
+            // TODO: Fix this sloppiness.
+            ConditionCode cc;
+            switch(inst.op().opText())
+            {
+                case "<": cc = ConditionCode.JL; break;
+                case "<=": cc = ConditionCode.JLE; break;
+                case ">": cc = ConditionCode.JG; break;
+                case ">=": cc = ConditionCode.JGE; break;
+                default: cc = null;
+            }
+
+            x86.addInst(new Jcc(cc, labelAddr));
+        }
+        else
+        {
+            // The test condition is a primitive boolean expression.
+            final boolean bool = (Boolean) inst.arg1().value();      
+            x86.addInst(new Movq(new Immediate(0), Register.R10));
+            x86.addInst(new Movq(new Immediate(1), Register.R11));
+            x86.addInst(new Cmp(Register.R11, Register.R10));
+            x86.addInst(new Jcc(bool ? ConditionCode.JNE : ConditionCode.JE, 
+                labelAddr));
+        }
     }
 
     private void gen(LabelInst inst)
