@@ -61,6 +61,10 @@ public final class Generator
 
     // The name of the label of the program's conclusion.
     private static final String CONCLUSION_LABEL_NAME = "conclusion";
+
+    // The program's exit code to be returned to the OS upon
+    // program termination.
+    private static final int EXIT_CODE = 0;
     
     // The IR program from which x86 code will be generated.
     private IRProgram ir;
@@ -165,6 +169,9 @@ public final class Generator
             // Pop the old base pointer off the stack, storing it in
             // register %rbp.
             .addInst(new Popq(Register.RBP))
+
+            // Return a successfully exit code.
+            .addInst(new Movq(new Immediate(EXIT_CODE), Register.RAX))
 
             // Pop the OS's return address off the stack and jump to it.
             .addInst(new Retq());
