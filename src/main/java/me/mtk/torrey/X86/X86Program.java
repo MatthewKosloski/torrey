@@ -82,6 +82,9 @@ public final class X86Program
             // register %rbp
             .append("\tpopq %rbp\n")
 
+            // Return a successfully exit code.
+            .append("\tmovq $0, %rax\n")
+
             // Pop the OS's return address off the stack and jump to it.
             .append("\tretq\n");
     
