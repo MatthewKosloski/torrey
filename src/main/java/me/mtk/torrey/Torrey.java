@@ -47,7 +47,7 @@ public class Torrey
     private static String RUNTIME_OCODE_NAME = "runtime.o";
 
     // The semantic version number of this software.
-    private static String SEMANTIC_VERSION = "1.0.0"; 
+    private static String SEMANTIC_VERSION = "1.0.1"; 
 
     @Parameter(
         names = {"--help", "-h"}, 
