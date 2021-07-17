@@ -37,4 +37,5 @@ public final class ErrorMessages
         + " identifier '%s' cannot be of type '%s'";
     public static final String ExpectedExprOrStmt = "Expected the start of an"
         + " expression or statement but found '%s' instead";
+    public static final String UndefinedOperandToPrint = "Cannot print operand '%s' because it does not evaluate to a known type";
 }
