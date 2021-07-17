@@ -210,6 +210,13 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
             // Type check child expression.
             childExpr.accept(this);
+
+            if (childExpr.evalType() == DataType.UNDEFINED)
+                reporter.error(
+                    childExpr.token(), 
+                    ErrorMessages.UndefinedOperandToPrint, 
+                    childExpr.token().rawText());
+
         }
         
         return DataType.UNDEFINED;
