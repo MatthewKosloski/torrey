@@ -76,8 +76,7 @@ public abstract class TorreyCompiler
      * an IOException is encountered while attempting to
      * write to the file system, then an error message is sent
      * to the standard error stream and the output string is
-     * sent to the standard output stream. Exits the JVM, 
-     * indicating abnormal process termination.
+     * sent to the standard output stream. Exits the JVM normally.
      *  
      * @param outStr The string to be outputted.
      */
@@ -103,7 +102,7 @@ public abstract class TorreyCompiler
         else
             stdout(outStr.toString());
         
-        // Exit, indicating abnormal termination.
+        // Exit normally.
         System.exit(0);
     }
 
