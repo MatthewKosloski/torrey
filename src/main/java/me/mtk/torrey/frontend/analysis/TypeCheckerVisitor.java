@@ -74,7 +74,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         catch (SemanticError e)
         {
             System.err.println(e.getMessage());
-            System.exit(0);
+            System.exit(1);
         }
 
         // A Program AST does not evaluate to a 

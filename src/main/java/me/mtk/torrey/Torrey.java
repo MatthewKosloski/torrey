@@ -11,7 +11,7 @@ import me.mtk.torrey.backend.targets.Targets;
 public final class Torrey
 {
     // The semantic version number of the compiler.
-    public static String SEMANTIC_VERSION = "3.0.2";
+    public static String SEMANTIC_VERSION = "3.0.1";
 
     public static void main(String ... args)
     {
@@ -85,17 +85,16 @@ public final class Torrey
         {
             System.err.println("Torrey: An error occurred while reading"
                 + " from the standard input stream.");
-            System.exit(0);
+            System.exit(1);
         }
         catch (ParameterException e)
         {
             System.err.println(e.getMessage());
-            System.exit(0);
+            System.exit(1);
         }
         catch (Error e)
         {
             System.err.println(e.getMessage());
-            System.exit(0);
         }
     }
 

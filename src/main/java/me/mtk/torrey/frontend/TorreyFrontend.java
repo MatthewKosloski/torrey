@@ -40,12 +40,10 @@ public final class TorreyFrontend extends TorreyCompiler
         catch(SyntaxError e)
         {
             System.err.println(e.getMessage());
-            System.exit(0);
         }
         catch(SemanticError e)
         {
             System.err.println(e.getMessage());
-            System.exit(0);
         }
 
         // In the future, if we ever want to perform optimizations on

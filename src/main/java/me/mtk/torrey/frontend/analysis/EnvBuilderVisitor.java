@@ -55,7 +55,7 @@ public class EnvBuilderVisitor implements ASTNodeVisitor<Void>
         catch (SemanticError e)
         {
             System.err.println(e.getMessage());
-            System.exit(0);
+            System.exit(1);
         }
         
         return null;
