@@ -11,7 +11,7 @@ import me.mtk.torrey.backend.targets.Targets;
 public final class Torrey
 {
     // The semantic version number of the compiler.
-    public static String SEMANTIC_VERSION = "3.0.1";
+    public static String SEMANTIC_VERSION = "3.0.3";
 
     public static void main(String ... args)
     {
