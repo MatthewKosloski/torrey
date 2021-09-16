@@ -92,10 +92,6 @@ public final class Torrey
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        catch (Error e)
-        {
-            System.err.println(e.getMessage());
-        }
     }
 
     /**
