@@ -99,12 +99,8 @@ public class TorreyConfig
     public boolean stopAtCompile() { return stopAtCompile; }
     public boolean keepSource() { return keepSource; }
     public boolean noStdOut() { return noStdOut; }
+    public String target() { return target; }
     
-    public TargetTriple target() 
-    {
-        return Targets.registry.get(target).triple();
-    }
-
     public TorreyConfig()
     {
 
@@ -126,6 +122,9 @@ public class TorreyConfig
             : null;
         outFileName = original.outFileName != null 
             ? new String(original.outFileName)
+            : null;
+        target = original.target != null
+            ? new String(original.target)
             : null;
     }
 }

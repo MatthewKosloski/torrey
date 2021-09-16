@@ -11,7 +11,7 @@ import me.mtk.torrey.backend.targets.Targets;
 public final class Torrey
 {
     // The semantic version number of the compiler.
-    public static String SEMANTIC_VERSION = "3.0.4";
+    public static String SEMANTIC_VERSION = "3.0.5";
 
     public static void main(String ... args)
     {
@@ -36,13 +36,6 @@ public final class Torrey
     
             if (config.help())
                 jcmdr.usage();
-
-            if (config.target() == null)
-            {
-                throw new Error(String.format("%s is not a registered target."
-                    + " To view the registered targets, supply the"
-                    + " '--target-list' flag.\n", config.target()));
-            }
 
             // Check stdin first.
             String input = TorreyIOUtils.readFromStdin();
@@ -71,15 +64,28 @@ public final class Torrey
             final IRProgram irProgram = fe.run();
             
             // Get the backend from the target registry.
-            final String triple = config.target().toString();
-            final TorreyBackend be = Targets.registry.get(triple);
+            TorreyBackend be = null;
+            if (Targets.registry.containsKey(config.target()))
+            {
+                be = Targets.registry.get(config.target());
+            }
+            else
+            {
+                System.err.format("'%s' is not a registered target."
+                    + " To view the registered targets, supply the"
+                    + " '--target-list' flag.\n", config.target());
+                System.exit(1);
+            }
 
-            be.setConfig(new TorreyConfig(config));
-            be.setInput(input);
-            
-            // Generate the target program from the intermediate representation
-            // and then (optionally) assemble it into a native executable.
-            be.assemble(be.generate(irProgram));
+            if (be != null)
+            {
+                be.setConfig(new TorreyConfig(config));
+                be.setInput(input);
+                
+                // Generate the target program from the intermediate representation
+                // and then (optionally) assemble it into a native executable.
+                be.assemble(be.generate(irProgram));
+            }
         }
         catch (IOException e)
         {
