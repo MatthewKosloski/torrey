@@ -9,6 +9,7 @@ import me.mtk.torrey.frontend.ast.ArithmeticExpr;
 import me.mtk.torrey.frontend.ast.BinaryExpr;
 import me.mtk.torrey.frontend.ast.BooleanExpr;
 import me.mtk.torrey.frontend.ast.CompareExpr;
+import me.mtk.torrey.frontend.ast.ConstantConvertable;
 import me.mtk.torrey.frontend.ast.Expr;
 import me.mtk.torrey.frontend.ast.IdentifierExpr;
 import me.mtk.torrey.frontend.ast.IfExpr;
@@ -188,7 +189,16 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
         {
             // The binary expression can be reduced to a constant
             // expression, so create a constant address.
-            final String foldedConstant = expr.getFold().token().rawText();
+            int foldedConstant;
+            if (expr.getFold() instanceof ConstantConvertable)
+            {
+                foldedConstant = ((ConstantConvertable) expr.getFold()).toConstant();
+            }
+            else
+            {
+                throw new Error(String.format("Unhandled expression type %s",
+                    expr.getFold().getClass().getSimpleName()));
+            }
             final ConstAddress rhs = new ConstAddress(foldedConstant);
             irProgram.addQuad(new CopyInst(result, rhs));
         }
