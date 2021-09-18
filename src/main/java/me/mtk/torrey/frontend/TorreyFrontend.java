@@ -1,19 +1,15 @@
 package me.mtk.torrey.frontend;
 
 import me.mtk.torrey.TorreyCompiler;
+import me.mtk.torrey.frontend.analysis.*;
 import me.mtk.torrey.frontend.ast.PrettyPrinterVisitor;
 import me.mtk.torrey.frontend.ast.Program;
-import me.mtk.torrey.frontend.error_reporter.ErrorReporter;
-import me.mtk.torrey.frontend.error_reporter.SemanticError;
-import me.mtk.torrey.frontend.error_reporter.SyntaxError;
+import me.mtk.torrey.frontend.error_reporter.*;
+import me.mtk.torrey.frontend.ir.gen.IRGenVisitor;
+import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.lexer.Lexer;
 import me.mtk.torrey.frontend.lexer.TokenList;
 import me.mtk.torrey.frontend.parser.Grammar;
-import me.mtk.torrey.frontend.analysis.ConstantFolderVisitor;
-import me.mtk.torrey.frontend.analysis.EnvBuilderVisitor;
-import me.mtk.torrey.frontend.analysis.TypeCheckerVisitor;
-import me.mtk.torrey.frontend.ir.gen.IRGenVisitor;
-import me.mtk.torrey.frontend.ir.gen.IRProgram;
 
 /**
  * The front-end of the compiler: lexical analysis, 

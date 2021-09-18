@@ -1,23 +1,7 @@
 package me.mtk.torrey.frontend.analysis;
 
-import me.mtk.torrey.frontend.ast.ASTNode;
-import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
-import me.mtk.torrey.frontend.ast.BinaryExpr;
-import me.mtk.torrey.frontend.ast.BooleanExpr;
-import me.mtk.torrey.frontend.ast.ConstantConvertable;
-import me.mtk.torrey.frontend.ast.Program;
-import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.Foldable;
-import me.mtk.torrey.frontend.ast.IdentifierExpr;
-import me.mtk.torrey.frontend.ast.IfExpr;
-import me.mtk.torrey.frontend.ast.IntegerExpr;
-import me.mtk.torrey.frontend.ast.UnaryExpr;
+import me.mtk.torrey.frontend.ast.*;
 import me.mtk.torrey.frontend.symbols.Env;
-import me.mtk.torrey.frontend.ast.LetExpr;
-import me.mtk.torrey.frontend.ast.PrimitiveExpr;
-import me.mtk.torrey.frontend.ast.PrintExpr;
-import me.mtk.torrey.frontend.ast.LetBindings;
-import me.mtk.torrey.frontend.ast.LetBinding;
 
 /**
  * Constant folding is a type of high-level

@@ -1,10 +1,6 @@
 package me.mtk.torrey;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;

@@ -1,44 +1,11 @@
 package me.mtk.torrey.frontend.ir.gen;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import me.mtk.torrey.frontend.ast.ASTNode;
-import me.mtk.torrey.frontend.ast.ASTNodeVisitor;
-import me.mtk.torrey.frontend.ast.ArithmeticExpr;
-import me.mtk.torrey.frontend.ast.BinaryExpr;
-import me.mtk.torrey.frontend.ast.BooleanExpr;
-import me.mtk.torrey.frontend.ast.CompareExpr;
-import me.mtk.torrey.frontend.ast.ConstantConvertable;
-import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.IdentifierExpr;
-import me.mtk.torrey.frontend.ast.IfExpr;
-import me.mtk.torrey.frontend.ast.IntegerExpr;
-import me.mtk.torrey.frontend.ast.LetBinding;
-import me.mtk.torrey.frontend.ast.LetBindings;
-import me.mtk.torrey.frontend.ast.LetExpr;
-import me.mtk.torrey.frontend.ast.PrimitiveExpr;
-import me.mtk.torrey.frontend.ast.PrintExpr;
-import me.mtk.torrey.frontend.ast.Program;
-import me.mtk.torrey.frontend.ast.UnaryExpr;
-import me.mtk.torrey.frontend.symbols.Env;
-import me.mtk.torrey.frontend.ir.addressing.IRAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
-import me.mtk.torrey.frontend.ir.instructions.IRBinaryInst;
-import me.mtk.torrey.frontend.ir.instructions.IRQuadruple;
-import me.mtk.torrey.frontend.ir.instructions.IRCallInst;
-import me.mtk.torrey.frontend.ir.instructions.IRCopyInst;
-import me.mtk.torrey.frontend.ir.instructions.IRGotoInst;
-import me.mtk.torrey.frontend.ir.instructions.IRIfInst;
-import me.mtk.torrey.frontend.ir.instructions.IRLabelInst;
-import me.mtk.torrey.frontend.ir.instructions.IRParamInst;
-import me.mtk.torrey.frontend.ir.instructions.IRUnaryInst;
-import me.mtk.torrey.frontend.ir.instructions.IRUnaryOpType;
+import java.util.*;
+import me.mtk.torrey.frontend.ast.*;
+import me.mtk.torrey.frontend.ir.addressing.*;
+import me.mtk.torrey.frontend.ir.instructions.*;
 import me.mtk.torrey.frontend.lexer.TokenType;
-import me.mtk.torrey.frontend.ir.instructions.IRBinaryOpType;
+import me.mtk.torrey.frontend.symbols.Env;
 
 /**
  * Converts the given abstract syntax tree to a more low-level,

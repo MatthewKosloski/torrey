@@ -1,12 +1,9 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import me.mtk.torrey.backend.targets.TargetProgram;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.AssemblerDirective;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.AssemblerDirectiveType;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Label;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.X86Inst;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.*;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.*;
 
 public final class X86Program implements TargetProgram
 {
