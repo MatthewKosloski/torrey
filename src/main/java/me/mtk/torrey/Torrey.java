@@ -6,7 +6,7 @@ import com.beust.jcommander.ParameterException;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.TorreyFrontend;
 import me.mtk.torrey.backend.TorreyBackend;
-import me.mtk.torrey.backend.targets.Targets;
+import me.mtk.torrey.backend.TorreyBackendFactory;
 
 public final class Torrey
 {
@@ -63,29 +63,23 @@ public final class Torrey
             fe.setInput(input);
             final IRProgram irProgram = fe.run();
             
-            // Get the backend from the target registry.
-            TorreyBackend be = null;
-            if (Targets.registry.containsKey(config.target()))
-            {
-                be = Targets.registry.get(config.target());
-            }
-            else
+            TorreyBackend be = TorreyBackendFactory.makeBackendFromTarget(
+                config.target());
+
+            if (be == null)
             {
                 System.err.format("'%s' is not a registered target."
-                    + " To view the registered targets, supply the"
-                    + " '--target-list' flag.\n", config.target());
+                + " To view the registered targets, supply the"
+                + " '--target-list' flag.\n", config.target());
                 System.exit(1);
             }
 
-            if (be != null)
-            {
-                be.setConfig(new TorreyConfig(config));
-                be.setInput(input);
-                
-                // Generate the target program from the intermediate representation
-                // and then (optionally) assemble it into a native executable.
-                be.assemble(be.generate(irProgram));
-            }
+            be.setConfig(new TorreyConfig(config));
+            be.setInput(input);
+            
+            // Generate the target program from the intermediate representation
+            // and then (optionally) assemble it into a native executable.
+            be.assemble(be.generate(irProgram));
         }
         catch (IOException e)
         {
@@ -114,11 +108,12 @@ public final class Torrey
     public void showRegisteredTargets()
     {
         final StringBuilder sb = new StringBuilder();
-        sb.append("Usage: --target=<triple>,")
+        sb.append("Usage: --target <triple>,")
             .append("\n\twhere <triple> is of the form ")
             .append("<arch>-<vendor>-<sys>.\n\n");
         sb.append("Registered targets (triples):\n");
-        Targets.registry.forEach((k, v) -> sb.append("\t").append(k));
+        TorreyBackendFactory.targetStringToTripleMap()
+            .forEach((k, v) -> sb.append("\t").append(k));
         System.out.println(sb.toString());
         System.exit(0);
     }

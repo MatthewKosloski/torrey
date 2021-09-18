@@ -1,7 +1,7 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
 
 import java.util.*;
-import me.mtk.torrey.backend.targets.TargetProgram;
+import me.mtk.torrey.backend.TargetProgram;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.*;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.*;
 
