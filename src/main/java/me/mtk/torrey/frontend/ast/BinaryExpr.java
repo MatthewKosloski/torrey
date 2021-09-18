@@ -18,7 +18,11 @@ public class BinaryExpr extends Expr implements Foldable
 
     public void setFold(Expr fold)
     {
-        if (!fold.equals(this))
+        // If the fold is equal to ourselves, then don't
+        // assign it as there's no point. Also, only assign
+        // the fold to us if we don't already have one (this
+        // prevents the overriding of folds).
+        if (!fold.equals(this) && this.fold == null)
             this.fold = fold;
     }
 

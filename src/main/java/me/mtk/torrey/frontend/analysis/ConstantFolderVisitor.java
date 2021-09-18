@@ -184,23 +184,11 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
         if (node instanceof Foldable)
         {
-            // The expression can be folded.
-
+            // The expression can be folded, so assign the fold
+            // to this expression if it doesn't already have a fold.
             final Foldable foldableExpr = ((Foldable) node);
-
-            if (foldableExpr.getFold() == null)
-            {
-                // The expression can folded AND has not yet been
-                // assigned a fold, so set the fold.
-                foldableExpr.setFold((Expr) fold);
-            }
-            else
-            {
-                // The expression can be folded AND has already been
-                // assigned a fold. Don't override the fold; just return
-                // the fold that's already assigned.
-                return foldableExpr.getFold();
-            }
+            foldableExpr.setFold((Expr) fold);
+            return foldableExpr.getFold();
         }
 
         return fold;
