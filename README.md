@@ -27,10 +27,10 @@ In an attempt to better my understanding of the low-level details that high-leve
 
 ## Maven Build
 
-To build an executable (JAR file) via Maven, run:
+To build an executable (JAR file) via Maven, from the root directory, run:
 
 ```
-mvn package
+rm -rf target && mvn package
 ```
 
 This will create a new `target` directory in the project root containing a `torreyc-x.x.x.jar` file, where `x.x.x` is the semantic version number for the compiler.
