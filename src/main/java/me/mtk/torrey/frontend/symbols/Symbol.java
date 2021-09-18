@@ -2,14 +2,14 @@ package me.mtk.torrey.frontend.symbols;
 
 import me.mtk.torrey.frontend.analysis.DataType;
 import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 
 public class Symbol
 {
     private String name;
     private DataType type;
     private SymCategory category;
-    private TempAddress address;
+    private IRTempAddress address;
     private Expr expr;
 
     public Symbol(String name, DataType type, SymCategory category, Expr expr)
@@ -40,12 +40,12 @@ public class Symbol
         return expr;
     }
 
-    public void setAddress(TempAddress address)
+    public void setAddress(IRTempAddress address)
     {
         this.address = address;
     }
 
-    public TempAddress address()
+    public IRTempAddress address()
     {
         return address;
     }

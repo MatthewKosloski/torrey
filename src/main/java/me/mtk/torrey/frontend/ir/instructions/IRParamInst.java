@@ -1,20 +1,20 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.Address;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 
 /**
  * Represents a parameter IR instruction.
  */
-public final class ParamInst extends Quadruple
+public final class IRParamInst extends IRQuadruple
 {
     /**
      * Instantiates a new parameter instruction.
      * 
      * @param addr The address at which the value of the parameter is located.
      */
-    public ParamInst(Address addr)
+    public IRParamInst(IRAddress addr)
     {
-        super(new ParamOperator(), addr);
+        super(new IRParamOperator(), addr);
     }
 
     /**

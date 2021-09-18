@@ -22,23 +22,23 @@ import me.mtk.torrey.frontend.ast.PrintExpr;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.ast.UnaryExpr;
 import me.mtk.torrey.frontend.symbols.Env;
-import me.mtk.torrey.frontend.ir.addressing.Address;
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
-import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
-import me.mtk.torrey.frontend.ir.addressing.LabelAddress;
-import me.mtk.torrey.frontend.ir.addressing.NameAddress;
-import me.mtk.torrey.frontend.ir.instructions.BinaryInst;
-import me.mtk.torrey.frontend.ir.instructions.Quadruple;
-import me.mtk.torrey.frontend.ir.instructions.CallInst;
-import me.mtk.torrey.frontend.ir.instructions.CopyInst;
-import me.mtk.torrey.frontend.ir.instructions.GotoInst;
-import me.mtk.torrey.frontend.ir.instructions.IfInst;
-import me.mtk.torrey.frontend.ir.instructions.LabelInst;
-import me.mtk.torrey.frontend.ir.instructions.ParamInst;
-import me.mtk.torrey.frontend.ir.instructions.UnaryInst;
-import me.mtk.torrey.frontend.ir.instructions.UnaryOpType;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
+import me.mtk.torrey.frontend.ir.instructions.IRBinaryInst;
+import me.mtk.torrey.frontend.ir.instructions.IRQuadruple;
+import me.mtk.torrey.frontend.ir.instructions.IRCallInst;
+import me.mtk.torrey.frontend.ir.instructions.IRCopyInst;
+import me.mtk.torrey.frontend.ir.instructions.IRGotoInst;
+import me.mtk.torrey.frontend.ir.instructions.IRIfInst;
+import me.mtk.torrey.frontend.ir.instructions.IRLabelInst;
+import me.mtk.torrey.frontend.ir.instructions.IRParamInst;
+import me.mtk.torrey.frontend.ir.instructions.IRUnaryInst;
+import me.mtk.torrey.frontend.ir.instructions.IRUnaryOpType;
 import me.mtk.torrey.frontend.lexer.TokenType;
-import me.mtk.torrey.frontend.ir.instructions.BinaryOpType;
+import me.mtk.torrey.frontend.ir.instructions.IRBinaryOpType;
 
 /**
  * Converts the given abstract syntax tree to a more low-level,
@@ -46,7 +46,7 @@ import me.mtk.torrey.frontend.ir.instructions.BinaryOpType;
  * of three-address code represented as a collection of quadruples
  * of the form (operator, argument1, argument2, result).
  */
-public final class IRGenVisitor implements ASTNodeVisitor<Address>
+public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
 {
     // The IR Program being generated.
     private IRProgram irProgram;
@@ -91,7 +91,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @param Program The root AST node.
      * @return null.
      */
-    public Address visit(Program program)
+    public IRAddress visit(Program program)
     {
         // For every AST node, call the appropriate
         // visit() method to generate the IR instruction
@@ -110,16 +110,16 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public Address visit(PrimitiveExpr expr)
+    public IRAddress visit(PrimitiveExpr expr)
     {
-        final TempAddress result = new TempAddress();
+        final IRTempAddress result = new IRTempAddress();
 
-        ConstAddress rhs;
+        IRConstAddress rhs;
 
         if (expr instanceof IntegerExpr)
-            rhs = new ConstAddress(expr.token().rawText());
+            rhs = new IRConstAddress(expr.token().rawText());
         else if (expr instanceof BooleanExpr)
-            rhs = new ConstAddress(expr.token().type() 
+            rhs = new IRConstAddress(expr.token().type() 
                 == TokenType.TRUE);
         else
         {
@@ -127,7 +127,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
             + " Unhandled primitive");
         }
 
-        irProgram.addQuad(new CopyInst(result, rhs));
+        irProgram.addQuad(new IRCopyInst(result, rhs));
 
         return result;
     }
@@ -140,15 +140,15 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public Address visit(UnaryExpr expr)
+    public IRAddress visit(UnaryExpr expr)
     {
-        final TempAddress result = new TempAddress();
-        final Optional<UnaryOpType> op = UnaryOpType.getUnaryOpType(
+        final IRTempAddress result = new IRTempAddress();
+        final Optional<IRUnaryOpType> op = IRUnaryOpType.getUnaryOpType(
             expr.token().type());
 
-        final Address arg = getDestinationAddr(expr.first());
+        final IRAddress arg = getDestinationAddr(expr.first());
 
-        irProgram.addQuad(new UnaryInst(op.get(), arg, result));
+        irProgram.addQuad(new IRUnaryInst(op.get(), arg, result));
 
         return result;
     }
@@ -161,7 +161,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return The destination address of the 
      * result of the given AST node.
      */
-    public Address visit(BinaryExpr expr)
+    public IRAddress visit(BinaryExpr expr)
     {
         if (expr instanceof ArithmeticExpr)
             return visit((ArithmeticExpr) expr);
@@ -179,10 +179,10 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return The destination address of the
      * result of the arithmetic instruction.
      */
-    public Address visit(ArithmeticExpr expr)
+    public IRAddress visit(ArithmeticExpr expr)
     {
-        final TempAddress result = new TempAddress();
-        final Optional<BinaryOpType> op = BinaryOpType.getBinaryOpType(
+        final IRTempAddress result = new IRTempAddress();
+        final Optional<IRBinaryOpType> op = IRBinaryOpType.getBinaryOpType(
             expr.token().type());
 
         if (expr.getFold() != null)
@@ -199,16 +199,16 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
                 throw new Error(String.format("Unhandled expression type %s",
                     expr.getFold().getClass().getSimpleName()));
             }
-            final ConstAddress rhs = new ConstAddress(foldedConstant);
-            irProgram.addQuad(new CopyInst(result, rhs));
+            final IRConstAddress rhs = new IRConstAddress(foldedConstant);
+            irProgram.addQuad(new IRCopyInst(result, rhs));
         }
         else 
         {
             // The binary expression cannot be reduced and thus
             // an arithmetic instruction must be emitted.
-            final Address arg1 = getDestinationAddr(expr.first());
-            final Address arg2 = getDestinationAddr(expr.second());
-            irProgram.addQuad(new BinaryInst(op.get(), arg1, arg2, result));
+            final IRAddress arg1 = getDestinationAddr(expr.first());
+            final IRAddress arg2 = getDestinationAddr(expr.second());
+            irProgram.addQuad(new IRBinaryInst(op.get(), arg1, arg2, result));
         }
         
         return result;
@@ -221,23 +221,23 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @param expr A binary comparison expression.
      * @return The label of the false branch.
      */
-    public Address visit(CompareExpr expr)
+    public IRAddress visit(CompareExpr expr)
     {
-        final LabelAddress label = new LabelAddress();
+        final IRLabelAddress label = new IRLabelAddress();
         
-        final Address arg1 = getDestinationAddr(expr.first());
-        final Address arg2 = getDestinationAddr(expr.second());
+        final IRAddress arg1 = getDestinationAddr(expr.first());
+        final IRAddress arg2 = getDestinationAddr(expr.second());
         
         final TokenType tokType = expr.token().type();
-        final Optional<BinaryOpType> irOpType = BinaryOpType.getBinaryOpType(
+        final Optional<IRBinaryOpType> irOpType = IRBinaryOpType.getBinaryOpType(
             tokType);
 
         // Only go to label if condition is false, so we 
         // negate the condition.
-        final Optional<BinaryOpType> negatedIrOpType = BinaryOpType.negate(
+        final Optional<IRBinaryOpType> negatedIrOpType = IRBinaryOpType.negate(
             irOpType.get());
 
-        irProgram.addQuad(new IfInst(negatedIrOpType.get(), arg1, 
+        irProgram.addQuad(new IRIfInst(negatedIrOpType.get(), arg1, 
             arg2, label));
         return label;
     }
@@ -249,26 +249,26 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @param stmt A print statement.
      * @return null.
      */
-    public Address visit(PrintExpr stmt)
+    public IRAddress visit(PrintExpr stmt)
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
-        final List<Quadruple> params = new ArrayList<>();
+        final List<IRQuadruple> params = new ArrayList<>();
                 
         // Generate the instructions for the parameters.
         for (ASTNode child : stmt.children())
         {
-            Address paramTemp = child.accept(this);
-            params.add(new ParamInst(paramTemp));
+            IRAddress paramTemp = child.accept(this);
+            params.add(new IRParamInst(paramTemp));
         }
     
-        final NameAddress procName = new NameAddress(
+        final IRNameAddress procName = new IRNameAddress(
             stmt.token().rawText());
-        final ConstAddress numParams = new ConstAddress(
+        final IRConstAddress numParams = new IRConstAddress(
             stmt.children().size());
 
         irProgram.addQuads(params);
-        irProgram.addQuad(new CallInst(procName, numParams));
+        irProgram.addQuad(new IRCallInst(procName, numParams));
 
         return null;
     }
@@ -283,7 +283,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * of the last expression of the body is returned; null
      * otherwise.
      */
-    public Address visit(LetExpr expr)
+    public IRAddress visit(LetExpr expr)
     {
         // Cache the previous environment and activate
         // the environment of this expression.
@@ -303,7 +303,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
             for (int i = 1; i < expr.children().size(); i++)
             {
                 final Expr child = (Expr) expr.children().get(i);
-                final Address addr = child.accept(this);
+                final IRAddress addr = child.accept(this);
                 
                 // Return the destination address of the last
                 // expression of the body.
@@ -325,7 +325,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @param bindings A LetBindings AST node.
      * @return null.
      */
-    public Address visit(LetBindings bindings)
+    public IRAddress visit(LetBindings bindings)
     {
         for (ASTNode n : bindings.children())
             ((LetBinding) n).accept(this);
@@ -341,20 +341,20 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @param bindings A LetBinding AST node.
      * @return null.
      */
-    public Address visit(LetBinding binding)
+    public IRAddress visit(LetBinding binding)
     {
-        final TempAddress result = new TempAddress();
+        final IRTempAddress result = new IRTempAddress();
         final String id = binding.first().token().rawText();
 
         // The source of the copy instruction is the
         // destination of the bounded expression.
-        final Address rhs = getDestinationAddr(binding.second());
+        final IRAddress rhs = getDestinationAddr(binding.second());
 
         // Store the source address of the bounded expression
         // in the symbol table.
         top.get(id).setAddress(result);
 
-        irProgram.addQuad(new CopyInst(result, rhs));
+        irProgram.addQuad(new IRCopyInst(result, rhs));
 
         return null;
     }
@@ -368,59 +368,59 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return The destination address of the expression
      * bound to the given identifier. 
      */
-    public Address visit(IdentifierExpr expr)
+    public IRAddress visit(IdentifierExpr expr)
     {
         return top.get(expr.token().rawText()).address();
     }
 
-    public Address visit(IfExpr expr)
+    public IRAddress visit(IfExpr expr)
     {
         // Generate IR instructions for the test condition, 
         // returning the address of label of the alternate branch.
-        LabelAddress altBranchLabel = null;
+        IRLabelAddress altBranchLabel = null;
         if (expr.test() instanceof CompareExpr)
             // The test condition is a comparison, so generate
             // IR instructions for the comparison.
-            altBranchLabel = (LabelAddress) expr.test().accept(this);
+            altBranchLabel = (IRLabelAddress) expr.test().accept(this);
         else
         {
             // The test condition is not a comparison but rather
             // a primitve boolean, so generate an if-then instruction.
             final TokenType tokType = expr.test().token().type();
-            altBranchLabel = new LabelAddress();
-            irProgram.addQuad(new IfInst(
-                new ConstAddress(tokType != TokenType.TRUE),
+            altBranchLabel = new IRLabelAddress();
+            irProgram.addQuad(new IRIfInst(
+                new IRConstAddress(tokType != TokenType.TRUE),
                 altBranchLabel));
         }
         
         // Generate IR instructions for the consequent branch.
-        final Address consequentBranchAddr = expr.consequent().accept(this);
+        final IRAddress consequentBranchAddr = expr.consequent().accept(this);
 
         // The result of this if expression will be stored in this temp.
-        final TempAddress result = new TempAddress();
+        final IRTempAddress result = new IRTempAddress();
 
         // If we have an address of the last expression in the
         // consequent branch, then store it in the temp.
         if (consequentBranchAddr != null)
-            irProgram.addQuad(new CopyInst(result, consequentBranchAddr));
+            irProgram.addQuad(new IRCopyInst(result, consequentBranchAddr));
 
         // Generate IR instructions for the alternative branch.
-        LabelAddress doneLabel;
+        IRLabelAddress doneLabel;
         if (expr.alternative() != null)
         {
             // Generate a new label and go to that label if
             // the test condition is true.
-            doneLabel = new LabelAddress();
-            irProgram.addQuad(new GotoInst(doneLabel));
+            doneLabel = new IRLabelAddress();
+            irProgram.addQuad(new IRGotoInst(doneLabel));
 
-            irProgram.addQuad(new LabelInst((LabelAddress) altBranchLabel));
-            final Address alternativeBranchAddr = expr.alternative()
+            irProgram.addQuad(new IRLabelInst((IRLabelAddress) altBranchLabel));
+            final IRAddress alternativeBranchAddr = expr.alternative()
                 .accept(this);
             
             // If we have an address of the last expression in the
             // alternative branch, then store it in the temp.
             if (alternativeBranchAddr != null)
-                irProgram.addQuad(new CopyInst(result, 
+                irProgram.addQuad(new IRCopyInst(result, 
                     alternativeBranchAddr));
         }
         else
@@ -430,7 +430,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
             doneLabel = altBranchLabel;
 
         // Finally, generate the done label instruction.
-        irProgram.addQuad(new LabelInst((LabelAddress) doneLabel));
+        irProgram.addQuad(new IRLabelInst((IRLabelAddress) doneLabel));
 
         return result;
     }
@@ -443,11 +443,11 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return Either a constant address, if the 
      * expression is an integer, or a temporary address.
      */
-    private Address getDestinationAddr(Expr expr)
+    private IRAddress getDestinationAddr(Expr expr)
     {
-        Address addr = null;
+        IRAddress addr = null;
         if (expr instanceof IntegerExpr)
-            addr = new ConstAddress(expr.token().rawText());
+            addr = new IRConstAddress(expr.token().rawText());
         else
             addr = expr.accept(this);
         return addr;
@@ -462,7 +462,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<Address>
      * @return Either a constant address, if the 
      * expression is an integer, or a temporary address.
      */
-    private Address getDestinationAddr(ASTNode n)
+    private IRAddress getDestinationAddr(ASTNode n)
     {
         return getDestinationAddr((Expr) n);
     }

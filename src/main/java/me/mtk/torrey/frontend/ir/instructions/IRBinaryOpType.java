@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import me.mtk.torrey.frontend.lexer.TokenType;
 
-public enum BinaryOpType
+public enum IRBinaryOpType
 {
     ADD,
     SUB,
@@ -24,19 +24,19 @@ public enum BinaryOpType
      * @param tokType A Torrey token type.
      * @return The corresponding binary IR operator type.
      */
-    public static Optional<BinaryOpType> getBinaryOpType(TokenType tokType)
+    public static Optional<IRBinaryOpType> getBinaryOpType(TokenType tokType)
     {
         switch (tokType)
         {
-            case PLUS: return Optional.of(BinaryOpType.ADD);
-            case MINUS: return Optional.of(BinaryOpType.SUB);
-            case STAR: return Optional.of(BinaryOpType.MULT);
-            case SLASH: return Optional.of(BinaryOpType.DIV);
-            case EQUAL: return Optional.of(BinaryOpType.EQUAL);
-            case LT: return Optional.of(BinaryOpType.LT);
-            case LTE: return Optional.of(BinaryOpType.LTE);
-            case GT: return Optional.of(BinaryOpType.GT);
-            case GTE: return Optional.of(BinaryOpType.GTE);
+            case PLUS: return Optional.of(IRBinaryOpType.ADD);
+            case MINUS: return Optional.of(IRBinaryOpType.SUB);
+            case STAR: return Optional.of(IRBinaryOpType.MULT);
+            case SLASH: return Optional.of(IRBinaryOpType.DIV);
+            case EQUAL: return Optional.of(IRBinaryOpType.EQUAL);
+            case LT: return Optional.of(IRBinaryOpType.LT);
+            case LTE: return Optional.of(IRBinaryOpType.LTE);
+            case GT: return Optional.of(IRBinaryOpType.GT);
+            case GTE: return Optional.of(IRBinaryOpType.GTE);
             default: return Optional.empty();
         }
     }
@@ -48,7 +48,7 @@ public enum BinaryOpType
      * @param opType An IR operator type.
      * @return The inverse IR operator type.
      */
-    public static Optional<BinaryOpType> negate(BinaryOpType opType)
+    public static Optional<IRBinaryOpType> negate(IRBinaryOpType opType)
     {
         switch (opType)
         {

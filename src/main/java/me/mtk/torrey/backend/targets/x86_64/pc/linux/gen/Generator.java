@@ -5,18 +5,18 @@ import java.util.Queue;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import me.mtk.torrey.frontend.ir.instructions.Quadruple;
-import me.mtk.torrey.frontend.ir.instructions.CopyInst;
-import me.mtk.torrey.frontend.ir.instructions.GotoInst;
-import me.mtk.torrey.frontend.ir.instructions.IfInst;
-import me.mtk.torrey.frontend.ir.instructions.LabelInst;
-import me.mtk.torrey.frontend.ir.instructions.UnaryInst;
-import me.mtk.torrey.frontend.ir.instructions.BinaryInst;
-import me.mtk.torrey.frontend.ir.instructions.ParamInst;
-import me.mtk.torrey.frontend.ir.instructions.CallInst;
-import me.mtk.torrey.frontend.ir.addressing.Address;
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
-import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
+import me.mtk.torrey.frontend.ir.instructions.IRQuadruple;
+import me.mtk.torrey.frontend.ir.instructions.IRCopyInst;
+import me.mtk.torrey.frontend.ir.instructions.IRGotoInst;
+import me.mtk.torrey.frontend.ir.instructions.IRIfInst;
+import me.mtk.torrey.frontend.ir.instructions.IRLabelInst;
+import me.mtk.torrey.frontend.ir.instructions.IRUnaryInst;
+import me.mtk.torrey.frontend.ir.instructions.IRBinaryInst;
+import me.mtk.torrey.frontend.ir.instructions.IRParamInst;
+import me.mtk.torrey.frontend.ir.instructions.IRCallInst;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.AddressingMode;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.BaseRelative;
@@ -137,24 +137,24 @@ public final class Generator
         // Generate the program's instructions by translating
         // IR instructions to x86_64 instructions.
         x86.addInst(new Label(entryAddr));
-        for (Quadruple quad : ir.quads())
+        for (IRQuadruple quad : ir.quads())
         {
-            if (quad instanceof CopyInst)
-                gen((CopyInst) quad);
-            else if (quad instanceof UnaryInst)
-                gen((UnaryInst) quad);
-            else if (quad instanceof BinaryInst)
-                gen((BinaryInst) quad);
-            else if (quad instanceof ParamInst)
-                gen((ParamInst) quad);
-            else if (quad instanceof CallInst)
-                gen((CallInst) quad);
-            else if (quad instanceof IfInst)
-                gen((IfInst) quad);
-            else if (quad instanceof LabelInst)
-                gen((LabelInst) quad);
-            else if (quad instanceof GotoInst)
-                gen((GotoInst) quad);
+            if (quad instanceof IRCopyInst)
+                gen((IRCopyInst) quad);
+            else if (quad instanceof IRUnaryInst)
+                gen((IRUnaryInst) quad);
+            else if (quad instanceof IRBinaryInst)
+                gen((IRBinaryInst) quad);
+            else if (quad instanceof IRParamInst)
+                gen((IRParamInst) quad);
+            else if (quad instanceof IRCallInst)
+                gen((IRCallInst) quad);
+            else if (quad instanceof IRIfInst)
+                gen((IRIfInst) quad);
+            else if (quad instanceof IRLabelInst)
+                gen((IRLabelInst) quad);
+            else if (quad instanceof IRGotoInst)
+                gen((IRGotoInst) quad);
             else
                 throw new Error("Cannot generate x86 instruction");
         }
@@ -242,7 +242,7 @@ public final class Generator
         return x86;
     }
 
-    private void gen(IfInst inst)
+    private void gen(IRIfInst inst)
     {
 
         final LabelAddress labelAddr = new LabelAddress(inst.result().toString());
@@ -288,20 +288,20 @@ public final class Generator
         }
     }
 
-    private void gen(LabelInst inst)
+    private void gen(IRLabelInst inst)
     {
         x86.addInst(new Label(new LabelAddress(inst.arg1().toString())));
     }
 
-    private void gen(GotoInst inst)
+    private void gen(IRGotoInst inst)
     {
         x86.addInst(new Jmp(new LabelAddress(inst.result().toString())));
     }
 
-    private void gen(CopyInst inst)
+    private void gen(IRCopyInst inst)
     {
-        final Address srcAddr = inst.arg1();
-        final Address destAddr = inst.result();
+        final IRAddress srcAddr = inst.arg1();
+        final IRAddress destAddr = inst.result();
 
         final X86Address src = transAddress(srcAddr);
         final X86Address dest = new Temporary(destAddr.toString());
@@ -309,10 +309,10 @@ public final class Generator
         x86.addInst(new Movq(src, dest));
     }
 
-    private void gen(UnaryInst inst)
+    private void gen(IRUnaryInst inst)
     { 
-        final Address srcAddr = inst.arg1();
-        final Address destAddr = inst.result();
+        final IRAddress srcAddr = inst.arg1();
+        final IRAddress destAddr = inst.result();
 
         final X86Address src = transAddress(srcAddr);
         final X86Address dest = new Temporary(destAddr.toString());
@@ -321,12 +321,12 @@ public final class Generator
         x86.addInst(new Negq(dest));
     }
 
-    private void gen(BinaryInst inst)
+    private void gen(IRBinaryInst inst)
     {
         final String op = inst.op().opText();
-        final Address arg1Addr = inst.arg1();
-        final Address arg2Addr = inst.arg2();
-        final Address destAddr = inst.result();
+        final IRAddress arg1Addr = inst.arg1();
+        final IRAddress arg2Addr = inst.arg2();
+        final IRAddress destAddr = inst.result();
 
         final X86Address arg1 = transAddress(arg1Addr);
         final X86Address arg2 = transAddress(arg2Addr);
@@ -383,12 +383,12 @@ public final class Generator
                 + " Unhandled binary case.");
     }
 
-    private void gen(ParamInst inst)
+    private void gen(IRParamInst inst)
     {
         params.add((String) inst.arg1().value());
     }
 
-    private void gen(CallInst inst)
+    private void gen(IRCallInst inst)
     {
         final String procName = (String) inst.arg1().value();
         final int numParams = (int) inst.arg2().value();
@@ -412,11 +412,11 @@ public final class Generator
      * @param addr An IR address.
      * @return An equivalent x86 address.
      */
-    private X86Address transAddress(Address addr)
+    private X86Address transAddress(IRAddress addr)
     {
-        if (addr instanceof ConstAddress)
+        if (addr instanceof IRConstAddress)
             return new Immediate(String.format("$%s", addr));
-        else if (addr instanceof TempAddress)
+        else if (addr instanceof IRTempAddress)
             return new Temporary(addr.toString());
         else
             throw new Error("transAddress(Address): Cannot translate.");

@@ -6,18 +6,18 @@ import java.util.HashMap;
 /**
  * Represents an unary operator.
  */
-public final class UnaryOperator extends Operator
+public final class IRUnaryOperator extends IROperator
 {
     // Maps an enum prop to its op text
-    private static final Map<UnaryOpType, String> store;
+    private static final Map<IRUnaryOpType, String> store;
 
     static
     {
         store = new HashMap<>();
-        store.put(UnaryOpType.MINUS, "-");
+        store.put(IRUnaryOpType.MINUS, "-");
     }
 
-    public UnaryOperator(UnaryOpType op) {
+    public IRUnaryOperator(IRUnaryOpType op) {
         super(store.get(op));
     }
 }

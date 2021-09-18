@@ -1,26 +1,26 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.Address;
-import me.mtk.torrey.frontend.ir.addressing.LabelAddress;
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 
 /**
  * Represents an intermediate language instruction.
  */
-public abstract class Quadruple 
+public abstract class IRQuadruple 
 {
     // The operator of the instruction.
-    protected Operator op;
+    protected IROperator op;
 
     // The first argument of the instruction.
-    protected Address arg1;
+    protected IRAddress arg1;
 
     // The second argument of the instruction.
-    protected Address arg2;
+    protected IRAddress arg2;
     
     // The address at which the result of the instruction 
     // is to be stored.
-    protected Address result;
+    protected IRAddress result;
     
     /**
      * Instantiates a new quadruple to hold the properties
@@ -32,7 +32,7 @@ public abstract class Quadruple
      * @param result A temporary address to store the result of the
      * instruction.
      */
-    public Quadruple(Operator op, Address arg1, Address arg2, TempAddress result)
+    public IRQuadruple(IROperator op, IRAddress arg1, IRAddress arg2, IRTempAddress result)
     {
         this.op = op;
         this.arg1 = arg1;
@@ -40,7 +40,7 @@ public abstract class Quadruple
         this.result = result;
     }
 
-    public Quadruple(Operator op, Address arg1, Address arg2, LabelAddress result)
+    public IRQuadruple(IROperator op, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
     {
         this.op = op;
         this.arg1 = arg1;
@@ -48,7 +48,7 @@ public abstract class Quadruple
         this.result = result;
     }
 
-    public Quadruple(Operator op, Address arg)
+    public IRQuadruple(IROperator op, IRAddress arg)
     {
         this.op = op;
         this.arg1 = arg;
@@ -56,22 +56,22 @@ public abstract class Quadruple
         this.result = null;
     }
 
-    public Operator op()
+    public IROperator op()
     {
         return op;
     }
 
-    public Address arg1()
+    public IRAddress arg1()
     {
         return arg1;
     }
 
-    public Address arg2()
+    public IRAddress arg2()
     {
         return arg2;
     }
 
-    public Address result()
+    public IRAddress result()
     {
         return result;
     }

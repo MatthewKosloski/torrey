@@ -1,17 +1,18 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.Address;
-import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
-import me.mtk.torrey.frontend.ir.addressing.LabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
 
-public final class IfInst extends Quadruple
+public final class IRIfInst extends IRQuadruple
 {
-    public IfInst(BinaryOpType op, Address arg1, Address arg2, LabelAddress result)
+    public IRIfInst(IRBinaryOpType op, IRAddress arg1, IRAddress arg2,
+        IRLabelAddress result)
     {
-        super(new BinaryOperator(op), arg1, arg2, result);
+        super(new IRBinaryOperator(op), arg1, arg2, result);
     }
 
-    public IfInst(ConstAddress bool, LabelAddress result)
+    public IRIfInst(IRConstAddress bool, IRLabelAddress result)
     {
         super(null, bool, null, result);
     }
