@@ -164,6 +164,8 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
 
     public Expr visit(PrimitiveExpr expr)
     { 
+        // Primitive expressions (e.g., booleans and integers) cannot
+        // be reduced, so just return them as-is.
         return expr; 
     }
 
