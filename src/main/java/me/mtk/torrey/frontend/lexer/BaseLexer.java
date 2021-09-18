@@ -2,8 +2,7 @@ package me.mtk.torrey.frontend.lexer;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.frontend.error_reporter.SyntaxError;
-import me.mtk.torrey.frontend.error_reporter.ErrorReporter;
+import me.mtk.torrey.frontend.error_reporter.*;
 
 /**
  * This base class keeps track of the lexer's state
