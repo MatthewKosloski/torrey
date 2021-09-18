@@ -4,10 +4,10 @@ import me.mtk.torrey.TorreyConfig;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.TorreyBackend;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.Assembler;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.Generator;
 import me.mtk.torrey.backend.targets.TargetProgram;
 import me.mtk.torrey.backend.targets.TargetTriple;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.Assembler;
 
 /**
  * The compiler backend that targets x86_64-pc-linux.

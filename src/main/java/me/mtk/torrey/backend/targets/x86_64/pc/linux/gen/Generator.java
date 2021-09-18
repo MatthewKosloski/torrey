@@ -24,6 +24,8 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Register;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Registers;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Temporary;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.X86Address;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.AssemblerDirective;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.AssemblerDirectiveType;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Immediate;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.LabelAddress;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Global;

@@ -1,10 +1,11 @@
-package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
+package me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import me.mtk.torrey.TorreyCompiler;
 import me.mtk.torrey.TorreyIOUtils;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
 
 /**
  * Uses the gcc process to build an executable

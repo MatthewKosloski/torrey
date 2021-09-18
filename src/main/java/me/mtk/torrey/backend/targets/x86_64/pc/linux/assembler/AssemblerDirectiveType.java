@@ -1,4 +1,4 @@
-package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
+package me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler;
 
 public enum AssemblerDirectiveType 
 {
