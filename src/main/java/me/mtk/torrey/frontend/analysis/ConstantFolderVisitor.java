@@ -121,7 +121,7 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             final Env prevEnv = top;
             top = expr.environment();
 
-            // Fold the child expressioms.
+            // Fold the child expressions.
             foldChildren(expr);
 
             // Restore the previous environment.
