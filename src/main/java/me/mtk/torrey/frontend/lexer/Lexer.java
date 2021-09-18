@@ -1,8 +1,6 @@
 package me.mtk.torrey.frontend.lexer;
 
-import me.mtk.torrey.frontend.error_reporter.ErrorMessages;
-import me.mtk.torrey.frontend.error_reporter.ErrorReporter;
-import me.mtk.torrey.frontend.error_reporter.SyntaxError;
+import me.mtk.torrey.frontend.error_reporter.*;
 
 /**
  * An implementation of a LL(1) recursive-descent

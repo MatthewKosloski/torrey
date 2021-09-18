@@ -2,10 +2,8 @@ package me.mtk.torrey.frontend.parser;
 
 import java.util.List;
 import me.mtk.torrey.frontend.ast.Program;
-import me.mtk.torrey.frontend.error_reporter.ErrorReporter;
-import me.mtk.torrey.frontend.error_reporter.SyntaxError;
-import me.mtk.torrey.frontend.lexer.Token;
-import me.mtk.torrey.frontend.lexer.TokenType;
+import me.mtk.torrey.frontend.error_reporter.*;
+import me.mtk.torrey.frontend.lexer.*;
 
 /**
  * Implements a LL(k) recursive-descent parser. Holds the

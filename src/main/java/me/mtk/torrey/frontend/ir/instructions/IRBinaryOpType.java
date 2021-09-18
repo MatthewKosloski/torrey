@@ -1,7 +1,6 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
 import java.util.Optional;
-
 import me.mtk.torrey.frontend.lexer.TokenType;
 
 public enum IRBinaryOpType

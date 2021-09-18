@@ -1,9 +1,8 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions;
 
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.X86Address;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.AddressingMode;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.*;
 
-public class X86Inst 
+public abstract class X86Inst 
 {
     // TODO: Store finite set of valid opcodes in a hash map
     // or something.

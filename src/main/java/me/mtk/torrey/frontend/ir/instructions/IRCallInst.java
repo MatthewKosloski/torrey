@@ -1,8 +1,6 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.*;
 
 public final class IRCallInst extends IRQuadruple
 {

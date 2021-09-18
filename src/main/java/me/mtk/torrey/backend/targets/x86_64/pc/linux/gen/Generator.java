@@ -1,52 +1,12 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
 
-import java.util.Map;
-import java.util.Queue;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import me.mtk.torrey.frontend.ir.instructions.IRQuadruple;
-import me.mtk.torrey.frontend.ir.instructions.IRCopyInst;
-import me.mtk.torrey.frontend.ir.instructions.IRGotoInst;
-import me.mtk.torrey.frontend.ir.instructions.IRIfInst;
-import me.mtk.torrey.frontend.ir.instructions.IRLabelInst;
-import me.mtk.torrey.frontend.ir.instructions.IRUnaryInst;
-import me.mtk.torrey.frontend.ir.instructions.IRBinaryInst;
-import me.mtk.torrey.frontend.ir.instructions.IRParamInst;
-import me.mtk.torrey.frontend.ir.instructions.IRCallInst;
-import me.mtk.torrey.frontend.ir.addressing.IRAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
+import java.util.*;
+import me.mtk.torrey.frontend.ir.addressing.*;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.AddressingMode;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.BaseRelative;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Register;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Registers;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Temporary;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.X86Address;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.AssemblerDirective;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.AssemblerDirectiveType;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Immediate;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.LabelAddress;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Global;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.X86Inst;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Addq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Callq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Cmp;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.ConditionCode;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Cqo;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Jcc;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Jmp;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Label;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Idivq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Imulq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Movq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Negq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Popq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Pushq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Retq;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Subq;
-
+import me.mtk.torrey.frontend.ir.instructions.*;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.*;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.*;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.*;
 /**
  * Generates 64-bit x86 assembly code
  * from three-address code represented by

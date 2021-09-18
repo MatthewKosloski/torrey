@@ -2,26 +2,9 @@ package me.mtk.torrey.frontend.parser;
 
 import java.util.List;
 import java.util.ArrayList;
-import me.mtk.torrey.frontend.ast.Expr;
-import me.mtk.torrey.frontend.ast.IdentifierExpr;
-import me.mtk.torrey.frontend.ast.IfExpr;
-import me.mtk.torrey.frontend.ast.IntegerExpr;
-import me.mtk.torrey.frontend.ast.LetExpr;
-import me.mtk.torrey.frontend.ast.PrimitiveExpr;
-import me.mtk.torrey.frontend.ast.PrintExpr;
-import me.mtk.torrey.frontend.ast.UnaryExpr;
-import me.mtk.torrey.frontend.ast.ArithmeticExpr;
-import me.mtk.torrey.frontend.ast.BinaryExpr;
-import me.mtk.torrey.frontend.ast.BooleanExpr;
-import me.mtk.torrey.frontend.ast.CompareExpr;
-import me.mtk.torrey.frontend.ast.LetBindings;
-import me.mtk.torrey.frontend.ast.LetBinding;
-import me.mtk.torrey.frontend.ast.Program;
-import me.mtk.torrey.frontend.error_reporter.ErrorReporter;
-import me.mtk.torrey.frontend.error_reporter.SyntaxError;
-import me.mtk.torrey.frontend.lexer.Token;
-import me.mtk.torrey.frontend.lexer.TokenType;
-import me.mtk.torrey.frontend.error_reporter.ErrorMessages;
+import me.mtk.torrey.frontend.ast.*;
+import me.mtk.torrey.frontend.error_reporter.*;
+import me.mtk.torrey.frontend.lexer.*;
 
 /**
  * Translates the context-free grammar to a 
