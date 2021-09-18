@@ -1,6 +1,8 @@
-package me.mtk.torrey.backend.targets;
+package me.mtk.torrey.backend.triple;
 
-public final class TargetTriple
+import me.mtk.torrey.backend.TorreyBackend;
+
+public abstract class TargetTriple
 {
     private TargetArch arch;
     private TargetVendor vendor;
@@ -12,6 +14,8 @@ public final class TargetTriple
         this.vendor = vendor;
         this.sys = sys;
     }
+
+    public abstract TorreyBackend makeBackend();
 
     public TargetArch arch()
     {

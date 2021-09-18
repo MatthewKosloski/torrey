@@ -1,4 +1,4 @@
-package me.mtk.torrey.backend.targets;
+package me.mtk.torrey.backend.triple;
 
 /**
  * The supported target systems (operating systems).
