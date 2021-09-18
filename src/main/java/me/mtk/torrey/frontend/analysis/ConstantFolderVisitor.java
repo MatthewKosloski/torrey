@@ -171,7 +171,7 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
      * Visits the given expression and potentially
      * sets its fold iff the expression is foldable.
      * 
-     * @param expr An expression to (potentially)
+     * @param expr An expression to (potentially) fold.
      * @return The expression or a reference to
      * the expression to which it folds.
      */
