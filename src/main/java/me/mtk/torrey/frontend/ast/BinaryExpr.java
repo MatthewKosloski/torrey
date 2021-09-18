@@ -18,7 +18,8 @@ public class BinaryExpr extends Expr implements Foldable
 
     public void setFold(Expr fold)
     {
-        this.fold = fold;
+        if (!fold.equals(this))
+            this.fold = fold;
     }
 
     public Expr getFold()

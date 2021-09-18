@@ -179,12 +179,30 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
      */
     private ASTNode fold(ASTNode node)
     {
+        // Recurse through children.
         final ASTNode fold = node.accept(this);
-        // Only set fold if this node is foldable and
-        // this node's fold is not just a reference to
-        // itself.
-        if (node instanceof Foldable && !fold.equals(node))
-            ((Foldable) node).setFold((Expr) fold);
+
+        if (node instanceof Foldable)
+        {
+            // The expression can be folded.
+
+            final Foldable foldableExpr = ((Foldable) node);
+
+            if (foldableExpr.getFold() == null)
+            {
+                // The expression can folded AND has not yet been
+                // assigned a fold, so set the fold.
+                foldableExpr.setFold((Expr) fold);
+            }
+            else
+            {
+                // The expression can be folded AND has already been
+                // assigned a fold. Don't override the fold; just return
+                // the fold that's already assigned.
+                return foldableExpr.getFold();
+            }
+        }
+
         return fold;
     }
 
