@@ -8,10 +8,10 @@ package me.mtk.torrey.frontend.ir.addressing;
  * An address can be a constant, or a 
  * compiler-generated temporary.
  */
-public abstract class Address
+public abstract class IRAddress
 {
     // The mode of this address.
-    private AddressingMode mode;
+    private IRAddressingMode mode;
 
     // The value of the address.
     private Object value;
@@ -20,7 +20,7 @@ public abstract class Address
      * Constructs a new address.
      * @param value The value stored at this address.
      */
-    public Address(AddressingMode mode, Object value)
+    public IRAddress(IRAddressingMode mode, Object value)
     {
         this.mode = mode;
         this.value = value;
@@ -31,7 +31,7 @@ public abstract class Address
      * 
      * @return An addressing mode.
      */
-    public AddressingMode mode()
+    public IRAddressingMode mode()
     {
         return mode;
     }

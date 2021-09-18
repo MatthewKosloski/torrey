@@ -1,12 +1,12 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.Address;
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 
 /**
  * Represents a unary IR instruction.
  */
-public class UnaryInst extends Quadruple
+public class IRUnaryInst extends IRQuadruple
 {
     /**
      * Instantiates a new unary IR instruction.
@@ -16,9 +16,9 @@ public class UnaryInst extends Quadruple
      * @param result The temp address at which the result of the operation
      * is to be stored.
      */
-    public UnaryInst(UnaryOpType op, Address arg, TempAddress result)
+    public IRUnaryInst(IRUnaryOpType op, IRAddress arg, IRTempAddress result)
     {
-        super(new UnaryOperator(op), arg, null, result);
+        super(new IRUnaryOperator(op), arg, null, result);
     }
 
     /**
@@ -28,7 +28,7 @@ public class UnaryInst extends Quadruple
      * @param op The unary operator type of this instruction.
      * @param arg The address at which the operand is located.
      */
-    public UnaryInst(UnaryOpType op, Address arg)
+    public IRUnaryInst(IRUnaryOpType op, IRAddress arg)
     {
         this(op, arg, null);
     }

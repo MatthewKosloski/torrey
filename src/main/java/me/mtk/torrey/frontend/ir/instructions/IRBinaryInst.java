@@ -1,12 +1,12 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.Address;
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 
 /**
  * Represents a binary IR instruction.
  */
-public class BinaryInst extends Quadruple
+public class IRBinaryInst extends IRQuadruple
 {
     /**
      * Instantiates a new binary IR instruction.
@@ -17,10 +17,10 @@ public class BinaryInst extends Quadruple
      * @param result The temp address at which the result of the operation 
      * is to be stored. 
      */
-    public BinaryInst(BinaryOpType op, Address arg1, Address arg2, 
-        TempAddress result)
+    public IRBinaryInst(IRBinaryOpType op, IRAddress arg1, IRAddress arg2, 
+        IRTempAddress result)
     {
-        super(new BinaryOperator(op), arg1, arg2, result);
+        super(new IRBinaryOperator(op), arg1, arg2, result);
     }
 
     /**
@@ -31,7 +31,7 @@ public class BinaryInst extends Quadruple
      * @param arg1 The address at which the first operand is located.
      * @param arg2 The address at which the second operand is located.
      */
-    public BinaryInst(BinaryOpType op, Address arg1, Address arg2)
+    public IRBinaryInst(IRBinaryOpType op, IRAddress arg1, IRAddress arg2)
     {
         this(op, arg1, arg2, null);
     }

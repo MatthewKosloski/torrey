@@ -1,6 +1,6 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions;
 
-import me.mtk.torrey.frontend.ir.instructions.BinaryOpType;
+import me.mtk.torrey.frontend.ir.instructions.IRBinaryOpType;
 
 public enum ConditionCode
 {
@@ -17,7 +17,7 @@ public enum ConditionCode
      * @param irOp An IR binary operator type.
      * @return The corresponding condition code in x86.
      */
-    public static ConditionCode transIrOp(BinaryOpType irOp)
+    public static ConditionCode transIrOp(IRBinaryOpType irOp)
     {
         switch (irOp)
         {

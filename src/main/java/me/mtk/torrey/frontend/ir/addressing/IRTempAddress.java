@@ -3,13 +3,13 @@ package me.mtk.torrey.frontend.ir.addressing;
 /**
  * Represents an address with TEMP addressing mode.
  */
-public final class TempAddress extends Address
+public final class IRTempAddress extends IRAddress
 {
     // The number of the temporary address.
     private static int num = 0;
 
-    public TempAddress()
+    public IRTempAddress()
     {
-        super(AddressingMode.TEMP, String.format("t%d", num++));
+        super(IRAddressingMode.TEMP, String.format("t%d", num++));
     }
 }

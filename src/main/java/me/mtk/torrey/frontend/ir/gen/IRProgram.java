@@ -1,7 +1,7 @@
 package me.mtk.torrey.frontend.ir.gen;
 
-import me.mtk.torrey.frontend.ir.instructions.Quadruple;
-import me.mtk.torrey.frontend.ir.addressing.AddressingMode;
+import me.mtk.torrey.frontend.ir.instructions.IRQuadruple;
+import me.mtk.torrey.frontend.ir.addressing.IRAddressingMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public final class IRProgram
 {
     // The three-address instructions, each represented
     // by a quadruple (op, arg1, arg2, result).
-    private List<Quadruple> quads;
+    private List<IRQuadruple> quads;
 
     // The list of temporary names used in the IR program. They
     // are enumerated in the order in which they are created.
@@ -22,16 +22,16 @@ public final class IRProgram
         temps = new ArrayList<>();
     }
 
-    public void addQuad(Quadruple quad)
+    public void addQuad(IRQuadruple quad)
     {
         // If we have a first argument and it's a temporary,
         // record the name of that temporary.
-        if (quad.arg1() != null && quad.arg1().mode() == AddressingMode.TEMP)
+        if (quad.arg1() != null && quad.arg1().mode() == IRAddressingMode.TEMP)
             addTemp((String) quad.arg1().value());
         
         // If we have a second argument and it's a temporary,
         // record the name of that temporary.
-        if (quad.arg2() != null && quad.arg2().mode() == AddressingMode.TEMP)
+        if (quad.arg2() != null && quad.arg2().mode() == IRAddressingMode.TEMP)
             addTemp((String) quad.arg2().value());
 
         // If we have a result temp address, record the name.
@@ -41,13 +41,13 @@ public final class IRProgram
         quads.add(quad);
     }
 
-    public void addQuads(List<Quadruple> quads)
+    public void addQuads(List<IRQuadruple> quads)
     {
-        for (Quadruple quad : quads)
+        for (IRQuadruple quad : quads)
             addQuad(quad);
     }
 
-    public List<Quadruple> quads()
+    public List<IRQuadruple> quads()
     {
         return quads;
     }

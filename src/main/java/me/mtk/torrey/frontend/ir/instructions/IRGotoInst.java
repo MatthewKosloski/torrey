@@ -1,17 +1,17 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.LabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
 
-public final class LabelInst extends Quadruple
+public final class IRGotoInst extends IRQuadruple
 {
     /**
-     * Instantiates a new label instruction.
+     * Instantiates a new goto instruction.
      * 
      * @param label The name of the label.
      */
-    public LabelInst(LabelAddress label)
+    public IRGotoInst(IRLabelAddress label)
     {
-        super(new LabelOperator(), label);
+        super(new IRGotoOperator(), null, null, label);
     }
 
     /**
@@ -21,6 +21,6 @@ public final class LabelInst extends Quadruple
      */
     public String toString()
     {
-        return String.format("%s %s:", op.opText(), arg1);
+        return String.format("%s %s", op.opText(), result);
     }
 }

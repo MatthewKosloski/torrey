@@ -1,10 +1,10 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.TempAddress;
-import me.mtk.torrey.frontend.ir.addressing.NameAddress;
-import me.mtk.torrey.frontend.ir.addressing.ConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
 
-public final class CallInst extends Quadruple
+public final class IRCallInst extends IRQuadruple
 {
     /**
      * Instantiates a procedure call IR instruction,
@@ -18,10 +18,10 @@ public final class CallInst extends Quadruple
      * @param numParams A constant address indicating the number
      * of parameters to the procedure.
      */
-    public CallInst(TempAddress result, NameAddress procName, 
-        ConstAddress numParams)
+    public IRCallInst(IRTempAddress result, IRNameAddress procName,
+        IRConstAddress numParams)
     {
-        super(new CallOperator(), procName, numParams, result);
+        super(new IRCallOperator(), procName, numParams, result);
     }
 
     /**
@@ -33,7 +33,7 @@ public final class CallInst extends Quadruple
      * @param numParams A constant address indicating the number
      * of parameters to the procedure.
      */
-    public CallInst(NameAddress procName, ConstAddress numParams)
+    public IRCallInst(IRNameAddress procName, IRConstAddress numParams)
     {
         this(null, procName, numParams);
     }

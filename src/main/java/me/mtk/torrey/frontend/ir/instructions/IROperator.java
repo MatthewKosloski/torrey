@@ -4,11 +4,11 @@ package me.mtk.torrey.frontend.ir.instructions;
  * To be extended by all intermediate language
  * instruction operators.
  */
-public abstract class Operator
+public abstract class IROperator
 {
     private final String opText;
 
-    Operator(String opText)
+    IROperator(String opText)
     {
         this.opText = opText;
     }

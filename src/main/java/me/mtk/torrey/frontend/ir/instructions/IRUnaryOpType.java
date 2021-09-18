@@ -3,7 +3,7 @@ package me.mtk.torrey.frontend.ir.instructions;
 import java.util.Optional;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
-public enum UnaryOpType
+public enum IRUnaryOpType
 {
     MINUS;
 
@@ -14,11 +14,11 @@ public enum UnaryOpType
      * @param torreyOp The Torrey operator.
      * @return The corresponding IR operator.
      */
-    public static Optional<UnaryOpType> getUnaryOpType(TokenType tokType)
+    public static Optional<IRUnaryOpType> getUnaryOpType(TokenType tokType)
     {
         switch (tokType)
         {
-            case MINUS: return Optional.of(UnaryOpType.MINUS);
+            case MINUS: return Optional.of(IRUnaryOpType.MINUS);
             default: return Optional.empty();
         }
     }
