@@ -1,14 +1,14 @@
 package me.mtk.torrey.backend;
 
-import me.mtk.torrey.TorreyCompiler;
+import me.mtk.torrey.Compiler;
 import me.mtk.torrey.backend.triple.TargetTriple;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 
-public abstract class TorreyBackend extends TorreyCompiler
+public abstract class CompilerBackend extends Compiler
 {
     private TargetTriple triple;
 
-    public TorreyBackend(TargetTriple triple)
+    public CompilerBackend(TargetTriple triple)
     {
         this.triple = triple;
     }

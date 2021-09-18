@@ -2,7 +2,7 @@ package me.mtk.torrey;
 
 import java.io.IOException;
 
-public abstract class TorreyCompiler 
+public abstract class Compiler
 {   
     // The config file that holds the command-line arguments.
     protected TorreyConfig config;

@@ -4,9 +4,10 @@ import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
-import me.mtk.torrey.frontend.TorreyFrontend;
-import me.mtk.torrey.backend.TorreyBackend;
-import me.mtk.torrey.backend.TorreyBackendFactory;
+import me.mtk.torrey.frontend.CompilerFrontend;
+import me.mtk.torrey.backend.CompilerBackend;
+import me.mtk.torrey.backend.CompilerBackendFactory;
+import me.mtk.torrey.backend.TargetProgram;
 
 public final class Torrey
 {
@@ -58,15 +59,15 @@ public final class Torrey
             }
 
             // The compiler front-end.
-            final TorreyFrontend fe = new TorreyFrontend();
-            fe.setConfig(new TorreyConfig(config));
-            fe.setInput(input);
-            final IRProgram irProgram = fe.run();
+            final CompilerFrontend frontend = new CompilerFrontend();
+            frontend.setConfig(new TorreyConfig(config));
+            frontend.setInput(input);
+            final IRProgram irProgram = frontend.run();
             
-            TorreyBackend be = TorreyBackendFactory.makeBackendFromTarget(
-                config.target());
+            CompilerBackend backend = CompilerBackendFactory
+                .makeBackendFromTarget(config.target());
 
-            if (be == null)
+            if (backend == null)
             {
                 System.err.format("'%s' is not a registered target."
                 + " To view the registered targets, supply the"
@@ -74,12 +75,13 @@ public final class Torrey
                 System.exit(1);
             }
 
-            be.setConfig(new TorreyConfig(config));
-            be.setInput(input);
+            backend.setConfig(new TorreyConfig(config));
+            backend.setInput(input);
             
             // Generate the target program from the intermediate representation
             // and then (optionally) assemble it into a native executable.
-            be.assemble(be.generate(irProgram));
+            final TargetProgram targetProgram = backend.generate(irProgram);
+            backend.assemble(targetProgram);
         }
         catch (IOException e)
         {
@@ -112,7 +114,7 @@ public final class Torrey
             .append("\n\twhere <triple> is of the form ")
             .append("<arch>-<vendor>-<sys>.\n\n");
         sb.append("Registered targets (triples):\n");
-        TorreyBackendFactory.targetStringToTripleMap()
+        CompilerBackendFactory.targetStringToTripleMap()
             .forEach((k, v) -> sb.append("\t").append(k));
         System.out.println(sb.toString());
         System.exit(0);

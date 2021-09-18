@@ -10,7 +10,7 @@ import me.mtk.torrey.backend.triple.*;
 /**
  * Handles the construction of compiler backends at runtime.
  */
-public final class TorreyBackendFactory
+public final class CompilerBackendFactory
 {
     // Maps target triple strings to target triple instances.
     private static Map<String, TargetTriple> targetStringToTripleMap;
@@ -26,7 +26,7 @@ public final class TorreyBackendFactory
             x8664PCLinuxTarget);
     }
 
-    public static TorreyBackend makeBackendFromTarget(String target)
+    public static CompilerBackend makeBackendFromTarget(String target)
     {
         if (targetStringToTripleMap.containsKey(target))
         {

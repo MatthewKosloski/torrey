@@ -3,7 +3,7 @@ package me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import me.mtk.torrey.TorreyCompiler;
+import me.mtk.torrey.Compiler;
 import me.mtk.torrey.TorreyIOUtils;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
 
@@ -13,7 +13,7 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
  * code and linking it with the generated x86-64
  * assembly.
  */
-public final class Assembler extends TorreyCompiler
+public final class Assembler extends Compiler
 {
     // If the user does not provide an output file name for the 
     // executable via the command-line, use this as a default.

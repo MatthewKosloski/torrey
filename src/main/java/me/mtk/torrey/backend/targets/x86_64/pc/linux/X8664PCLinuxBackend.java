@@ -3,7 +3,7 @@ package me.mtk.torrey.backend.targets.x86_64.pc.linux;
 import me.mtk.torrey.TorreyConfig;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.TargetProgram;
-import me.mtk.torrey.backend.TorreyBackend;
+import me.mtk.torrey.backend.CompilerBackend;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.Assembler;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.Generator;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
@@ -12,7 +12,7 @@ import me.mtk.torrey.backend.triple.TargetTriple;
 /**
  * The compiler backend that targets x86_64-pc-linux.
  */
-public final class X8664PCLinuxBackend extends TorreyBackend
+public final class X8664PCLinuxBackend extends CompilerBackend
 {
 
     public X8664PCLinuxBackend(TargetTriple triple)

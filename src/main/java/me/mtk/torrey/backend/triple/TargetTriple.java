@@ -1,6 +1,6 @@
 package me.mtk.torrey.backend.triple;
 
-import me.mtk.torrey.backend.TorreyBackend;
+import me.mtk.torrey.backend.CompilerBackend;
 
 public abstract class TargetTriple
 {
@@ -15,7 +15,7 @@ public abstract class TargetTriple
         this.sys = sys;
     }
 
-    public abstract TorreyBackend makeBackend();
+    public abstract CompilerBackend makeBackend();
 
     public TargetArch arch()
     {

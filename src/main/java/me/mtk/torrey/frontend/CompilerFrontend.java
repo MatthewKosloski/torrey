@@ -1,6 +1,6 @@
 package me.mtk.torrey.frontend;
 
-import me.mtk.torrey.TorreyCompiler;
+import me.mtk.torrey.Compiler;
 import me.mtk.torrey.frontend.analysis.*;
 import me.mtk.torrey.frontend.ast.PrettyPrinterVisitor;
 import me.mtk.torrey.frontend.ast.Program;
@@ -18,7 +18,7 @@ import me.mtk.torrey.frontend.parser.Grammar;
  * intermediate program. This intermediate program can then
  * be translated to literally anything (x86, LLVM, etc.).
  */
-public final class TorreyFrontend extends TorreyCompiler
+public final class CompilerFrontend extends Compiler
 {
     public IRProgram run()
     {
