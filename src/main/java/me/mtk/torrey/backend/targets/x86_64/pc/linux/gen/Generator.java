@@ -207,7 +207,7 @@ public final class Generator
 
         final LabelAddress labelAddr = new LabelAddress(inst.result().toString());
 
-        if (inst.op() != null)
+        if (inst.opType() != null)
         {
             // The test condition is a comparison expression.
             
@@ -222,20 +222,7 @@ public final class Generator
 
             // Perform the comparison.
             x86.addInst(new Cmp(Register.R11, Register.R10));
-
-            // TODO: Fix this sloppiness.
-            ConditionCode cc;
-            switch(inst.op().opText())
-            {
-                case "<": cc = ConditionCode.JL; break;
-                case "<=": cc = ConditionCode.JLE; break;
-                case ">": cc = ConditionCode.JG; break;
-                case ">=": cc = ConditionCode.JGE; break;
-                case "!=": cc = ConditionCode.JNE; break;
-                default: cc = null;
-            }
-
-            x86.addInst(new Jcc(cc, labelAddr));
+            x86.addInst(new Jcc(ConditionCode.transIrOp(inst.opType()), labelAddr));
         }
         else
         {
@@ -284,7 +271,7 @@ public final class Generator
 
     private void gen(IRBinaryInst inst)
     {
-        final String op = inst.op().opText();
+        final String op = inst.opType().terminal();
         final IRAddress arg1Addr = inst.arg1();
         final IRAddress arg2Addr = inst.arg2();
         final IRAddress destAddr = inst.result();

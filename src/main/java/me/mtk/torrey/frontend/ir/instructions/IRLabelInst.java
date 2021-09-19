@@ -11,7 +11,7 @@ public final class IRLabelInst extends IRQuadruple
      */
     public IRLabelInst(IRLabelAddress label)
     {
-        super(new IRLabelOperator(), label);
+        super(IROpType.LABEL, label);
     }
 
     /**
@@ -21,6 +21,6 @@ public final class IRLabelInst extends IRQuadruple
      */
     public String toString()
     {
-        return String.format("%s %s:", op.opText(), arg1);
+        return String.format("%s %s:", opType.terminal(), arg1);
     }
 }

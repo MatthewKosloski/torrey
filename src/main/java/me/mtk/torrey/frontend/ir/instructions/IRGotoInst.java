@@ -11,7 +11,7 @@ public final class IRGotoInst extends IRQuadruple
      */
     public IRGotoInst(IRLabelAddress label)
     {
-        super(new IRGotoOperator(), null, null, label);
+        super(IROpType.GOTO, null, null, label);
     }
 
     /**
@@ -21,6 +21,6 @@ public final class IRGotoInst extends IRQuadruple
      */
     public String toString()
     {
-        return String.format("%s %s", op.opText(), result);
+        return String.format("%s %s", opType.terminal(), result);
     }
 }

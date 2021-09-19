@@ -20,11 +20,11 @@ public final class IRCopyInst extends IRQuadruple
      */
     public IRCopyInst(IRTempAddress lhs, IRAddress rhs)
     {
-        super(new IRCopyOperator(), rhs, null, lhs);
+        super(IROpType.COPY, rhs, null, lhs);
     }
 
     public String toString()
     {
-        return String.format("%s %s %s", result, op.opText(), arg1);
+        return String.format("%s %s %s", result, opType.terminal(), arg1);
     }
 }

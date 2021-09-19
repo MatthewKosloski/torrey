@@ -14,7 +14,7 @@ public final class IRParamInst extends IRQuadruple
      */
     public IRParamInst(IRAddress addr)
     {
-        super(new IRParamOperator(), addr);
+        super(IROpType.PARAM, addr);
     }
 
     /**
@@ -24,6 +24,6 @@ public final class IRParamInst extends IRQuadruple
      */
     public String toString()
     {
-        return String.format("%s %s", op.opText(), arg1);
+        return String.format("%s %s", opType.terminal(), arg1);
     }
 }

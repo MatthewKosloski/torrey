@@ -1,13 +1,15 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
 import me.mtk.torrey.frontend.ir.addressing.*;
+import me.mtk.torrey.frontend.lexer.TokenType;
 
 public final class IRIfInst extends IRQuadruple
 {
-    public IRIfInst(IRBinaryOpType op, IRAddress arg1, IRAddress arg2,
+    public IRIfInst(TokenType tokType, IRAddress arg1, IRAddress arg2,
         IRLabelAddress result)
     {
-        super(new IRBinaryOperator(op), arg1, arg2, result);
+        super(IROpType.getInvertedBinaryOpTypeFromTokenType(tokType),
+            arg1, arg2, result);
     }
 
     public IRIfInst(IRConstAddress bool, IRLabelAddress result)
@@ -22,9 +24,9 @@ public final class IRIfInst extends IRQuadruple
      */
     public String toString()
     {
-        if (arg1 != null && arg2 != null && result != null && op != null)
+        if (arg1 != null && arg2 != null && result != null && opType != null)
             return String.format("if %s %s %s goto %s", arg1, 
-                op.opText(), arg2, result);
+                opType.terminal(), arg2, result);
         return String.format("if %s goto %s", arg1, result);
     }
 }

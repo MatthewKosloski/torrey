@@ -109,13 +109,11 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
      */
     public IRAddress visit(UnaryExpr expr)
     {
+        final TokenType tokType = expr.token().type();
         final IRTempAddress result = new IRTempAddress();
-        final Optional<IRUnaryOpType> op = IRUnaryOpType.getUnaryOpType(
-            expr.token().type());
-
         final IRAddress arg = getDestinationAddr(expr.first());
 
-        irProgram.addQuad(new IRUnaryInst(op.get(), arg, result));
+        irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
 
         return result;
     }
@@ -149,8 +147,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
     public IRAddress visit(ArithmeticExpr expr)
     {
         final IRTempAddress result = new IRTempAddress();
-        final Optional<IRBinaryOpType> op = IRBinaryOpType.getBinaryOpType(
-            expr.token().type());
 
         if (expr.getFold() != null)
         {
@@ -173,9 +169,10 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
         {
             // The binary expression cannot be reduced and thus
             // an arithmetic instruction must be emitted.
+            final TokenType tokType = expr.token().type();
             final IRAddress arg1 = getDestinationAddr(expr.first());
             final IRAddress arg2 = getDestinationAddr(expr.second());
-            irProgram.addQuad(new IRBinaryInst(op.get(), arg1, arg2, result));
+            irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
         }
         
         return result;
@@ -190,22 +187,14 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
      */
     public IRAddress visit(CompareExpr expr)
     {
+        final TokenType tokType = expr.token().type();
+        
         final IRLabelAddress label = new IRLabelAddress();
         
         final IRAddress arg1 = getDestinationAddr(expr.first());
         final IRAddress arg2 = getDestinationAddr(expr.second());
         
-        final TokenType tokType = expr.token().type();
-        final Optional<IRBinaryOpType> irOpType = IRBinaryOpType.getBinaryOpType(
-            tokType);
-
-        // Only go to label if condition is false, so we 
-        // negate the condition.
-        final Optional<IRBinaryOpType> negatedIrOpType = IRBinaryOpType.negate(
-            irOpType.get());
-
-        irProgram.addQuad(new IRIfInst(negatedIrOpType.get(), arg1, 
-            arg2, label));
+        irProgram.addQuad(new IRIfInst(tokType, arg1, arg2, label));
         return label;
     }
 

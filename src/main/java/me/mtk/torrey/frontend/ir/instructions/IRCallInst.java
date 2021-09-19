@@ -19,7 +19,7 @@ public final class IRCallInst extends IRQuadruple
     public IRCallInst(IRTempAddress result, IRNameAddress procName,
         IRConstAddress numParams)
     {
-        super(new IRCallOperator(), procName, numParams, result);
+        super(IROpType.CALL, procName, numParams, result);
     }
 
     /**
@@ -41,6 +41,6 @@ public final class IRCallInst extends IRQuadruple
      */
     public String toString()
     {
-        return String.format("%s %s, %s", op.opText(), arg1, arg2);
+        return String.format("%s %s, %s", opType.terminal(), arg1, arg2);
     }
 }
