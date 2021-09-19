@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public final class IRBinaryOperator extends IROperator
 {
-    // Maps an enum prop to its op text
+    // Maps an IR binary operator type to its text (terminal symbol)
     private static final Map<IRBinaryOpType, String> store;
 
     static
@@ -19,6 +19,7 @@ public final class IRBinaryOperator extends IROperator
         store.put(IRBinaryOpType.MULT, "*");
         store.put(IRBinaryOpType.DIV, "/");
         store.put(IRBinaryOpType.EQUAL, "==");
+        store.put(IRBinaryOpType.NEQUAL, "!=");
         store.put(IRBinaryOpType.LT, "<");
         store.put(IRBinaryOpType.LTE, "<=");
         store.put(IRBinaryOpType.GT, ">");

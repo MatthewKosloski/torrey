@@ -231,6 +231,7 @@ public final class Generator
                 case "<=": cc = ConditionCode.JLE; break;
                 case ">": cc = ConditionCode.JG; break;
                 case ">=": cc = ConditionCode.JGE; break;
+                case "!=": cc = ConditionCode.JNE; break;
                 default: cc = null;
             }
 
