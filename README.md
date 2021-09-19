@@ -176,7 +176,7 @@ goto         -> "goto" labelid ;
 
 addr         -> temp | name | constant ;
 
-relOp       -> "==" | "<" | "<=" | ">" | ">=" ;
+relOp       -> "==" | "!=" | "<" | "<=" | ">" | ">=" ;
 arithOp     -> "+" | "-" | "*" | "/" ;
 labelid     -> "l0" | "l1" | "l2" | ... ;
 ```
