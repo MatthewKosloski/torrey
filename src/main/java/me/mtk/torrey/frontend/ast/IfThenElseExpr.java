@@ -11,16 +11,6 @@ public final class IfThenElseExpr extends IfExpr
         addChild(alternative);
     }
 
-    public Expr test()
-    {
-        return (Expr) get(0);
-    }
-
-    public Expr consequent()
-    {
-        return (Expr) get(1);
-    }
-
     public Expr alternative()
     {
         return (Expr) get(2);
