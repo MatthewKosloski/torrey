@@ -128,12 +128,11 @@ public class Grammar extends Parser
         Expr expr;
 
         // expr?
-        Expr alternative = null;
         if (!peek(TokenType.RPAREN, TokenType.EOF))
         {
             // The next token is not a closing paren,
             // so try to parse an if-then-else.
-            alternative = expression();
+            final Expr alternative = expression();
             expr = new IfExpr(tok, test, consequent, alternative);
         }
         else
