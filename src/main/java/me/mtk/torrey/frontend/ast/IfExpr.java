@@ -5,21 +5,17 @@ import me.mtk.torrey.frontend.lexer.Token;
 
 public final class IfExpr extends Expr
 {
-    public IfExpr(Token tok, Expr test, Expr consequent, Expr alternative)
+    public IfExpr(Token tok, Expr test, Expr consequent)
     {
         super(tok, DataType.UNDEFINED);
         addChild(test);
         addChild(consequent);
-
-        // If this is an if-then expression,
-        // then alternative will be null.
-        if (alternative != null)
-            addChild(alternative);
     }
 
-    public IfExpr(Token tok, Expr test, Expr consequent)
+    public IfExpr(Token tok, Expr test, Expr consequent, Expr alternative)
     {
-        this(tok, test, consequent, null);
+        this(tok, test, consequent);
+        addChild(alternative);
     }
 
     public Expr test()
