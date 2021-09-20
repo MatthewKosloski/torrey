@@ -116,8 +116,14 @@ public class EnvBuilderVisitor implements ASTNodeVisitor<Void>
         expr.test().accept(this);
         expr.consequent().accept(this);
 
-        if (expr.alternative() != null)
-            expr.alternative().accept(this);
+        return null;
+    }
+
+    public Void visit(IfThenElseExpr expr)
+    {
+        expr.test().accept(this);
+        expr.consequent().accept(this);
+        expr.alternative().accept(this);
 
         return null;
     }

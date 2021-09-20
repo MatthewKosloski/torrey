@@ -133,7 +133,7 @@ public class Grammar extends Parser
             // The next token is not a closing paren,
             // so try to parse an if-then-else.
             final Expr alternative = expression();
-            expr = new IfExpr(tok, test, consequent, alternative);
+            expr = new IfThenElseExpr(tok, test, consequent, alternative);
         }
         else
             // Try to parse an if-then.

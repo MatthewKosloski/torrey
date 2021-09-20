@@ -133,6 +133,12 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         return expr;
     }
 
+    public ASTNode visit(IfThenElseExpr expr)
+    {
+        foldChildren(expr);
+        return expr;
+    }
+
     public Expr visit(IdentifierExpr expr)
     {
         final String id = expr.token().rawText();
