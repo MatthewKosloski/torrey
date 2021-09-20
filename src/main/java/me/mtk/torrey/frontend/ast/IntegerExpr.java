@@ -24,4 +24,10 @@ public final class IntegerExpr extends PrimitiveExpr
     {
         return Integer.parseInt(token().rawText());
     }
+
+    @Override
+    public <T> T accept(ASTNodeVisitor<T> visitor)
+    {
+        return visitor.visit(this);
+    }
 }

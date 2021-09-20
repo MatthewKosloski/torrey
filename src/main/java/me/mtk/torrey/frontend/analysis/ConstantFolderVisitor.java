@@ -35,43 +35,14 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
         return program;
     }
 
-    public Expr visit(BinaryExpr expr)
+    public Expr visit(ArithmeticExpr expr)
     {
-        // Perform constant folding on the two child nodes.
-        final ASTNode firstFolded = fold(expr.first());
-        final ASTNode secondFolded = fold(expr.second());
+        return foldBinaryExpr(expr);
+    }
 
-        if (firstFolded instanceof ConstantConvertable
-            && secondFolded instanceof ConstantConvertable)
-        {
-            final int c1 = ((ConstantConvertable) firstFolded).toConstant();
-            final int c2 = ((ConstantConvertable) secondFolded).toConstant();
-
-            // If the folded expression is a unary expression
-            // whose operand is a let expression, then don't attempt
-            // constant fold.
-            if ((firstFolded instanceof UnaryExpr 
-                && firstFolded.first() instanceof LetExpr) ||
-                (secondFolded instanceof UnaryExpr 
-                && secondFolded.first() instanceof LetExpr))
-                return expr;
-            
-            switch (expr.token().type())
-            {
-                case PLUS: return (Expr) Expr.makeConstantExpr(c1 + c2);
-                case MINUS: return (Expr) Expr.makeConstantExpr(c1 - c2);
-                case STAR: return (Expr) Expr.makeConstantExpr(c1 * c2);
-                case SLASH: return (Expr) Expr.makeConstantExpr(c1 / c2);
-                case LT: return new BooleanExpr(c1 < c2);
-                case LTE: return new BooleanExpr(c1 <= c2);
-                case GT: return new BooleanExpr(c1 > c2);
-                case GTE: return new BooleanExpr(c1 >= c2);
-                case EQUAL: return new BooleanExpr(c1 == c2);
-                default: return expr;
-            }
-        }
-
-        return expr;
+    public Expr visit(CompareExpr expr)
+    {
+        return foldBinaryExpr(expr);
     }
 
     public Expr visit(UnaryExpr expr) 
@@ -152,11 +123,55 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
             return boundedExpr;
     }
 
-    public Expr visit(PrimitiveExpr expr)
+    public Expr visit(IntegerExpr expr)
     { 
-        // Primitive expressions (e.g., booleans and integers) cannot
-        // be reduced, so just return them as-is.
+        // Cannot be simplified, so just return the expression.
         return expr; 
+    }
+
+    public Expr visit(BooleanExpr expr)
+    { 
+        // Cannot be simplified, so just return the expression.
+        return expr; 
+    }
+
+    private Expr foldBinaryExpr(BinaryExpr expr)
+    {
+        // Perform constant folding on the two child nodes.
+        final ASTNode firstFolded = fold(expr.first());
+        final ASTNode secondFolded = fold(expr.second());
+
+        if (firstFolded instanceof ConstantConvertable
+            && secondFolded instanceof ConstantConvertable)
+        {
+            final int c1 = ((ConstantConvertable) firstFolded).toConstant();
+            final int c2 = ((ConstantConvertable) secondFolded).toConstant();
+
+            // If the folded expression is a unary expression
+            // whose operand is a let expression, then don't attempt
+            // constant fold.
+            if ((firstFolded instanceof UnaryExpr 
+                && firstFolded.first() instanceof LetExpr) ||
+                (secondFolded instanceof UnaryExpr 
+                && secondFolded.first() instanceof LetExpr))
+                return expr;
+            
+            switch (expr.token().type())
+            {
+                case PLUS: return (Expr) Expr.makeConstantExpr(c1 + c2);
+                case MINUS: return (Expr) Expr.makeConstantExpr(c1 - c2);
+                case STAR: return (Expr) Expr.makeConstantExpr(c1 * c2);
+                case SLASH: return (Expr) Expr.makeConstantExpr(c1 / c2);
+                case LT: return new BooleanExpr(c1 < c2);
+                case LTE: return new BooleanExpr(c1 <= c2);
+                case GT: return new BooleanExpr(c1 > c2);
+                case GTE: return new BooleanExpr(c1 >= c2);
+                case EQUAL: return new BooleanExpr(c1 == c2);
+                default: return expr;
+            }
+        }
+
+        return expr;
     }
 
     /*

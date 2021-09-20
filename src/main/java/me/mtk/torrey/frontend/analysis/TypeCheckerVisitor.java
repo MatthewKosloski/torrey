@@ -62,13 +62,12 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     }
 
     /**
-     * Type checks a binary expression, ensuring that both operands
-     * are of type integer.
+     * Type checks a comparison expression.
      * 
      * @param expr The binary expression to be type checked.
-     * @return DataType INTEGER.
+     * @return DataType.BOOLEAN.
      */
-    public DataType visit(BinaryExpr expr)
+    public DataType visit(CompareExpr expr)
     {
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
@@ -79,97 +78,114 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         final Token operator = expr.token();
 
-        if (expr instanceof ArithmeticExpr)
-        {
-            if (first.evalType() != DataType.INTEGER)
-            {
-                // expected type DataType.INTEGER
-                reporter.error(first.token(), ErrorMessages.UnexpectedOperandToBe, 
-                    operator.rawText(), DataType.INTEGER, first.evalType());
-            } 
-    
-            if (second.evalType() != DataType.INTEGER)
-            {
-                // expected type DataType.INTEGER
-                reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
-                    operator.rawText(), DataType.INTEGER, second.evalType());
-            }
-    
-            if (first instanceof IntegerExpr && 
-                second instanceof IntegerExpr && 
-                operator.type() == TokenType.SLASH &&
-                Integer.parseInt(second.token().rawText()) == 0)
-            {
-                // Both operands are primitives and integers to 
-                // a division operator and the denominator is 0.
-    
-                reporter.error(second.token(), ErrorMessages.DivisionByZero, 
-                operator.rawText());   
-            }
-    
-        }
-        else if (expr instanceof CompareExpr)
-        {
-            final boolean areInts = first.evalType() == DataType.INTEGER
-                && second.evalType() == DataType.INTEGER;
-            final boolean areBools = first.evalType() == DataType.BOOLEAN
-                && second.evalType() == DataType.BOOLEAN;
-            final boolean onlyFirstIsInt = first.evalType() == DataType.INTEGER 
-                && second.evalType() != DataType.INTEGER;
-            final boolean onlyFirstIsBool = first.evalType() == DataType.BOOLEAN
-                && second.evalType() != DataType.BOOLEAN;
+        final boolean areInts = first.evalType() == DataType.INTEGER
+            && second.evalType() == DataType.INTEGER;
+        final boolean areBools = first.evalType() == DataType.BOOLEAN
+            && second.evalType() == DataType.BOOLEAN;
+        final boolean onlyFirstIsInt = first.evalType() == DataType.INTEGER 
+            && second.evalType() != DataType.INTEGER;
+        final boolean onlyFirstIsBool = first.evalType() == DataType.BOOLEAN
+            && second.evalType() != DataType.BOOLEAN;
 
-            if (onlyFirstIsInt)
-            {
-                // The first operand is an integer. Expected the second 
-                // operand to also be an integer.
-                reporter.error(
-                    second.token(), 
-                    ErrorMessages.UnexpectedOperandToBe, 
-                    operator.rawText(), 
-                    DataType.INTEGER, 
-                    second.evalType());
-            }
-            else if (onlyFirstIsBool)
-            {
-                // The first operand is a boolean. Expected the second 
-                // operand to also be a boolean.
-                reporter.error(second.token(), 
-                ErrorMessages.UnexpectedOperandToBe,
-                    operator.rawText(), 
-                    DataType.BOOLEAN, 
-                    second.evalType());
-            }
-            else if (!(areInts || areBools))
-            {
-                // Either both operands are not integers or
-                // both operands are not booleans.
-                reporter.error(first.token(), 
-                    ErrorMessages.UnexpectedOperandToBeEither, 
-                    operator.rawText(), 
-                    DataType.INTEGER, 
-                    DataType.BOOLEAN, 
-                    first.evalType());
-            }
-        }
-        else
+        if (onlyFirstIsInt)
         {
-            throw new Error("TypeCheckerVisitor.visit(BinaryExpr):"
-                + " Unhandled expr case.");
+            // The first operand is an integer. Expected the second 
+            // operand to also be an integer.
+            reporter.error(
+                second.token(), 
+                ErrorMessages.UnexpectedOperandToBe, 
+                operator.rawText(), 
+                DataType.INTEGER, 
+                second.evalType());
         }
-
+        else if (onlyFirstIsBool)
+        {
+            // The first operand is a boolean. Expected the second 
+            // operand to also be a boolean.
+            reporter.error(second.token(), 
+            ErrorMessages.UnexpectedOperandToBe,
+                operator.rawText(), 
+                DataType.BOOLEAN, 
+                second.evalType());
+        }
+        else if (!(areInts || areBools))
+        {
+            // Either both operands are not integers or
+            // both operands are not booleans.
+            reporter.error(first.token(), 
+                ErrorMessages.UnexpectedOperandToBeEither, 
+                operator.rawText(), 
+                DataType.INTEGER, 
+                DataType.BOOLEAN, 
+                first.evalType());
+        }
 
         return expr.evalType();
     }
 
     /**
-     * Type checks primitive literal expressions by simply returning
-     * the eval type of the expression.
+     * Type checks a binary arithmetic expression.
      * 
-     * @param expr The primitive literal expression to be type checked.
-     * @return The data type of the primitive.
+     * @param expr The binary arithmetic expression to be type-checked.
+     * @return DataType INTEGER.
      */
-    public DataType visit(PrimitiveExpr expr)
+    public DataType visit(ArithmeticExpr expr)
+    {
+        final Expr first = (Expr) expr.first();
+        final Expr second = (Expr) expr.second();
+
+        // Type check the operands.
+        first.accept(this);
+        second.accept(this);
+
+        final Token operator = expr.token();
+
+        if (first.evalType() != DataType.INTEGER)
+        {
+            // expected type DataType.INTEGER
+            reporter.error(first.token(), ErrorMessages.UnexpectedOperandToBe, 
+                operator.rawText(), DataType.INTEGER, first.evalType());
+        } 
+
+        if (second.evalType() != DataType.INTEGER)
+        {
+            // expected type DataType.INTEGER
+            reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
+                operator.rawText(), DataType.INTEGER, second.evalType());
+        }
+
+        if (first instanceof IntegerExpr && 
+            second instanceof IntegerExpr && 
+            operator.type() == TokenType.SLASH &&
+            Integer.parseInt(second.token().rawText()) == 0)
+        {
+            // Both operands are primitives and integers to 
+            // a division operator and the denominator is 0.
+            reporter.error(second.token(), ErrorMessages.DivisionByZero, 
+                operator.rawText());   
+        }
+
+        return expr.evalType();
+    }
+
+    /**
+     * Type checks a boolean expression.
+     * 
+     * @param expr The boolean expression to be type-checked.
+     * @return DataType.BOOLEAN
+     */
+    public DataType visit(BooleanExpr expr)
+    {
+        return expr.evalType();
+    }
+
+    /**
+     * Type checks an integer expression.
+     * 
+     * @param expr The integer expression to be type-checked.
+     * @return DataType.INTEGER
+     */
+    public DataType visit(IntegerExpr expr)
     {
         return expr.evalType();
     }

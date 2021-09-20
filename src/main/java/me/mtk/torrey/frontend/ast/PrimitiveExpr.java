@@ -9,10 +9,4 @@ public abstract class PrimitiveExpr extends Expr
     {
         super(tok, evalType);
     }
-
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
 }

@@ -3,7 +3,7 @@ package me.mtk.torrey.frontend.ast;
 import me.mtk.torrey.frontend.analysis.DataType;
 import me.mtk.torrey.frontend.lexer.Token;
 
-public class BinaryExpr extends Expr implements Foldable
+public abstract class BinaryExpr extends Expr implements Foldable
 {
 
     // The expression that this expression reduces to.
@@ -29,11 +29,5 @@ public class BinaryExpr extends Expr implements Foldable
     public Expr getFold()
     {
         return fold;
-    }
-
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
     }
 }

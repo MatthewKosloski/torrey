@@ -136,7 +136,14 @@ public class EnvBuilderVisitor implements ASTNodeVisitor<Void>
         return null;
     }
 
-    public Void visit(BinaryExpr expr)
+    public Void visit(ArithmeticExpr expr)
+    {
+        expr.first().accept(this);
+        expr.second().accept(this);
+        return null;
+    }
+
+    public Void visit(CompareExpr expr)
     {
         expr.first().accept(this);
         expr.second().accept(this);
@@ -149,7 +156,12 @@ public class EnvBuilderVisitor implements ASTNodeVisitor<Void>
         return null;
     }
 
-    public Void visit(PrimitiveExpr expr)
+    public Void visit(IntegerExpr expr)
+    {
+        return null;
+    }
+
+    public Void visit(BooleanExpr expr)
     {
         return null;
     }

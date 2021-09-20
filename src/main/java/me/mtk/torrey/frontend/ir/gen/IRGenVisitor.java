@@ -68,34 +68,21 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
 
         return null;
     }
-
-    /**
-     * Generates one or more IR instructions for the 
-     * given primitive AST node.
-     * 
-     * @param expr A primitive AST node.
-     * @return The destination address of the 
-     * result of the given AST node.
-     */
-    public IRAddress visit(PrimitiveExpr expr)
+    
+    public IRAddress visit(IntegerExpr expr)
     {
         final IRTempAddress result = new IRTempAddress();
-
-        IRConstAddress rhs;
-
-        if (expr instanceof IntegerExpr)
-            rhs = new IRConstAddress(expr.token().rawText());
-        else if (expr instanceof BooleanExpr)
-            rhs = new IRConstAddress(expr.token().type() 
-                == TokenType.TRUE);
-        else
-        {
-            throw new Error("IRGenVisitor.visit(PrimitiveExpr):"
-            + " Unhandled primitive");
-        }
-
+        final IRConstAddress rhs = new IRConstAddress(expr.token().rawText());
         irProgram.addQuad(new IRCopyInst(result, rhs));
+        return result;
+    }
 
+    public IRAddress visit(BooleanExpr expr)
+    {
+        final IRTempAddress result = new IRTempAddress();
+        final boolean bool = expr.token().type() == TokenType.TRUE;
+        final IRConstAddress rhs = new IRConstAddress(bool);
+        irProgram.addQuad(new IRCopyInst(result, rhs));
         return result;
     }
 
@@ -116,24 +103,6 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
         irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
 
         return result;
-    }
-
-    /**
-     * Generates one or more IR instructions for the 
-     * given binary AST node.
-     * 
-     * @param expr A binary AST node.
-     * @return The destination address of the 
-     * result of the given AST node.
-     */
-    public IRAddress visit(BinaryExpr expr)
-    {
-        if (expr instanceof ArithmeticExpr)
-            return visit((ArithmeticExpr) expr);
-        else if (expr instanceof CompareExpr)
-            return visit((CompareExpr) expr);
-
-        return null;
     }
 
     /**
