@@ -4,10 +4,8 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.X86Address;
 
 public final class Subq extends X86Inst
 {
-    private static final String op = "subq";
-
     public Subq(X86Address src, X86Address dest)
     {
-        super(op, src, dest);
+        super(X86OpType.SUBQ, src, dest);
     }  
 }

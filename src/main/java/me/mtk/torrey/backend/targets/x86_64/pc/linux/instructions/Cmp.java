@@ -24,6 +24,6 @@ public final class Cmp extends X86Inst
 {
     public Cmp(Register r1, Register r2)
     {
-        super("cmp", r1, r2);
+        super(X86OpType.CMP, r1, r2);
     }
 }

@@ -136,4 +136,9 @@ public enum IROpType
                     "Unexpected op type %s", opType));
         }
     }
+
+    public String toString()
+    {
+        return terminalSymbol;
+    }
 }

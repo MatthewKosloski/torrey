@@ -6,6 +6,6 @@ public final class Popq extends X86Inst
 {
     public Popq(Register register)
     {
-        super("popq", register, null);
+        super(X86OpType.POPQ, register, null);
     }
 }

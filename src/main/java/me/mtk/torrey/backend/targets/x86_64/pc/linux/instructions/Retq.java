@@ -4,6 +4,6 @@ public final class Retq extends X86Inst
 {
     public Retq()
     {
-        super("retq", null, null);
+        super(X86OpType.RETQ, null, null);
     }
 }

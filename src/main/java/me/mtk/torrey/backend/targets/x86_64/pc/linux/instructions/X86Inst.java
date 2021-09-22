@@ -2,28 +2,26 @@ package me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions;
 
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.*;
 
-public abstract class X86Inst 
+public abstract class X86Inst
 {
-    // TODO: Store finite set of valid opcodes in a hash map
-    // or something.
-    private String op;
+    private X86OpType opType;
     private X86Address arg1;
     private X86Address arg2;
 
-    public X86Inst(String op, X86Address arg1, X86Address arg2)
+    public X86Inst(X86OpType opType, X86Address arg1, X86Address arg2)
     {
         if (arg2 != null && arg2.mode() == AddressingMode.IMMEDIATE)
             throw new Error("X86Inst(): Destination address"
                 + " cannot be an immediate");
 
-        this.op = op;
+        this.opType = opType;
         this.arg1 = arg1;
         this.arg2 = arg2;
     }
 
     public String op()
     {
-        return op;
+        return opType.toString();
     }
 
     public X86Address arg1()
@@ -49,11 +47,11 @@ public abstract class X86Inst
     public String toString()
     {
         if (arg2 != null)
-            return String.format("%s %s, %s", op, arg1, arg2);
+            return String.format("%s %s, %s", opType, arg1, arg2);
         else if (arg1 != null)
-            return String.format("%s %s", op, arg1);
+            return String.format("%s %s", opType, arg1);
         else
-            return String.format("%s", op); 
+            return String.format("%s", opType); 
     }
 
 }

@@ -4,6 +4,6 @@ public final class Cqo extends X86Inst
 {
     public Cqo()
     {
-        super("cqo", null, null);
+        super(X86OpType.CQO, null, null);
     }    
 }

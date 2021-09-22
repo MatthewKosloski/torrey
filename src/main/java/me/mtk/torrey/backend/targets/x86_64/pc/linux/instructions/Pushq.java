@@ -6,6 +6,6 @@ public final class Pushq extends X86Inst
 {
     public Pushq(Register register)
     {
-        super("pushq", register, null);
+        super(X86OpType.PUSHQ, register, null);
     }
 }
