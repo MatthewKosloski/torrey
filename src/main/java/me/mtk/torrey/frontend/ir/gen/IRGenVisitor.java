@@ -171,26 +171,26 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
      * Generates one or more IR instructions for the 
      * given print expression.
      * 
-     * @param stmt A print expression.
+     * @param expr A print expression.
      * @return null.
      */
-    public IRAddress visit(PrintExpr stmt)
+    public IRAddress visit(PrintExpr expr)
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
         final List<IRQuadruple> params = new ArrayList<>();
                 
         // Generate the instructions for the parameters.
-        for (ASTNode child : stmt.children())
+        for (ASTNode child : expr.children())
         {
             IRAddress paramTemp = child.accept(this);
             params.add(new IRParamInst(paramTemp));
         }
     
         final IRNameAddress procName = new IRNameAddress(
-            stmt.token().rawText());
+            expr.token().rawText());
         final IRConstAddress numParams = new IRConstAddress(
-            stmt.children().size());
+            expr.children().size());
 
         irProgram.addQuads(params);
         irProgram.addQuad(new IRCallInst(procName, numParams));
