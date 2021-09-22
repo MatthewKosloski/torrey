@@ -5,6 +5,7 @@ import me.mtk.torrey.frontend.ir.addressing.*;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.ir.instructions.*;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.*;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Global.RuntimeProcedure;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.*;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.*;
 /**
@@ -346,10 +347,10 @@ public final class Generator
             for (int i = 0; i < numParams; i++)
             {
                 String param = params.remove();
-                x86.addInst(new Movq(new Temporary(param), new Register(Registers.RDI)));
-                x86.addInst(new Callq(new Global("print_int")));
+                x86.addInst(new Movq(new Temporary(param), Register.RDI));
+                x86.addInst(new Callq(new Global(RuntimeProcedure.PRINT_INT)));
                 if (procName.equals("println"))
-                    x86.addInst(new Callq(new Global("print_nl")));
+                    x86.addInst(new Callq(new Global(RuntimeProcedure.PRINT_NL)));
             }
         }
     }
