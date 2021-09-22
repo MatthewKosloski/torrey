@@ -169,9 +169,9 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
 
     /**
      * Generates one or more IR instructions for the 
-     * given print statement.
+     * given print expression.
      * 
-     * @param stmt A print statement.
+     * @param stmt A print expression.
      * @return null.
      */
     public IRAddress visit(PrintExpr stmt)
