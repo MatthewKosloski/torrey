@@ -223,7 +223,8 @@ public final class Generator
 
             // Perform the comparison.
             x86.addInst(new Cmp(Register.R11, Register.R10));
-            x86.addInst(new Jcc(ConditionCode.transIrOp(inst.opType()), labelAddr));
+            x86.addInst(X86InstFactory.makeJccInstFromIROpType(inst.opType(),
+                labelAddr));
         }
         else
         {
@@ -232,8 +233,7 @@ public final class Generator
             x86.addInst(new Movq(new Immediate(0), Register.R10));
             x86.addInst(new Movq(new Immediate(1), Register.R11));
             x86.addInst(new Cmp(Register.R11, Register.R10));
-            x86.addInst(new Jcc(bool ? ConditionCode.JNE : ConditionCode.JE, 
-                labelAddr));
+            x86.addInst(bool ? new Jne(labelAddr) : new Je(labelAddr));
         }
     }
 
