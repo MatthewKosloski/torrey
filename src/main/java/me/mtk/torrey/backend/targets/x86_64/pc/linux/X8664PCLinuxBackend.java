@@ -5,7 +5,7 @@ import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.backend.TargetProgram;
 import me.mtk.torrey.backend.CompilerBackend;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.Assembler;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.Generator;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Generator;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
 import me.mtk.torrey.backend.triple.TargetTriple;
 
@@ -22,10 +22,9 @@ public final class X8664PCLinuxBackend extends CompilerBackend
 
     public X86Program generate(IRProgram ir)
     {
-        final Generator x86Gen = new Generator(ir);
-        final X86Program x86Program = x86Gen.gen();
+        final X86Program x86Program = X86Generator.buildX86ProgramFromIRProgram(ir);
 
-        debug("x86-64 program (output from Generator): %s\n", 
+        debug("x86-64 program (output from Generator): %s\n",
             x86Program.toString());
 
         if (config.stopAtCompile())

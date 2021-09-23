@@ -1,4 +1,4 @@
-package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen;
+package me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.passes;
 
 import java.util.*;
 import me.mtk.torrey.frontend.ir.addressing.*;
@@ -6,98 +6,41 @@ import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.ir.instructions.*;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.*;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Global.RuntimeProcedure;
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler.*;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.gen.X86Program;
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.*;
-/**
- * Generates 64-bit x86 assembly code
- * from three-address code represented by
- * a collection of quadruples of the form
- * (op, arg1, arg2, result).
- */
-public final class Generator 
+
+public final class GeneratePseudoX86Program implements Pass<X86Program>
 {
-    // The name of the label of the program's prelude.
-    private static final String PRELUDE_LABEL_NAME = "main";
+    // The temp names pointing to parameters of subsequent call instructions.
+    private Queue<String> params;
 
-    // The name of the label of the program's entry point.
-    private static final String ENTRY_LABEL_NAME = "start";
-
-    // The name of the label of the program's conclusion.
-    private static final String CONCLUSION_LABEL_NAME = "conclusion";
-
-    // The program's exit code to be returned to the OS upon
-    // program termination.
-    private static final int EXIT_CODE = 0;
-    
     // The IR program from which x86 code will be generated.
     private IRProgram ir;
 
     // An x86 program that is equivalent to the input IR program.
     private X86Program x86;
 
-    // The temp names pointing to parameters of subsequent call instructions.
-    private Queue<String> params;
-
-    // The program's stack size measured in bytes (a multiple of 16).
-    private final int stackSize;
-
-    public Generator(IRProgram ir)
+    public GeneratePseudoX86Program(IRProgram input)
     {
-        this.ir = ir;
-        this.x86 = new X86Program();
-        params = new LinkedList<>();
+        this.ir = input;
 
         // By default, allocate 8 bytes per temp variable.
-        final int tempStackSize = ir.temps().size() * 8;
+        int stackSize = ir.temps().size() * 8;
 
         // Ensure the stack pointer is 16-bytes aligned
-        // by setting tempStackSize to the nearest
+        // by setting stackSize to the nearest
         // multiple of 16.
-        if (tempStackSize % 16 != 0)
-            // tempStackSize isn't a multiple of 16,
+        if (stackSize % 16 != 0)
+            // stackSize isn't a multiple of 16,
             // so set it to the nearest multiple of 16.
-            this.stackSize = closestMultiple(tempStackSize, 16);
-        else
-            this.stackSize = tempStackSize;
+            stackSize = closestMultiple(stackSize, 16);
+        
+        this.x86 = new X86Program(stackSize);
+        this.params = new LinkedList<>();
     }
 
-    public X86Program gen()
+    public X86Program pass()
     {
-        // Add assembler directives to the text segment.
-        x86.addTextSegmentDirective(new AssemblerDirective(
-            AssemblerDirectiveType.GLOBL, 
-            Arrays.asList(PRELUDE_LABEL_NAME)));
-
-        final LabelAddress preludeAddr = new LabelAddress(PRELUDE_LABEL_NAME);
-        final LabelAddress entryAddr = new LabelAddress(ENTRY_LABEL_NAME);
-        final LabelAddress concludeAddr = new LabelAddress(CONCLUSION_LABEL_NAME);
-
-        // Generate instructions for the program's entry point.
-        x86.addInst(new Label(preludeAddr))
-
-            // Save the caller's base pointer in our stack. The base
-            // pointer points to the beginning of a stack frame. This
-            // also aligns the stack pointer.
-            .addInst(new Pushq(Register.RBP))
-
-            // The top of the stack now contains the caller's (the OS's)
-            // base pointer (thus %rsp points to it). Change the base
-            // pointer so that it points to the location of the old
-            // base pointer.
-            .addInst(new Movq(Register.RSP, Register.RBP))
-
-            // Allocate the stack by moving the stack pointer down
-            // stackSize bytes (remember, the stack grows downward,
-            // so we must subtract to increase the stack size).
-            .addInst(new Subq(new Immediate(stackSize), Register.RSP))
-
-            // Unconditionally jump to the start of our program.
-            .addInst(new Jmp(entryAddr));
-
-        
-        // Generate the program's instructions by translating
-        // IR instructions to x86_64 instructions.
-        x86.addInst(new Label(entryAddr));
         for (IRQuadruple quad : ir.quads())
         {
             if (quad instanceof IRCopyInst)
@@ -120,88 +63,8 @@ public final class Generator
                 throw new Error("Cannot generate x86 instruction");
         }
 
-        // Unconditionally jump to the conclusion of our program.
-        x86.addInst(new Jmp(concludeAddr));
-
-        x86.addInst(new Label(concludeAddr))
-            
-            // Move the stack pointer up stackSize bytes to 
-            // the old base pointer.
-            .addInst(new Addq(new Immediate(stackSize), Register.RSP))
-
-            // Pop the old base pointer off the stack, storing it in
-            // register %rbp.
-            .addInst(new Popq(Register.RBP))
-
-            // Return a successfully exit code.
-            .addInst(new Movq(new Immediate(EXIT_CODE), Register.RAX))
-
-            // Pop the OS's return address off the stack and jump to it.
-            .addInst(new Retq());
-
-        // At this point, we have a "pseudo-x86" program with a, potentially
-        // infinite, amount of IR temporaries. We need to replace all temporaries 
-        // with base-relative stack addresses (relative to the current frame's 
-        // base pointer). This is not a really effective way of using the 
-        // CPU to do computations, so later we will use some algorithm 
-        // (e.g., graph coloring) to perform register allocation. This 
-        // will make the program much faster as it does not have to make 
-        // as many trips to main memory (registers only require one CPU
-        // clock cycle, main memory access requires hundreds).
-
-        // Maps a temporary (e.g., "t1") to a base-relative stack 
-        // address (e.g., -8(%rbp)).
-        final Map<String, String> stackAddrs = new HashMap<>();
-        
-        // Assign a base-relative stack address to each IR temporary.
-        int offset = 0;
-        for (String temp : ir.temps())
-            stackAddrs.put(temp, String.format("%d(%%rbp)", offset -= 8));
-
-        // Traverse the x86 program, replacing each IR temporary with
-        // its assigned base-relative stack address.
-        for (X86Inst inst : x86.instrs())
-        {
-            if (inst.arg1() != null && inst.arg1().mode() == AddressingMode.TEMP)
-                inst.setArg1(new BaseRelative(
-                    stackAddrs.get((String) inst.arg1().value())));
-            if (inst.arg2() != null && inst.arg2().mode() == AddressingMode.TEMP)
-                inst.setArg2(new BaseRelative(
-                    stackAddrs.get((String) inst.arg2().value())));
-        }
-
-        // In x86, it is illegal for both arguments to an instruction 
-        // be stack locations. Thus, if we have an instruction like
-        // `movq -16(%rbp), -24(%rbp)`, we must put one of the arguments
-        // in a register before perfoming movq. 
-        // So...
-        // Ensure that each instruction adheres to the restriction
-        // that at most one argument of an instruction may be
-        // a memory reference.
-
-        for (int i = 0; i < x86.instrs().size(); i++)
-        {
-            final X86Inst inst = x86.instrs().get(i);
-
-            if (inst.arg1() != null && inst.arg1().mode() 
-                == AddressingMode.BASEREL &&
-                inst.arg2() != null && inst.arg2().mode() == 
-                AddressingMode.BASEREL)
-            {
-                // Both arguments are stack locations,
-                // so move arg1 to register %r10 before
-                // performing the instruction.
-                x86.instrs().add(i, new Movq(inst.arg1(), 
-                    new Register(Registers.R10)));
-
-                // Update the arg1 of this instruction to
-                // be %r10
-                inst.setArg1(new Register(Registers.R10));
-            }
-        }
-
         return x86;
-    }
+    }    
 
     private void gen(IRIfInst inst)
     {
@@ -356,11 +219,11 @@ public final class Generator
     }
 
     /*
-     * Converts the given IR address to an equivalent x86 address.
-     * 
-     * @param addr An IR address.
-     * @return An equivalent x86 address.
-     */
+    * Converts the given IR address to an equivalent x86 address.
+    * 
+    * @param addr An IR address.
+    * @return An equivalent x86 address.
+    */
     private X86Address transAddress(IRAddress addr)
     {
         if (addr instanceof IRConstAddress)
@@ -379,5 +242,5 @@ public final class Generator
         n = n + x / 2; 
         n = n - (n % x); 
         return n;
-    } 
+    }
 }
