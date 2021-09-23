@@ -29,7 +29,7 @@ public final class X86Program implements TargetProgram
         return this;
     }
 
-    public void addTextSegmentDirective(AssemblerDirective directive)
+    public X86Program addTextSegmentDirective(AssemblerDirective directive)
     {
         // Before adding any directives to the text segment,
         // we must first add a .text directive to define
@@ -39,6 +39,8 @@ public final class X86Program implements TargetProgram
                 AssemblerDirectiveType.TEXT));
 
         textSegment.add(directive);
+
+        return this;
     }
 
     public List<X86Inst> instrs()
