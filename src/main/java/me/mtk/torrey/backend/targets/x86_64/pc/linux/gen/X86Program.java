@@ -14,10 +14,13 @@ public final class X86Program implements TargetProgram
     // Holds the list of x86 instructions of the program.
     private List<X86Inst> instrs;
 
-    public X86Program()
+    private int stackSize;
+
+    public X86Program(int stackSize)
     {
         instrs = new ArrayList<>();
         textSegment = new ArrayList<>();
+        this.stackSize = stackSize;
     }
 
     public X86Program addInst(X86Inst inst)
@@ -82,5 +85,10 @@ public final class X86Program implements TargetProgram
         }
 
         return sb.toString();
+    }
+
+    public int stackSize()
+    {
+        return stackSize;
     }
 }
