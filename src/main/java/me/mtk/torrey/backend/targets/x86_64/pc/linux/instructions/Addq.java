@@ -6,6 +6,6 @@ public final class Addq extends X86Inst
 {
     public Addq(X86Address src, X86Address dest)
     {
-        super(X86OpType.ADDQ, src, dest);
+        super(OpType.ADDQ, src, dest);
     }  
 }

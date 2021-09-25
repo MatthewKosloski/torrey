@@ -6,6 +6,6 @@ public final class Callq extends X86Inst
 {
     public Callq(Global procedure)
     {
-        super(X86OpType.CALLQ, procedure, null);
+        super(OpType.CALLQ, procedure, null);
     }
 }

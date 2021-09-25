@@ -6,6 +6,6 @@ public final class Jge extends X86Inst
 {
     public Jge(LabelAddress label)
     {
-        super(X86OpType.JGE, label, null);
+        super(OpType.JGE, label, null);
     }
 }

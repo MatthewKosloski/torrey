@@ -6,6 +6,6 @@ public final class Jg extends X86Inst
 {
     public Jg(LabelAddress label)
     {
-        super(X86OpType.JG, label, null);
+        super(OpType.JG, label, null);
     }
 }

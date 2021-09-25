@@ -7,30 +7,30 @@ public class X86InstFactory
 {
     public static X86Inst makeJccInstFromIROpType(Quadruple.OpType irOpType, LabelAddress label)
     {
-        final X86OpType x86OpType = X86OpType
+        final X86Inst.OpType x86OpType = X86Inst.OpType
             .getConditionCodeFromIROpType(irOpType);
 
-        if (x86OpType == X86OpType.JL)
+        if (x86OpType == X86Inst.OpType.JL)
         {
             return new Jl(label);
         }
-        else if (x86OpType == X86OpType.JLE)
+        else if (x86OpType == X86Inst.OpType.JLE)
         {
             return new Jle(label);
         }
-        else if (x86OpType == X86OpType.JG)
+        else if (x86OpType == X86Inst.OpType.JG)
         {
             return new Jg(label);
         }
-        else if (x86OpType == X86OpType.JGE)
+        else if (x86OpType == X86Inst.OpType.JGE)
         {
             return new Jge(label);
         }
-        else if (x86OpType == X86OpType.JE)
+        else if (x86OpType == X86Inst.OpType.JE)
         {
             return new Je(label);
         }
-        else if (x86OpType == X86OpType.JNE)
+        else if (x86OpType == X86Inst.OpType.JNE)
         {
             return new Jne(label);
         }

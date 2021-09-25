@@ -6,6 +6,6 @@ public final class Imulq extends X86Inst
 {
     public Imulq(Register srcDest)
     {
-        super(X86OpType.IMULQ, srcDest, null);
+        super(OpType.IMULQ, srcDest, null);
     }    
 }

@@ -6,6 +6,6 @@ public final class Jl extends X86Inst
 {
     public Jl(LabelAddress label)
     {
-        super(X86OpType.JL, label, null);
+        super(OpType.JL, label, null);
     }
 }

@@ -6,6 +6,6 @@ public final class Negq extends X86Inst
 {
     public Negq(X86Address dest)
     {
-        super(X86OpType.NEGQ, dest, null);
+        super(OpType.NEGQ, dest, null);
     }    
 }

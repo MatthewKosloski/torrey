@@ -6,6 +6,6 @@ public final class Jle extends X86Inst
 {
     public Jle(LabelAddress label)
     {
-        super(X86OpType.JLE, label, null);
+        super(OpType.JLE, label, null);
     }
 }

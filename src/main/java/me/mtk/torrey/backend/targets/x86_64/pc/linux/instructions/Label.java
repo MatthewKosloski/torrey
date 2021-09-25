@@ -6,7 +6,7 @@ public final class Label extends X86Inst
 {
     public Label(LabelAddress label)
     {
-        super(X86OpType.LABEL, label, null);
+        super(OpType.LABEL, label, null);
     }
 
     public String toString()

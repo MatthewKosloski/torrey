@@ -6,6 +6,6 @@ public final class Je extends X86Inst
 {
     public Je(LabelAddress label)
     {
-        super(X86OpType.JE, label, null);
+        super(OpType.JE, label, null);
     }
 }

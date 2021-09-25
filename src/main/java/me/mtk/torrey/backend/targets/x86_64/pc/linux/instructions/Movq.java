@@ -6,6 +6,6 @@ public final class Movq extends X86Inst
 {
     public Movq(X86Address src, X86Address dest)
     {
-        super(X86OpType.MOVQ, src, dest);
+        super(OpType.MOVQ, src, dest);
     }    
 }

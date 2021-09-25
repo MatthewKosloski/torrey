@@ -6,6 +6,6 @@ public final class Subq extends X86Inst
 {
     public Subq(X86Address src, X86Address dest)
     {
-        super(X86OpType.SUBQ, src, dest);
+        super(OpType.SUBQ, src, dest);
     }  
 }

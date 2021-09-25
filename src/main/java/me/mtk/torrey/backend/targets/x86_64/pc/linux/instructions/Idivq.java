@@ -6,6 +6,6 @@ public final class Idivq extends X86Inst
 {
     public Idivq(X86Address dest)
     {
-        super(X86OpType.IDIVQ, dest, null);
+        super(OpType.IDIVQ, dest, null);
     }    
 }

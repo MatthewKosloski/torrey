@@ -6,6 +6,6 @@ public final class Jmp extends X86Inst
 {
     public Jmp(LabelAddress label)
     {
-        super(X86OpType.JMP, label, null);
+        super(OpType.JMP, label, null);
     }
 }

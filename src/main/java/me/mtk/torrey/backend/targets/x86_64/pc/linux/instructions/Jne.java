@@ -6,6 +6,6 @@ public final class Jne extends X86Inst
 {
     public Jne(LabelAddress label)
     {
-        super(X86OpType.JNE, label, null);
+        super(OpType.JNE, label, null);
     }
 }
