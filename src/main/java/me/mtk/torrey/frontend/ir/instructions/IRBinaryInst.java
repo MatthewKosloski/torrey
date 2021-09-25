@@ -7,7 +7,7 @@ import me.mtk.torrey.frontend.lexer.TokenType;
 /**
  * Represents a binary IR instruction.
  */
-public class IRBinaryInst extends IRQuadruple
+public class IRBinaryInst extends Quadruple
 {
     /**
      * Instantiates a new binary IR instruction.

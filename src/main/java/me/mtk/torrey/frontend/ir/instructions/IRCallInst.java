@@ -2,7 +2,7 @@ package me.mtk.torrey.frontend.ir.instructions;
 
 import me.mtk.torrey.frontend.ir.addressing.*;
 
-public final class IRCallInst extends IRQuadruple
+public final class IRCallInst extends Quadruple
 {
     /**
      * Instantiates a procedure call IR instruction,

@@ -178,7 +178,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
     {
         // Accumulate the param instructions to be
         // inserted directly before the call instruction.
-        final List<IRQuadruple> params = new ArrayList<>();
+        final List<Quadruple> params = new ArrayList<>();
                 
         // Generate the instructions for the parameters.
         for (ASTNode child : expr.children())

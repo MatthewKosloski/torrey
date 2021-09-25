@@ -2,7 +2,7 @@ package me.mtk.torrey.frontend.ir.instructions;
 
 import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
 
-public final class IRGotoInst extends IRQuadruple
+public final class IRGotoInst extends Quadruple
 {
     /**
      * Instantiates a new goto instruction.

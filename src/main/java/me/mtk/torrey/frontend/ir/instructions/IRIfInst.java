@@ -3,7 +3,7 @@ package me.mtk.torrey.frontend.ir.instructions;
 import me.mtk.torrey.frontend.ir.addressing.*;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
-public final class IRIfInst extends IRQuadruple
+public final class IRIfInst extends Quadruple
 {
     public IRIfInst(TokenType tokType, IRAddress arg1, IRAddress arg2,
         IRLabelAddress result)

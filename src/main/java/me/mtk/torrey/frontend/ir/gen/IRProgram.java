@@ -1,6 +1,6 @@
 package me.mtk.torrey.frontend.ir.gen;
 
-import me.mtk.torrey.frontend.ir.instructions.IRQuadruple;
+import me.mtk.torrey.frontend.ir.instructions.Quadruple;
 import me.mtk.torrey.frontend.ir.addressing.IRAddressingMode;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ public final class IRProgram
 {
     // The three-address instructions, each represented
     // by a quadruple (op, arg1, arg2, result).
-    private List<IRQuadruple> quads;
+    private List<Quadruple> quads;
 
     // The list of temporary names used in the IR program. They
     // are enumerated in the order in which they are created.
@@ -22,7 +22,7 @@ public final class IRProgram
         temps = new ArrayList<>();
     }
 
-    public void addQuad(IRQuadruple quad)
+    public void addQuad(Quadruple quad)
     {
         // If we have a first argument and it's a temporary,
         // record the name of that temporary.
@@ -41,13 +41,13 @@ public final class IRProgram
         quads.add(quad);
     }
 
-    public void addQuads(List<IRQuadruple> quads)
+    public void addQuads(List<Quadruple> quads)
     {
-        for (IRQuadruple quad : quads)
+        for (Quadruple quad : quads)
             addQuad(quad);
     }
 
-    public List<IRQuadruple> quads()
+    public List<Quadruple> quads()
     {
         return quads;
     }

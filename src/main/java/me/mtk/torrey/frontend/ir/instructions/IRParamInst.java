@@ -5,7 +5,7 @@ import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 /**
  * Represents a parameter IR instruction.
  */
-public final class IRParamInst extends IRQuadruple
+public final class IRParamInst extends Quadruple
 {
     /**
      * Instantiates a new parameter instruction.

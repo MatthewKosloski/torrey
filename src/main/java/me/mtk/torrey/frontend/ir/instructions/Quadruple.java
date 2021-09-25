@@ -7,7 +7,7 @@ import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 /**
  * Represents an intermediate language instruction.
  */
-public abstract class IRQuadruple 
+public abstract class Quadruple 
 {
     // The operator type of the instruction.
     protected IROpType opType;
@@ -32,7 +32,7 @@ public abstract class IRQuadruple
      * @param result A temporary address to store the result of the
      * instruction.
      */
-    public IRQuadruple(IROpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
+    public Quadruple(IROpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
     {
         this.opType = opType;
         this.arg1 = arg1;
@@ -40,7 +40,7 @@ public abstract class IRQuadruple
         this.result = result;
     }
 
-    public IRQuadruple(IROpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
+    public Quadruple(IROpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
     {
         this.opType = opType;
         this.arg1 = arg1;
@@ -48,7 +48,7 @@ public abstract class IRQuadruple
         this.result = result;
     }
 
-    public IRQuadruple(IROpType opType, IRAddress arg)
+    public Quadruple(IROpType opType, IRAddress arg)
     {
         this.opType = opType;
         this.arg1 = arg;

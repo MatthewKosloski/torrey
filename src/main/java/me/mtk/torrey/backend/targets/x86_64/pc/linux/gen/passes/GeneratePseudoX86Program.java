@@ -41,7 +41,7 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
 
     public X86Program pass()
     {
-        for (IRQuadruple quad : ir.quads())
+        for (Quadruple quad : ir.quads())
         {
             if (quad instanceof IRCopyInst)
                 gen((IRCopyInst) quad);

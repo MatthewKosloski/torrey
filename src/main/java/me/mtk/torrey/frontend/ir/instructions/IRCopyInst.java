@@ -8,7 +8,7 @@ import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
  * where the contents at address y are stored in
  * the temp address x.
  */
-public final class IRCopyInst extends IRQuadruple
+public final class IRCopyInst extends Quadruple
 {
     /**
      * Instantiates a new copy IR instruction.
