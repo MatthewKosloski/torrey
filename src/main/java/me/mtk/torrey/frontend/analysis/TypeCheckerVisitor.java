@@ -250,7 +250,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
     {
         final String id = expr.token().rawText();
         final Symbol sym = top.get(id);
-        expr.setEvalType(sym.type());
+        expr.setEvalType(sym.expr().evalType());
         return expr.evalType();
     }
 

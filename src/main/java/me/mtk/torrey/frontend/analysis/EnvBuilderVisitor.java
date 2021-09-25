@@ -85,8 +85,7 @@ public class EnvBuilderVisitor implements ASTNodeVisitor<Void>
         boundedExpr.accept(this);
         
         final String id = idExpr.token().rawText();
-        final Symbol sym = new Symbol(id, boundedExpr.evalType(),
-            SymCategory.VARIABLE, boundedExpr);
+        final Symbol sym = new Symbol(id, SymCategory.VARIABLE, boundedExpr);
 
         if (!top.has(id))
             top.put(id, sym);
