@@ -26,7 +26,7 @@ public final class IRIfInst extends Quadruple
     {
         if (arg1 != null && arg2 != null && result != null && opType != null)
             return String.format("if %s %s %s goto %s", arg1, 
-                opType.terminal(), arg2, result);
+                opType, arg2, result);
         return String.format("if %s goto %s", arg1, result);
     }
 }

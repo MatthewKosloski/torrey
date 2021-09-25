@@ -43,6 +43,6 @@ public class IRUnaryInst extends Quadruple
      */
     public String toString()
     {
-        return String.format("%s = %s %s", result, opType.terminal(), arg1);
+        return String.format("%s = %s %s", result, opType, arg1);
     }
 }

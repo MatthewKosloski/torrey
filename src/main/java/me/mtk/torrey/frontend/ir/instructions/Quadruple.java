@@ -51,16 +51,6 @@ public abstract class Quadruple
         }
 
         /**
-         * Returns the terminal symbol of this IR operator.
-         * 
-         * @return An IR terminal symbol.
-         */
-        public String terminal()
-        {
-            return terminalSymbol;
-        }
-
-        /**
          * Gets the binary IR operator type corresponding
          * to the given Torrey token type.
          * 

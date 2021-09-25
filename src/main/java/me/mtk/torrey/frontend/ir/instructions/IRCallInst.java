@@ -41,6 +41,6 @@ public final class IRCallInst extends Quadruple
      */
     public String toString()
     {
-        return String.format("%s %s, %s", opType.terminal(), arg1, arg2);
+        return String.format("%s %s, %s", opType, arg1, arg2);
     }
 }

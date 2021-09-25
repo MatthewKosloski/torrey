@@ -21,6 +21,6 @@ public final class IRLabelInst extends Quadruple
      */
     public String toString()
     {
-        return String.format("%s %s:", opType.terminal(), arg1);
+        return String.format("%s %s:", opType, arg1);
     }
 }

@@ -21,6 +21,6 @@ public final class IRGotoInst extends Quadruple
      */
     public String toString()
     {
-        return String.format("%s %s", opType.terminal(), result);
+        return String.format("%s %s", opType, result);
     }
 }
