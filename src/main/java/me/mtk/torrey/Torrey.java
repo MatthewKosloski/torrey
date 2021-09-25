@@ -12,7 +12,7 @@ import me.mtk.torrey.backend.TargetProgram;
 public final class Torrey
 {
     // The semantic version number of the compiler.
-    public static String SEMANTIC_VERSION = "3.0.7";
+    public static String SEMANTIC_VERSION = "3.0.8";
 
     public static void main(String ... args)
     {
