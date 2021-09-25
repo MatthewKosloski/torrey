@@ -1,11 +1,11 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions;
 
 import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.LabelAddress;
-import me.mtk.torrey.frontend.ir.instructions.IROpType;
+import me.mtk.torrey.frontend.ir.instructions.Quadruple;
 
 public class X86InstFactory 
 {
-    public static X86Inst makeJccInstFromIROpType(IROpType irOpType, LabelAddress label)
+    public static X86Inst makeJccInstFromIROpType(Quadruple.OpType irOpType, LabelAddress label)
     {
         final X86OpType x86OpType = X86OpType
             .getConditionCodeFromIROpType(irOpType);

@@ -22,7 +22,7 @@ public class IRBinaryInst extends Quadruple
     public IRBinaryInst(TokenType tokType, IRAddress arg1, IRAddress arg2, 
         IRTempAddress result)
     {
-        super(IROpType.getBinaryOpTypeFromTokenType(tokType),
+        super(OpType.getBinaryOpTypeFromTokenType(tokType),
             arg1, arg2, result);
     }
 

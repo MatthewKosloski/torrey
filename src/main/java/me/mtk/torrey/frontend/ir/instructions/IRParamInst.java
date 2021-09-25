@@ -14,7 +14,7 @@ public final class IRParamInst extends Quadruple
      */
     public IRParamInst(IRAddress addr)
     {
-        super(IROpType.PARAM, addr);
+        super(OpType.PARAM, addr);
     }
 
     /**

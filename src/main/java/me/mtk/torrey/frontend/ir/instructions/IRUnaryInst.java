@@ -20,7 +20,7 @@ public class IRUnaryInst extends Quadruple
      */
     public IRUnaryInst(TokenType tokType, IRAddress arg, IRTempAddress result)
     {
-        super(IROpType.getUnaryOpTypeFromTokenType(tokType), arg, null, result);
+        super(OpType.getUnaryOpTypeFromTokenType(tokType), arg, null, result);
     }
 
     /**

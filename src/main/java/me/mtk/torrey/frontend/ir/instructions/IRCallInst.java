@@ -19,7 +19,7 @@ public final class IRCallInst extends Quadruple
     public IRCallInst(IRTempAddress result, IRNameAddress procName,
         IRConstAddress numParams)
     {
-        super(IROpType.CALL, procName, numParams, result);
+        super(OpType.CALL, procName, numParams, result);
     }
 
     /**

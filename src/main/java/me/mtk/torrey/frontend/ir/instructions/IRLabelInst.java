@@ -11,7 +11,7 @@ public final class IRLabelInst extends Quadruple
      */
     public IRLabelInst(IRLabelAddress label)
     {
-        super(IROpType.LABEL, label);
+        super(OpType.LABEL, label);
     }
 
     /**

@@ -1,6 +1,6 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions;
 
-import me.mtk.torrey.frontend.ir.instructions.IROpType;
+import me.mtk.torrey.frontend.ir.instructions.Quadruple;
 
 public enum X86OpType 
 {
@@ -43,7 +43,7 @@ public enum X86OpType
      * @param irOpType An IR binary operator type.
      * @return The corresponding condition code in x86.
      */
-    public static X86OpType getConditionCodeFromIROpType(IROpType irOpType)
+    public static X86OpType getConditionCodeFromIROpType(Quadruple.OpType irOpType)
     {
         switch (irOpType)
         {

@@ -20,7 +20,7 @@ public final class IRCopyInst extends Quadruple
      */
     public IRCopyInst(IRTempAddress lhs, IRAddress rhs)
     {
-        super(IROpType.COPY, rhs, null, lhs);
+        super(OpType.COPY, rhs, null, lhs);
     }
 
     public String toString()

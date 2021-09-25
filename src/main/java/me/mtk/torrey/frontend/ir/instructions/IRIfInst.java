@@ -8,7 +8,7 @@ public final class IRIfInst extends Quadruple
     public IRIfInst(TokenType tokType, IRAddress arg1, IRAddress arg2,
         IRLabelAddress result)
     {
-        super(IROpType.getInvertedBinaryOpTypeFromTokenType(tokType),
+        super(OpType.getInvertedBinaryOpTypeFromTokenType(tokType),
             arg1, arg2, result);
     }
 

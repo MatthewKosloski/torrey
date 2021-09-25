@@ -11,7 +11,7 @@ public final class IRGotoInst extends Quadruple
      */
     public IRGotoInst(IRLabelAddress label)
     {
-        super(IROpType.GOTO, null, null, label);
+        super(OpType.GOTO, null, null, label);
     }
 
     /**
