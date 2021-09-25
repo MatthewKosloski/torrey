@@ -2,13 +2,22 @@ package me.mtk.torrey.frontend.ast;
 
 import me.mtk.torrey.frontend.lexer.Token;
 import me.mtk.torrey.frontend.lexer.TokenType;
-import me.mtk.torrey.frontend.analysis.DataType;
 
 /**
  * Represents an expression in the AST.
  */
 public abstract class Expr extends ASTNode 
 {
+
+    // Holds the possible data types of an expression.
+    public enum DataType
+    {
+        INTEGER,
+        PRINT,
+        BOOLEAN,
+        UNDEFINED
+    }
+
     // The type that this expression evaluates to.
     private DataType evalType;
 

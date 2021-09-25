@@ -10,7 +10,7 @@ import me.mtk.torrey.frontend.symbols.*;
  * the operands to operators. Also, determines the evaluation
  * types of identifiers, let expressions, and if expressions.
  */
-public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
+public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
 {
     // A reference to the error reporter that will
     // report any semantic errors during type checking.
@@ -40,7 +40,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * @param program The program to be type checked.
      * @return The DataType of the program.
      */
-    public DataType visit(Program program)
+    public Expr.DataType visit(Program program)
     {
         try
         {
@@ -58,16 +58,16 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         // A Program AST does not evaluate to a 
         // data type as it's not an expression.
-        return DataType.UNDEFINED;
+        return Expr.DataType.UNDEFINED;
     }
 
     /**
      * Type checks a comparison expression.
      * 
      * @param expr The binary expression to be type checked.
-     * @return DataType.BOOLEAN.
+     * @return Expr.DataType.BOOLEAN.
      */
-    public DataType visit(CompareExpr expr)
+    public Expr.DataType visit(CompareExpr expr)
     {
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
@@ -78,14 +78,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         final Token operator = expr.token();
 
-        final boolean areInts = first.evalType() == DataType.INTEGER
-            && second.evalType() == DataType.INTEGER;
-        final boolean areBools = first.evalType() == DataType.BOOLEAN
-            && second.evalType() == DataType.BOOLEAN;
-        final boolean onlyFirstIsInt = first.evalType() == DataType.INTEGER 
-            && second.evalType() != DataType.INTEGER;
-        final boolean onlyFirstIsBool = first.evalType() == DataType.BOOLEAN
-            && second.evalType() != DataType.BOOLEAN;
+        final boolean areInts = first.evalType() == Expr.DataType.INTEGER
+            && second.evalType() == Expr.DataType.INTEGER;
+        final boolean areBools = first.evalType() == Expr.DataType.BOOLEAN
+            && second.evalType() == Expr.DataType.BOOLEAN;
+        final boolean onlyFirstIsInt = first.evalType() == Expr.DataType.INTEGER 
+            && second.evalType() != Expr.DataType.INTEGER;
+        final boolean onlyFirstIsBool = first.evalType() == Expr.DataType.BOOLEAN
+            && second.evalType() != Expr.DataType.BOOLEAN;
 
         if (onlyFirstIsInt)
         {
@@ -95,7 +95,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
                 second.token(), 
                 ErrorMessages.UnexpectedOperandToBe, 
                 operator.rawText(), 
-                DataType.INTEGER, 
+                Expr.DataType.INTEGER, 
                 second.evalType());
         }
         else if (onlyFirstIsBool)
@@ -105,7 +105,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             reporter.error(second.token(), 
             ErrorMessages.UnexpectedOperandToBe,
                 operator.rawText(), 
-                DataType.BOOLEAN, 
+                Expr.DataType.BOOLEAN, 
                 second.evalType());
         }
         else if (!(areInts || areBools))
@@ -115,8 +115,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             reporter.error(first.token(), 
                 ErrorMessages.UnexpectedOperandToBeEither, 
                 operator.rawText(), 
-                DataType.INTEGER, 
-                DataType.BOOLEAN, 
+                Expr.DataType.INTEGER, 
+                Expr.DataType.BOOLEAN, 
                 first.evalType());
         }
 
@@ -129,7 +129,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * @param expr The binary arithmetic expression to be type-checked.
      * @return DataType INTEGER.
      */
-    public DataType visit(ArithmeticExpr expr)
+    public Expr.DataType visit(ArithmeticExpr expr)
     {
         final Expr first = (Expr) expr.first();
         final Expr second = (Expr) expr.second();
@@ -140,18 +140,18 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         final Token operator = expr.token();
 
-        if (first.evalType() != DataType.INTEGER)
+        if (first.evalType() != Expr.DataType.INTEGER)
         {
-            // expected type DataType.INTEGER
+            // expected type Expr.DataType.INTEGER
             reporter.error(first.token(), ErrorMessages.UnexpectedOperandToBe, 
-                operator.rawText(), DataType.INTEGER, first.evalType());
+                operator.rawText(), Expr.DataType.INTEGER, first.evalType());
         } 
 
-        if (second.evalType() != DataType.INTEGER)
+        if (second.evalType() != Expr.DataType.INTEGER)
         {
-            // expected type DataType.INTEGER
+            // expected type Expr.DataType.INTEGER
             reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
-                operator.rawText(), DataType.INTEGER, second.evalType());
+                operator.rawText(), Expr.DataType.INTEGER, second.evalType());
         }
 
         if (first instanceof IntegerExpr && 
@@ -172,9 +172,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * Type checks a boolean expression.
      * 
      * @param expr The boolean expression to be type-checked.
-     * @return DataType.BOOLEAN
+     * @return Expr.DataType.BOOLEAN
      */
-    public DataType visit(BooleanExpr expr)
+    public Expr.DataType visit(BooleanExpr expr)
     {
         return expr.evalType();
     }
@@ -183,9 +183,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * Type checks an integer expression.
      * 
      * @param expr The integer expression to be type-checked.
-     * @return DataType.INTEGER
+     * @return Expr.DataType.INTEGER
      */
-    public DataType visit(IntegerExpr expr)
+    public Expr.DataType visit(IntegerExpr expr)
     {
         return expr.evalType();
     }
@@ -197,7 +197,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * @param expr The print expression to be type checked.
      * @return DataType PRINT.
      */
-    public DataType visit(PrintExpr expr)
+    public Expr.DataType visit(PrintExpr expr)
     {
         for (ASTNode child : expr.children())
         {
@@ -206,7 +206,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
             // Type-check the child expression and its children.
             childExpr.accept(this);
 
-            if (childExpr.evalType() == DataType.UNDEFINED)
+            if (childExpr.evalType() == Expr.DataType.UNDEFINED)
                 reporter.error(
                     childExpr.token(), 
                     ErrorMessages.UndefinedOperandToPrint, 
@@ -214,7 +214,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         }
         
-        return DataType.UNDEFINED;
+        return Expr.DataType.UNDEFINED;
     }
 
     /**
@@ -224,7 +224,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
      * @param expr The unary expression to be type checked.
      * @return DataType INTEGER.
      */
-    public DataType visit(UnaryExpr expr)
+    public Expr.DataType visit(UnaryExpr expr)
     {
         final Token operator = expr.token();
         final Expr operand = (Expr) expr.first();
@@ -232,21 +232,21 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // Type check the operand.
         operand.accept(this);
 
-        if (operand.evalType() != DataType.INTEGER)
+        if (operand.evalType() != Expr.DataType.INTEGER)
         {
-            // expected type DataType.INTEGER
+            // expected type Expr.DataType.INTEGER
             reporter.error(
                 operand.token(), 
                 ErrorMessages.UnexpectedOperandToBe,
                 operator.rawText(), 
-                DataType.INTEGER, 
+                Expr.DataType.INTEGER, 
                 operand.evalType());
         } 
 
         return expr.evalType();
     }
 
-    public DataType visit(IdentifierExpr expr)
+    public Expr.DataType visit(IdentifierExpr expr)
     {
         final String id = expr.token().rawText();
         final Symbol sym = top.get(id);
@@ -254,7 +254,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         return expr.evalType();
     }
 
-    public DataType visit(LetExpr expr)
+    public Expr.DataType visit(LetExpr expr)
     {
         if (expr.children().size() > 1)
         {
@@ -280,7 +280,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         return expr.evalType();
     }
 
-    public DataType visit(LetBindings bindings)
+    public Expr.DataType visit(LetBindings bindings)
     {
         // Call visit(LetBinding) to type check
         // all the bindings in this AST node.
@@ -289,10 +289,10 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
 
         // A LetBindings AST does not evaluate to a 
         // data type as it's not an expression.
-        return DataType.UNDEFINED;
+        return Expr.DataType.UNDEFINED;
     }
 
-    public DataType visit(LetBinding binding)
+    public Expr.DataType visit(LetBinding binding)
     {
         final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
         final Expr boundedExpr = (Expr) binding.second();
@@ -300,7 +300,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         // Type check the bounded expression.
         boundedExpr.accept(this);
 
-        if (boundedExpr.evalType() == DataType.UNDEFINED)
+        if (boundedExpr.evalType() == Expr.DataType.UNDEFINED)
         {
             reporter.error(idExpr.token(), 
                 ErrorMessages.UnexpectedBoundedExprType,
@@ -310,10 +310,10 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.
-        return DataType.UNDEFINED;
+        return Expr.DataType.UNDEFINED;
     }
 
-    public DataType visit(IfExpr expr)
+    public Expr.DataType visit(IfExpr expr)
     {
         // Type-check the test condition
         // and its child nodes.
@@ -332,7 +332,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         else
             bool = (BooleanExpr) expr.test();
 
-        DataType evalType = DataType.UNDEFINED;
+        Expr.DataType evalType = Expr.DataType.UNDEFINED;
         if (bool.token().type() == TokenType.TRUE)
             // The test condition is true, so the type of
             // this if expression is the type of the consequent.
@@ -343,7 +343,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         return expr.evalType();
     }
 
-    public DataType visit(IfThenElseExpr expr)
+    public Expr.DataType visit(IfThenElseExpr expr)
     {
         // Type-check the test condition
         // and its child nodes.
@@ -366,7 +366,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<DataType>
         else
             bool = (BooleanExpr) expr.test();
 
-        DataType evalType = DataType.UNDEFINED;
+        Expr.DataType evalType = Expr.DataType.UNDEFINED;
         if (bool.token().type() == TokenType.TRUE)
             // The test condition is true, so the type of
             // this if expression is the type of the consequent.

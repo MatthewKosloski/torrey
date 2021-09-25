@@ -1,6 +1,5 @@
 package me.mtk.torrey.frontend.ast;
 
-import me.mtk.torrey.frontend.analysis.DataType;
 import me.mtk.torrey.frontend.lexer.Token;
 import me.mtk.torrey.frontend.lexer.TokenType;
 

@@ -1,7 +1,6 @@
 package me.mtk.torrey.frontend.ast;
 
 import java.util.List;
-import me.mtk.torrey.frontend.analysis.DataType;
 import me.mtk.torrey.frontend.lexer.Token;
 import me.mtk.torrey.frontend.symbols.Env;
 
