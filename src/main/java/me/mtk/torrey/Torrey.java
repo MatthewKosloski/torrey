@@ -8,11 +8,27 @@ import me.mtk.torrey.frontend.CompilerFrontend;
 import me.mtk.torrey.backend.CompilerBackend;
 import me.mtk.torrey.backend.CompilerBackendFactory;
 import me.mtk.torrey.backend.TargetProgram;
+import me.mtk.torrey.backend.TargetRegistry;
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.X8664PCLinuxTarget;
 
 public final class Torrey
 {
     // The semantic version number of the compiler.
     public static String SEMANTIC_VERSION = "3.0.8";
+
+    private static TargetRegistry targetRegistry;
+    private static CompilerBackendFactory backendFactory;
+
+    static
+    {
+        targetRegistry = new TargetRegistry();
+
+        // Install the compiler backends.
+        targetRegistry.add(new X8664PCLinuxTarget());
+
+        // Initialize the backend factory with the target registry.
+        backendFactory = new CompilerBackendFactory(targetRegistry);
+    }
 
     public static void main(String ... args)
     {
@@ -64,7 +80,7 @@ public final class Torrey
             frontend.setInput(input);
             final IRProgram irProgram = frontend.run();
             
-            CompilerBackend backend = CompilerBackendFactory
+            CompilerBackend backend = Torrey.backendFactory
                 .makeBackendFromTarget(config.target());
 
             if (backend == null)
@@ -114,8 +130,10 @@ public final class Torrey
             .append("\n\twhere <triple> is of the form ")
             .append("<arch>-<vendor>-<sys>.\n\n");
         sb.append("Registered targets (triples):\n");
-        CompilerBackendFactory.targetStringToTripleMap()
-            .forEach((k, v) -> sb.append("\t").append(k));
+    
+        for (String targetStr : Torrey.targetRegistry.getKeys())
+            sb.append("\t").append(targetStr);
+
         System.out.println(sb.toString());
         System.exit(0);
     }
