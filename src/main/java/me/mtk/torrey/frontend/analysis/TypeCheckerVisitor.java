@@ -93,7 +93,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
             // operand to also be an integer.
             reporter.error(
                 second.token(), 
-                ErrorMessages.UnexpectedOperandToBe, 
+                ErrorMessages.ExpectedOperandToBe, 
                 operator.rawText(), 
                 Expr.DataType.INTEGER, 
                 second.evalType());
@@ -103,7 +103,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
             // The first operand is a boolean. Expected the second 
             // operand to also be a boolean.
             reporter.error(second.token(), 
-            ErrorMessages.UnexpectedOperandToBe,
+            ErrorMessages.ExpectedOperandToBe,
                 operator.rawText(), 
                 Expr.DataType.BOOLEAN, 
                 second.evalType());
@@ -113,7 +113,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
             // Either both operands are not integers or
             // both operands are not booleans.
             reporter.error(first.token(), 
-                ErrorMessages.UnexpectedOperandToBeEither, 
+                ErrorMessages.ExpectedOperandToBeEither, 
                 operator.rawText(), 
                 Expr.DataType.INTEGER, 
                 Expr.DataType.BOOLEAN, 
@@ -143,14 +143,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         if (first.evalType() != Expr.DataType.INTEGER)
         {
             // expected type Expr.DataType.INTEGER
-            reporter.error(first.token(), ErrorMessages.UnexpectedOperandToBe, 
+            reporter.error(first.token(), ErrorMessages.ExpectedOperandToBe, 
                 operator.rawText(), Expr.DataType.INTEGER, first.evalType());
         } 
 
         if (second.evalType() != Expr.DataType.INTEGER)
         {
             // expected type Expr.DataType.INTEGER
-            reporter.error(second.token(), ErrorMessages.UnexpectedOperandToBe, 
+            reporter.error(second.token(), ErrorMessages.ExpectedOperandToBe, 
                 operator.rawText(), Expr.DataType.INTEGER, second.evalType());
         }
 
@@ -237,7 +237,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
             // expected type Expr.DataType.INTEGER
             reporter.error(
                 operand.token(), 
-                ErrorMessages.UnexpectedOperandToBe,
+                ErrorMessages.ExpectedOperandToBe,
                 operator.rawText(), 
                 Expr.DataType.INTEGER, 
                 operand.evalType());
