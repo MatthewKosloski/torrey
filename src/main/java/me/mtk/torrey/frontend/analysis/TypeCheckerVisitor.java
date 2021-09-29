@@ -398,10 +398,11 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         {
             // The test condition is false, so the type of this
             // if expression is the type of the alternative.
-            if (expr.alternative().isFalsy())
-                expr.makeFalsy();
-            
             evalType = expr.alternative().evalType();
+
+            // The test condition is false, so this if 
+            // expression is false.
+            expr.makeFalsy();
         }
 
         expr.setEvalType(evalType);
