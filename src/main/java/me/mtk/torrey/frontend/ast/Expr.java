@@ -13,7 +13,6 @@ public abstract class Expr extends ASTNode
     public enum DataType
     {
         INTEGER,
-        PRINT,
         BOOLEAN,
         NIL
     }
