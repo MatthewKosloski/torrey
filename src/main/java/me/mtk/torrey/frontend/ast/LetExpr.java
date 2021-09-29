@@ -11,7 +11,7 @@ public class LetExpr extends Expr
     public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
     {
         // "let"
-        super(letTok, DataType.UNDEFINED);
+        super(letTok, DataType.NIL);
 
         // The environment doesn't get created until semantic analysis.
         environment = null;

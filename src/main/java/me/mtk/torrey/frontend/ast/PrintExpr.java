@@ -9,7 +9,7 @@ public class PrintExpr extends Expr
     public PrintExpr(Token printOp, List<Expr> exprList)
     {
         // "print" | "println"
-        super(printOp, DataType.UNDEFINED);
+        super(printOp, DataType.NIL);
 
         for (Expr expr : exprList)
             addChild(expr);

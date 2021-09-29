@@ -15,7 +15,7 @@ public abstract class Expr extends ASTNode
         INTEGER,
         PRINT,
         BOOLEAN,
-        UNDEFINED
+        NIL
     }
 
     // The type that this expression evaluates to.

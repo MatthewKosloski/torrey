@@ -6,7 +6,7 @@ public class IdentifierExpr extends Expr
 {
     public IdentifierExpr(Token t) 
     {
-        super(t, DataType.UNDEFINED);
+        super(t, DataType.NIL);
     }
 
     @Override

@@ -6,7 +6,7 @@ public class IfExpr extends Expr
 {
     public IfExpr(Token tok, Expr test, Expr consequent)
     {
-        super(tok, DataType.UNDEFINED);
+        super(tok, DataType.NIL);
         addChild(test);
         addChild(consequent);
     }

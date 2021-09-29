@@ -58,7 +58,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
 
         // A Program AST does not evaluate to a 
         // data type as it's not an expression.
-        return Expr.DataType.UNDEFINED;
+        return Expr.DataType.NIL;
     }
 
     /**
@@ -206,7 +206,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
             // Type-check the child expression and its children.
             childExpr.accept(this);
 
-            if (childExpr.evalType() == Expr.DataType.UNDEFINED)
+            if (childExpr.evalType() == Expr.DataType.NIL)
                 reporter.error(
                     childExpr.token(), 
                     ErrorMessages.UndefinedOperandToPrint, 
@@ -214,7 +214,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
 
         }
         
-        return Expr.DataType.UNDEFINED;
+        return Expr.DataType.NIL;
     }
 
     /**
@@ -289,7 +289,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
 
         // A LetBindings AST does not evaluate to a 
         // data type as it's not an expression.
-        return Expr.DataType.UNDEFINED;
+        return Expr.DataType.NIL;
     }
 
     public Expr.DataType visit(LetBinding binding)
@@ -300,7 +300,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         // Type check the bounded expression.
         boundedExpr.accept(this);
 
-        if (boundedExpr.evalType() == Expr.DataType.UNDEFINED)
+        if (boundedExpr.evalType() == Expr.DataType.NIL)
         {
             reporter.error(idExpr.token(), 
                 ErrorMessages.UnexpectedBoundedExprType,
@@ -310,7 +310,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         
         // A LetBinding AST does not evaluate to a 
         // data type as it's not an expression.
-        return Expr.DataType.UNDEFINED;
+        return Expr.DataType.NIL;
     }
 
     public Expr.DataType visit(IfExpr expr)
