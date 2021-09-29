@@ -20,6 +20,11 @@ public final class BooleanExpr extends PrimitiveExpr
             : TokenType.FALSE, bool + ""));
     }
 
+    public boolean toBoolean()
+    {
+        return this.token().type() == TokenType.TRUE;
+    }
+
     @Override
     public <T> T accept(ASTNodeVisitor<T> visitor)
     {
