@@ -318,6 +318,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         // Type-check the test condition
         // and its child nodes.
         expr.test().accept(this);
+
+        if (expr.test().evalType() == Expr.DataType.NIL)
+        {
+            reporter.error(
+                expr.test().token(),
+                ErrorMessages.CannotBeTestedForTruthiness,
+                expr.test().evalType());
+        }
         
         // Type-check the consequent and
         // its child nodes.
@@ -348,6 +356,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         // Type-check the test condition
         // and its child nodes.
         expr.test().accept(this);
+
+        if (expr.test().evalType() == Expr.DataType.NIL)
+        {
+            reporter.error(
+                expr.test().token(),
+                ErrorMessages.CannotBeTestedForTruthiness,
+                expr.test().evalType());
+        }
         
         // Type-check the consequent and
         // its child nodes.

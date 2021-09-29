@@ -38,4 +38,5 @@ public final class ErrorMessages
     public static final String ExpectedExprOrStmt = "Expected the start of an"
         + " expression or statement but found '%s' instead";
     public static final String UndefinedOperandToPrint = "Cannot print operand '%s' because it does not evaluate to a known type";
+    public static final String CannotBeTestedForTruthiness = "An expression of type '%s' cannot be tested for truthiness";
 }
