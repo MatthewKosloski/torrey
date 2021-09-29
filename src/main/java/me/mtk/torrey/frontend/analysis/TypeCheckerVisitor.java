@@ -120,6 +120,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
                 first.evalType());
         }
 
+        if (expr.getFold().isFalsy())
+            expr.makeFalsy();
+
         return expr.evalType();
     }
 
@@ -165,6 +168,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
                 operator.rawText());   
         }
 
+        if (expr.getFold().isFalsy())
+            expr.makeFalsy();
+
         return expr.evalType();
     }
 
@@ -176,6 +182,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
      */
     public Expr.DataType visit(BooleanExpr expr)
     {
+        if (!expr.toBoolean())
+            expr.makeFalsy();
+
         return expr.evalType();
     }
 
@@ -187,6 +196,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
      */
     public Expr.DataType visit(IntegerExpr expr)
     {
+        if (expr.toConstant() == 0)
+            expr.makeFalsy();
+        
         return expr.evalType();
     }
 
@@ -213,6 +225,8 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
                     childExpr.token().rawText());
 
         }
+
+        expr.makeFalsy();
         
         return Expr.DataType.NIL;
     }
@@ -243,6 +257,9 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
                 operand.evalType());
         } 
 
+        if (operand.isFalsy())
+            expr.makeFalsy();
+
         return expr.evalType();
     }
 
@@ -250,6 +267,10 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
     {
         final String id = expr.token().rawText();
         final Symbol sym = top.get(id);
+
+        if (sym.expr().isFalsy())
+            expr.makeFalsy();
+
         expr.setEvalType(sym.expr().evalType());
         return expr.evalType();
     }
@@ -274,6 +295,10 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
             // as the type of its last expression.
             final Expr lastExpr = (Expr) expr.last();
             expr.setEvalType(lastExpr.evalType());
+
+            if (lastExpr.isFalsy())
+                expr.makeFalsy();
+
             return expr.evalType();
         }
 
@@ -315,8 +340,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
 
     public Expr.DataType visit(IfExpr expr)
     {
-        // Type-check the test condition
-        // and its child nodes.
+        // Type-check the test condition and its child nodes.
         expr.test().accept(this);
 
         if (expr.test().evalType() == Expr.DataType.NIL)
@@ -327,24 +351,17 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
                 expr.test().evalType());
         }
         
-        // Type-check the consequent and
-        // its child nodes.
+        // Type-check the consequent and its child nodes.
         expr.consequent().accept(this);
 
-        // The test condition will either be a 
-        // BooleanExpr or a CompareExpr that folds
-        // to a BooleanExpr.
-        BooleanExpr bool;
-        if (expr.test() instanceof Foldable)
-            bool = (BooleanExpr) ((Foldable) expr.test()).getFold();
-        else
-            bool = (BooleanExpr) expr.test();
-
-        Expr.DataType evalType = Expr.DataType.UNDEFINED;
-        if (bool.token().type() == TokenType.TRUE)
+        Expr.DataType evalType = Expr.DataType.NIL;
+        if (expr.test().isTruthy())
             // The test condition is true, so the type of
             // this if expression is the type of the consequent.
             evalType = expr.consequent().evalType();
+        else
+            // The test condition is false, so this if expression is false.
+            expr.makeFalsy();
         
         expr.setEvalType(evalType);
 
@@ -353,8 +370,7 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
 
     public Expr.DataType visit(IfThenElseExpr expr)
     {
-        // Type-check the test condition
-        // and its child nodes.
+        // Type-check the test condition and its child nodes.
         expr.test().accept(this);
 
         if (expr.test().evalType() == Expr.DataType.NIL)
@@ -365,35 +381,31 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
                 expr.test().evalType());
         }
         
-        // Type-check the consequent and
-        // its child nodes.
+        // Type-check the consequent and its child nodes.
         expr.consequent().accept(this);
 
-        // Type-check the alternative and
-        // its child nodes.
+        // Type-check the alternative and its child nodes.
         expr.alternative().accept(this);
 
-        // The test condition will either be a 
-        // BooleanExpr or a CompareExpr that folds
-        // to a BooleanExpr.
-        BooleanExpr bool;
-        if (expr.test() instanceof Foldable)
-            bool = (BooleanExpr) ((Foldable) expr.test()).getFold();
-        else
-            bool = (BooleanExpr) expr.test();
-
-        Expr.DataType evalType = Expr.DataType.UNDEFINED;
-        if (bool.token().type() == TokenType.TRUE)
+        Expr.DataType evalType = Expr.DataType.NIL;
+        if (expr.test().isTruthy())
+        {
             // The test condition is true, so the type of
             // this if expression is the type of the consequent.
             evalType = expr.consequent().evalType();
+        }
         else
+        {
             // The test condition is false, so the type of this
             // if expression is the type of the alternative.
+            if (expr.alternative().isFalsy())
+                expr.makeFalsy();
+            
             evalType = expr.alternative().evalType();
+        }
 
         expr.setEvalType(evalType);
-
+        
         return expr.evalType();
     }
 

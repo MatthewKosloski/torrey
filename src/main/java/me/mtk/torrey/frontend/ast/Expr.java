@@ -20,15 +20,14 @@ public abstract class Expr extends ASTNode
     // The type that this expression evaluates to.
     private DataType evalType;
 
-    /**
-     * Constructs a new expression AST node from the given token.
-     * 
-     * @param t A token from which this AST node is derived.
-     */
-    public Expr(Token t)
-    { 
-        this(t, null);
-    }
+    // The truthiness of this expression within a boolean context.
+    // When encountered in a boolean context, all expressions
+    // are truthy except for:
+    //  - nil
+    //  - false
+    //  - 0
+    //  - (- 0)
+    private boolean isTruthy;
 
     /**
      * Constructs a new expression AST node from the given token,
@@ -41,6 +40,10 @@ public abstract class Expr extends ASTNode
     {
         super(tok);
         evalType = type;
+        
+        // By default, every expression is initially truthy until
+        // its actual truthiness is determined during semantic analysis.
+        isTruthy = true;
     }
 
     /**
@@ -79,5 +82,43 @@ public abstract class Expr extends ASTNode
     public DataType evalType()
     {
         return evalType;
+    }
+
+    /**
+     * Indicates whether this expression evaluates to a truthy value.
+     * 
+     * @return True if the expression evaluates to a truthy value; 
+     * false otherwise.
+     */
+    public boolean isTruthy()
+    {
+        return isTruthy;
+    }
+
+    /**
+     * Indicates whether this expression evaluates to a falsy value.
+     * 
+     * @return True if the expression evaluates to a falsy value; 
+     * false otherwise.
+     */
+    public boolean isFalsy()
+    {
+        return !isTruthy;
+    }
+
+    /**
+     * Sets the truthiness of the expression to falsy.
+     */
+    public void makeFalsy()
+    {
+        isTruthy = false;
+    }
+
+    /**
+     * Sets the truthiness of the expression to truthy.
+     */
+    public void makeTruthy()
+    {
+        isTruthy = true;
     }
 }

@@ -309,13 +309,11 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
             doneLabel = (IRLabelAddress) expr.test().accept(this);
         else
         {
-            // The test condition is not a comparison but rather
-            // a primitve boolean, so generate an if-then instruction.
-            final TokenType tokType = expr.test().token().type();
+            // The test condition is not a comparison, so generate 
+            // an if-then instruction.
             doneLabel = new IRLabelAddress();
             irProgram.addQuad(new IRIfInst(
-                new IRConstAddress(tokType != TokenType.TRUE),
-                doneLabel));
+                new IRConstAddress(!expr.isTruthy()), doneLabel));
         }
         
         // Generate IR instructions for the consequent branch.
@@ -346,13 +344,11 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
             altBranchLabel = (IRLabelAddress) expr.test().accept(this);
         else
         {
-            // The test condition is not a comparison but rather
-            // a primitve boolean, so generate an if-then instruction.
-            final TokenType tokType = expr.test().token().type();
+            // The test condition is not a comparison, so generate 
+            // an if-then instruction.
             altBranchLabel = new IRLabelAddress();
             irProgram.addQuad(new IRIfInst(
-                new IRConstAddress(tokType != TokenType.TRUE),
-                altBranchLabel));
+                new IRConstAddress(!expr.isTruthy()), altBranchLabel));
         }
         
         // Generate IR instructions for the consequent branch.

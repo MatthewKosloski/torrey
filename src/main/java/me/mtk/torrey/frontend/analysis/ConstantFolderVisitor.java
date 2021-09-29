@@ -155,20 +155,61 @@ public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
                 (secondFolded instanceof UnaryExpr 
                 && secondFolded.first() instanceof LetExpr))
                 return expr;
+
+            Expr foldedExpr;
             
             switch (expr.token().type())
             {
-                case PLUS: return (Expr) Expr.makeConstantExpr(c1 + c2);
-                case MINUS: return (Expr) Expr.makeConstantExpr(c1 - c2);
-                case STAR: return (Expr) Expr.makeConstantExpr(c1 * c2);
-                case SLASH: return (Expr) Expr.makeConstantExpr(c1 / c2);
-                case LT: return new BooleanExpr(c1 < c2);
-                case LTE: return new BooleanExpr(c1 <= c2);
-                case GT: return new BooleanExpr(c1 > c2);
-                case GTE: return new BooleanExpr(c1 >= c2);
-                case EQUAL: return new BooleanExpr(c1 == c2);
-                default: return expr;
+                case PLUS:
+                    foldedExpr = (Expr) Expr.makeConstantExpr(c1 + c2);
+                    if (c1 + c2 == 0)
+                        foldedExpr.makeFalsy();
+                    break;
+                case MINUS:
+                    foldedExpr = (Expr) Expr.makeConstantExpr(c1 - c2);
+                    if (c1 - c2 == 0)
+                        foldedExpr.makeFalsy();
+                    break;
+                case STAR:
+                    foldedExpr = (Expr) Expr.makeConstantExpr(c1 * c2);
+                    if (c1 * c2 == 0)
+                        foldedExpr.makeFalsy();
+                    break;
+                case SLASH:
+                    foldedExpr = (Expr) Expr.makeConstantExpr(c1 / c2);
+                    if (c1 / c2 == 0)
+                        foldedExpr.makeFalsy();
+                    break;
+                case LT:
+                    foldedExpr = new BooleanExpr(c1 < c2);
+                    if (!(c1 < c2))
+                        foldedExpr.makeFalsy();
+                    break;
+                case LTE:
+                    foldedExpr = new BooleanExpr(c1 <= c2);
+                    if (!(c1 <= c2))
+                        foldedExpr.makeFalsy();
+                    break;
+                case GT:
+                    foldedExpr = new BooleanExpr(c1 > c2);
+                    if (!(c1 > c2))
+                        foldedExpr.makeFalsy();
+                    break;
+                case GTE:
+                    foldedExpr = new BooleanExpr(c1 >= c2);
+                    if (!(c1 >= c2))
+                        foldedExpr.makeFalsy();
+                    break;
+                case EQUAL:
+                    foldedExpr = new BooleanExpr(c1 == c2);
+                    if (!(c1 == c2))
+                        foldedExpr.makeFalsy();
+                    break;
+                default:
+                    foldedExpr = expr;
             }
+
+            return foldedExpr;
         }
 
         return expr;
