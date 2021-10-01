@@ -14,3 +14,4 @@ target
 dependency-reduced-pom.xml
 *.torrey
 node_modules
+*.jar
