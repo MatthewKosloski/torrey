@@ -382,10 +382,18 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
         }
         
         // Type-check the consequent and its child nodes.
-        expr.consequent().accept(this);
+        final Expr.DataType consequentType = expr.consequent().accept(this);
 
         // Type-check the alternative and its child nodes.
-        expr.alternative().accept(this);
+        final Expr.DataType alternativeType = expr.alternative().accept(this);
+
+        if (consequentType != alternativeType)
+        {
+            // The two branches don't have the same type
+            reporter.error(
+                expr.token(),
+                ErrorMessages.BothBranchesToIfMustBeSameType);
+        }
 
         Expr.DataType evalType = Expr.DataType.NIL;
         if (expr.test().isTruthy())
