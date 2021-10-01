@@ -4,7 +4,7 @@ const _expect = async (program) => {
     return __expect(program, '3.0.8');
 }
 
-describe.only('"(" "-" expr ")"', () => {
+describe('"(" "-" expr ")"', () => {
     it('Should error if no left parenthesis or child expression', async () => {
         const expect = await _expect(`
             -)
