@@ -193,3 +193,34 @@ It is incredibly easy to add additional backends to support more target language
 4. Associate the new `ArchVendorSysBackend` with the `TargetTriple` by creating a key-value entry within the registry map [here](https://github.com/MatthewKosloski/torrey/blob/c03/src/main/java/me/mtk/torrey/backend/targets/Targets.java).  The key is a string representation of the triple and is of the form `<arch>-<vendor>-<sys>`.  The value is a reference to the backend that implements the target language for that specific target.
 
 Once the back-end has been created and "registered", it can then be set as the target of compilation via the `--target` flag.  To view a list of the supported targets, supply the `--target-list` flag.
+
+
+## End-to-End Tests
+
+The `tests` directory contains e2e tests, written in JavaScript, that assert on the standard output of executables and the standard error of the compiler. For each test case, the `tests/utils/run/run.sh` script is run with an input program and compiler version number. This script attempts to compile the input program and write the output x86-64 assembly code to a temporary source file. If the compiler threw an error while attempting to compile the input program (e.g., syntax error, semantic error, etc.), then the script outputs the error message and exits with a non-zero exit code. Test cases can then assert on the standard error message (e.g., `expect.stderr.to.contain(...)`).  If the compiler successfully compiled the input program, then the script will attempt to assemble the source file into an object file, link the object file with the compiler runtime, and execute the resulting executable. Test cases can then assert on the standard output of the executable (e.g., `expect.stdout.to.contain(...)`).
+
+### Running the e2e tests
+
+1. Start up and enter the development virtual machine:
+
+```sh
+vagrant up && vagrant ssh
+```
+
+2. Navigate to the `tests` directory:
+
+```sh
+cd /vagrant/tests
+```
+
+3. Install the node modules:
+
+```sh
+npm install
+```
+
+4. Run the tests:
+
+```sh
+npm test
+```
