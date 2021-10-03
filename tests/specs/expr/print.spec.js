@@ -5,25 +5,39 @@ const _expect = async (program) => {
 }
 
 describe('"(" "print" expr+ ")"', () => {
-    it('Should be a syntax error if no left parenthesis', async () => {
+    it('Should be a syntax error if no left parenthesis and no operand', async () => {
         const expect = await _expect(`
             print)
         `);
         expect.stderr.to.contain('Expected an integer, unary, binary, print, let, or identifier expression but found \'print\' instead');
         expect.stderr.to.contain('1 Error');
     });
-    it('Should be a syntax error if no operands', async () => {
+    it('Should be a syntax error if no left parenthesis', async () => {
+        const expect = await _expect(`
+            print 69)
+        `);
+        expect.stderr.to.contain('Expected an integer, unary, binary, print, let, or identifier expression but found \'print\' instead');
+        expect.stderr.to.contain('1 Error');
+    });
+    it('Should be a syntax error if no operand', async () => {
         const expect = await _expect(`
             (print)
         `);
         expect.stderr.to.contain('Expected an integer, unary, binary, print, let, or identifier expression but found \')\' instead');
         expect.stderr.to.contain('1 Error');
     });
-    it('Should be a syntax error if no right parenthesis', async () => {
+    it('Should be a syntax error if no right parenthesis and no operand', async () => {
         const expect = await _expect(`
             (print
         `);
         expect.stderr.to.contain('Expected an integer, unary, binary, print, let, or identifier expression but found \'print\' instead');
+        expect.stderr.to.contain('1 Error');
+    });
+    it('Should be a syntax error if no right parenthesis', async () => {
+        const expect = await _expect(`
+            (print 420
+        `);
+        expect.stderr.to.contain('Expected a closing parenthesis \')\'');
         expect.stderr.to.contain('1 Error');
     });
     it('Should accept an integer literal operand', async () => {
@@ -140,46 +154,39 @@ describe('"(" "print" expr+ ")"', () => {
         expect.stderr.to.contain('Cannot print operand \'print\' because it does not evaluate to a known type');
         expect.stderr.to.contain('2 Errors');
     });
-    it('Should accept a let expression that evaluates to a non-nil expression', async () => {
+    it('Should be a semantic error if operand is a println expression', async () => {
+        const expect = await _expect(`
+            (print (println 42))
+        `);
+        expect.stderr.to.contain('Cannot print operand \'println\' because it does not evaluate to a known type');
+        expect.stderr.to.contain('1 Error');
+    });
+    it('Should be a semantic error if operands are println expressions', async () => {
+        const expect = await _expect(`
+            (print (println 42) (println (- 42)))
+        `);
+        expect.stderr.to.contain('Cannot print operand \'println\' because it does not evaluate to a known type');
+        expect.stderr.to.contain('2 Errors');
+    });
+    it('Should accept a let expression', async () => {
         const expect = await _expect(`
             (print (let [] 42))
         `);
         expect.stdout.to.equal('42');
     });
-    it('Should be a semantic error if operand is a let expression that evaluates to a nil expression', async () => {
-        const expect = await _expect(`
-            (print (let [] (print 42)))
-        `);
-        expect.stderr.to.contain('Cannot print operand \'let\' because it does not evaluate to a known type');
-        expect.stderr.to.contain('1 Error');
-    });
     // TODO: Should accept not
     // TODO: Should accept and
     // TODO: Should accept or
-    it('Should accept an if-then expression that evaluates to a non-nil expression', async () => {
+    it('Should accept an if-then expression', async () => {
         const expect = await _expect(`
             (print (if true 69420))
         `);
         expect.stdout.to.equal('69420');
     });
-    it('Should be a semantic error if operand is an if-then expression that evaluates to a nil expression', async () => {
-        const expect = await _expect(`
-            (print (if true (let [])))
-        `);
-        expect.stderr.to.contain('Cannot print operand \'if\' because it does not evaluate to a known type');
-        expect.stderr.to.contain('1 Error');
-    });
-    it('Should accept an if-then-else expression that evaluates to a non-nil expression', async () => {
+    it('Should accept an if-then-else expression', async () => {
         const expect = await _expect(`
             (print (if false 0 1))
         `);
         expect.stdout.to.equal('1');
-    });
-    it('Should be a semantic error if operand is an if-then-else expression that evaluates to a nil expression', async () => {
-        const expect = await _expect(`
-            (print (if false 696969 (let [])))
-        `);
-        expect.stderr.to.contain('Cannot print operand \'if\' because it does not evaluate to a known type');
-        expect.stderr.to.contain('1 Error');
     });
 });
