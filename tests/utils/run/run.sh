@@ -53,12 +53,13 @@ else
 	if [ $? -eq 0 ]; then
 	    # The compiler terminated normally, so let's try to assemble and run.
 
-            # Assemble and link runtime object file with assembly code 
-            # to produce an executable
+        # This command will:
+        #   1. Assemble and link runtime object file with assembly code 
+        #      to produce an executable
+        #   2. Execute the executable
+        #   3. Delete the temporary assembly file and executable
 	    gcc $assembly_path $runtime_build_path -o $executable_path \
-            # Execute the executable
             && $executable_path \
-            # Delete the temporary assembly file and executable
 			&& rm $assembly_path $executable_path
         exit 0
 	else
