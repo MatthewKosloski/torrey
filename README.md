@@ -222,5 +222,5 @@ npm install
 4. From the `/vagrant` directory, run:
 
 ```sh
-mvn package && cd tests && npm test && cd ../
+mvn package -Dmaven.test.skip && cd tests && npm test && cd ../
 ```
