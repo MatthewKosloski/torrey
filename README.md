@@ -219,8 +219,8 @@ cd /vagrant/tests
 npm install
 ```
 
-4. Run the tests:
+4. From the `/vagrant` directory, run:
 
 ```sh
-npm test
+mvn package && cd tests && npm test && cd ../
 ```
