@@ -10,7 +10,13 @@ const expect = async (program, version) => {
         const { stdout } = await run(program, version);
         result.stdout = chaiExpect(stdout);
     } catch(err) {
-        result.stderr = chaiExpect(err.stderr);
+        if (err.code === 64) {
+            // Failed to execute the script
+            throw new Error(err.stderr);
+        } else {
+            // Failed to compile
+            result.stderr = chaiExpect(err.stderr);
+        }
     }
     return result;
 };
