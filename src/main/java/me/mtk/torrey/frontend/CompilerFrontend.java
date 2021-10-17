@@ -122,17 +122,16 @@ public final class CompilerFrontend extends Compiler
         // Builds the let expression environments and reports 
         // errors regarding the use of identifier names. No
         // type checking happens here.
-        final EnvBuilderVisitor envBuilder = new EnvBuilderVisitor
-            (new ErrorReporter(input));
-            envBuilder.visit(ast);
+        final Binder binder = new Binder(new ErrorReporter(input));
+        binder.visit(ast);
 
         if (config.debug())
-            debug("AST (output from EnvBuilderVisitor): \n%s",
+            debug("AST (output from Binder): \n%s",
                 ppVisitor.visit(ast));
 
         // Reduces complex expressions (both arithmetic and logical).
-        final ConstantFolderVisitor constantFolder = 
-            new ConstantFolderVisitor();
+        final ConstantFolder constantFolder = 
+            new ConstantFolder();
         constantFolder.visit(ast);
 
         if (config.debug())
@@ -141,7 +140,7 @@ public final class CompilerFrontend extends Compiler
 
         // Type-checks operands to expressions and decorates
         // the AST with type information.
-        final TypeCheckerVisitor typeChecker = new TypeCheckerVisitor
+        final TypeChecker typeChecker = new TypeChecker
             (new ErrorReporter(input));
         typeChecker.visit(ast);
 
@@ -149,7 +148,7 @@ public final class CompilerFrontend extends Compiler
             ppVisitor.visit(ast));
 
         if (config.debug())
-            debug("Optimized AST (output from TypeCheckerVisitor): \n%s",
+            debug("Optimized AST (output from TypeChecker): \n%s",
                 ppVisitor.visit(ast));
 
         return ast;

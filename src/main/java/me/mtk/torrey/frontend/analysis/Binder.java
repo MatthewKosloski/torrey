@@ -10,7 +10,7 @@ import me.mtk.torrey.frontend.symbols.*;
  * is referenced or an existing identifier name is used
  * in a new declaration, then these errors are reported.
  */
-public class EnvBuilderVisitor implements ASTNodeVisitor<Void> 
+public class Binder implements ASTNodeVisitor<Void> 
 {
     // A reference to the error reporter that will
     // report any semantic errors during type checking.
@@ -19,7 +19,7 @@ public class EnvBuilderVisitor implements ASTNodeVisitor<Void>
     // The current environment.
     private Env top;
 
-    public EnvBuilderVisitor(ErrorReporter reporter)
+    public Binder(ErrorReporter reporter)
     {
         this.reporter = reporter;
         top = new Env(null);

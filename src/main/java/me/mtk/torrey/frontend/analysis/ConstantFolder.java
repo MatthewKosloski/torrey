@@ -15,13 +15,13 @@ import me.mtk.torrey.frontend.symbols.Env;
  *  (+ 2 3) -> 5
  *  (< 2 3) -> false
  */
-public final class ConstantFolderVisitor implements ASTNodeVisitor<ASTNode>
+public final class ConstantFolder implements ASTNodeVisitor<ASTNode>
 {
 
     // The current environment.
     private Env top;
 
-    public ConstantFolderVisitor()
+    public ConstantFolder()
     {
         top = new Env(null);
     }

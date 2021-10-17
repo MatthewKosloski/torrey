@@ -10,7 +10,7 @@ import me.mtk.torrey.frontend.symbols.*;
  * the operands to operators. Also, determines the evaluation
  * types of identifiers, let expressions, and if expressions.
  */
-public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
+public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
 {
     // A reference to the error reporter that will
     // report any semantic errors during type checking.
@@ -20,14 +20,14 @@ public final class TypeCheckerVisitor implements ASTNodeVisitor<Expr.DataType>
     private Env top;
 
     /**
-     * Constructs a new TypeCheckerVisitor that walks an
+     * Constructs a new TypeChecker that walks an
      * AST starting at the Program node checking for type
      * errors.
      * 
      * @param reporter The reporter reponsible for accumulating
      * and throwing SemanticErrors.
      */
-    public TypeCheckerVisitor(ErrorReporter reporter)
+    public TypeChecker(ErrorReporter reporter)
     {
         this.reporter = reporter;
         top = new Env(null);
