@@ -2,7 +2,6 @@ package me.mtk.torrey.frontend.ir.gen;
 
 import java.util.*;
 
-import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Label;
 import me.mtk.torrey.frontend.ast.*;
 import me.mtk.torrey.frontend.ir.addressing.*;
 import me.mtk.torrey.frontend.ir.instructions.*;
