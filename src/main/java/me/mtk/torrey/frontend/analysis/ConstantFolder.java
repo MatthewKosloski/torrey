@@ -37,12 +37,16 @@ public final class ConstantFolder implements ASTNodeVisitor<ASTNode>
 
     public Expr visit(ArithmeticExpr expr)
     {
-        return foldBinaryExpr(expr);
+        final Expr foldedExpr = foldBinaryExpr(expr);
+        expr.setFold(foldedExpr);
+        return expr;
     }
 
     public Expr visit(CompareExpr expr)
     {
-        return foldBinaryExpr(expr);
+        final Expr foldedExpr = foldBinaryExpr(expr);
+        expr.setFold(foldedExpr);
+        return expr;
     }
 
     public Expr visit(UnaryExpr expr) 
