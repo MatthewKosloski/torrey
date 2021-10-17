@@ -13,7 +13,7 @@ import me.mtk.torrey.frontend.symbols.Env;
  * of three-address code represented as a collection of quadruples
  * of the form (operator, argument1, argument2, result).
  */
-public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
+public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 {
     // The IR Program being generated.
     private IRProgram irProgram;
@@ -32,7 +32,7 @@ public final class IRGenVisitor implements ASTNodeVisitor<IRAddress>
      * @param program The AST from which IR instructions
      * will be generated.
      */
-    public IRGenVisitor(Program program)
+    public IRGenerator(Program program)
     {
         this.irProgram = new IRProgram();
         this.program = program;
