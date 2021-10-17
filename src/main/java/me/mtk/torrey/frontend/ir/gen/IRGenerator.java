@@ -1,6 +1,8 @@
 package me.mtk.torrey.frontend.ir.gen;
 
 import java.util.*;
+
+import me.mtk.torrey.backend.targets.x86_64.pc.linux.instructions.Label;
 import me.mtk.torrey.frontend.ast.*;
 import me.mtk.torrey.frontend.ir.addressing.*;
 import me.mtk.torrey.frontend.ir.instructions.*;
@@ -164,6 +166,15 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
         final IRAddress arg2 = getDestinationAddr(expr.second());
         
         irProgram.addQuad(new IRIfInst(tokType, arg1, arg2, label));
+
+        if (!expr.hasParentExpr())
+        {
+            // Generate a label instruction if this expression is orphaned, because
+            // if this expression is an orphan, then there won't be a parent to
+            // receive the label that we'll be returning.
+            irProgram.addQuad(new IRLabelInst(label));
+        }
+
         return label;
     }
 
