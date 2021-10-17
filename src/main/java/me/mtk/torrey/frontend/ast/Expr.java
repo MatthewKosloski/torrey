@@ -121,4 +121,14 @@ public abstract class Expr extends ASTNode
     {
         isTruthy = true;
     }
+
+    /**
+     * Indicates whether this expression has a parent expression.
+     * 
+     * @return True if this expression has a parent expression; False otherwise.
+     */
+    public boolean hasParentExpr() 
+    {
+        return this.parent() instanceof Expr;
+    }
 }

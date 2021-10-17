@@ -17,6 +17,9 @@ public abstract class ASTNode
     // From which token did we create this node?
     private Token token;
 
+    // The parent of this node.
+    private ASTNode parent;
+
     // A normalized list of child nodes (rather than named fields)
     // makes it much easier to build external tree visitors.
     private List<ASTNode> children;
@@ -47,6 +50,7 @@ public abstract class ASTNode
      */
     public void addChild(ASTNode child)
     {
+        child.parent = this;
         children.add(child);
     }
 
@@ -70,6 +74,16 @@ public abstract class ASTNode
     public List<ASTNode> children()
     {
         return children;
+    }
+
+    /**
+     * Returns the parent node.
+     * 
+     * @return The parent node.
+     */
+    public ASTNode parent()
+    {
+        return parent;
     }
 
     /**
