@@ -29,4 +29,9 @@ public abstract class BinaryExpr extends Expr implements Foldable
     {
         return fold;
     }
+
+    public boolean hasFold()
+    {
+        return fold != null;
+    }
 }

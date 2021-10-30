@@ -170,7 +170,7 @@ unary        -> temp "=" "-" addr ;
 binary       -> temp "=" addr (arithOp | relOp) addr ;
 param        -> "param" addr ;
 call         -> "call" name "," constant ;
-if           -> "if" addr relOp addr goto ;
+if           -> "if" ((addr relOp addr) | constant) goto ;
 label        -> "label" labelid ":" ;
 goto         -> "goto" labelid ;
 

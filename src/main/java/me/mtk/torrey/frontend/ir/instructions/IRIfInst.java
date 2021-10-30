@@ -12,9 +12,9 @@ public final class IRIfInst extends Quadruple
             arg1, arg2, result);
     }
 
-    public IRIfInst(IRConstAddress bool, IRLabelAddress result)
+    public IRIfInst(IRConstAddress constAddr, IRLabelAddress result)
     {
-        super(null, bool, null, result);
+        super(null, constAddr, null, result);
     }
 
     /**

@@ -81,8 +81,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
     public IRAddress visit(BooleanExpr expr)
     {
         final IRTempAddress result = new IRTempAddress();
-        final boolean bool = expr.token().type() == TokenType.TRUE;
-        final IRConstAddress rhs = new IRConstAddress(bool);
+        final IRConstAddress rhs = new IRConstAddress(expr.isTruthy());
         irProgram.addQuad(new IRCopyInst(result, rhs));
         return result;
     }
@@ -157,6 +156,15 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      */
     public IRAddress visit(CompareExpr expr)
     {
+        if (expr.hasFold())
+        {
+            // The comparison was evaluated at compile-time.
+            final IRTempAddress result = new IRTempAddress();
+            irProgram.addQuad(new IRCopyInst(result,
+                new IRConstAddress(expr.isTruthy() ? 1 : 0)));
+            return result;
+        }
+
         final TokenType tokType = expr.token().type();
         
         final IRLabelAddress label = new IRLabelAddress();
@@ -310,6 +318,20 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 
     public IRAddress visit(IfExpr expr)
     {
+        if (expr.hasEvaluatedTest(top) && expr.isTruthy())
+        {
+            // The test condition was evaluated earlier in compilation and is truthy,
+            // so we can simply generate IR instructions for the consequent.
+            return expr.consequent().accept(this);
+        } else if (expr.hasEvaluatedTest(top) && expr.isFalsy())
+        {
+            // The test condition was evaluated earlier in compilation and is falsy,
+            // so we should generate nothing.
+            return null;
+        }
+
+        // The test condition has not been evaluated, so generate branches.
+
         // Generate IR instructions for the test condition, 
         // returning the address of label of the alternate branch.
         IRLabelAddress doneLabel = null;
@@ -345,6 +367,20 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 
     public IRAddress visit(IfThenElseExpr expr)
     {
+        if (expr.hasEvaluatedTest(top) && expr.isTruthy())
+        {
+            // The test condition was evaluated earlier in compilation and is truthy,
+            // so we can simply generate IR instructions for the consequent.
+            return expr.consequent().accept(this);
+        } else if (expr.hasEvaluatedTest(top) && expr.isFalsy())
+        {
+            // The test condition was evaluated earlier in compilation and is falsy,
+            // so we should generate nothing.
+            return null;
+        }
+
+        // The test condition has not been evaluated, so generate branches.
+
         // Generate IR instructions for the test condition, 
         // returning the address of label of the alternate branch.
         IRLabelAddress altBranchLabel = null;

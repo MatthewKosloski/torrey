@@ -25,4 +25,13 @@ public interface Foldable
      * @return The folded expression.
      */
     public Expr getFold();
+
+    /**
+     * Indicates whether the foldable expression has a fold. 
+     * If it doesn't, then that means the compiler wasn't able
+     * to fold the expression at compile-time.
+     * 
+     * @return True if the foldable expression is folded; False otherwise.
+     */
+    public boolean hasFold();
 }
