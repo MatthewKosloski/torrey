@@ -53,10 +53,14 @@ public final class ConstantFolder implements ASTNodeVisitor<ASTNode>
     {
         final Expr operand = (Expr) expr.first();
 
-        // Don't perform folding if
-        // the operand is an integer.
-        if (!(operand instanceof IntegerExpr))
-            fold(operand);
+        ConstantConvertable foldedOperand;
+        if (operand instanceof UnaryExpr && operand.first() instanceof IntegerExpr)
+            foldedOperand = (ConstantConvertable) expr.first();
+        else
+            foldedOperand = (ConstantConvertable) fold(operand);
+
+        final Expr foldedExpr = (Expr) Expr.makeConstantExpr(foldedOperand.toConstant() * -1);
+        expr.setFold(foldedExpr);
 
         return expr;
     }

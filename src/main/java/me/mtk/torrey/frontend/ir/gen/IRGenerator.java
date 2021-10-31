@@ -99,9 +99,30 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
     {
         final TokenType tokType = expr.token().type();
         final IRTempAddress result = new IRTempAddress();
-        final IRAddress arg = getDestinationAddr(expr.first());
 
-        irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
+        if (expr.getFold() != null)
+        {
+            // The unary expression can be reduced to a constant
+            // expression, so create a constant address.
+            int foldedConstant;
+            if (expr.getFold() instanceof ConstantConvertable)
+            {
+                foldedConstant = ((ConstantConvertable) expr.getFold()).toConstant();
+            }
+            else
+            {
+                throw new Error(String.format("Unhandled expression type %s",
+                    expr.getFold().getClass().getSimpleName()));
+            }
+            final IRConstAddress rhs = new IRConstAddress(foldedConstant);
+            irProgram.addQuad(new IRCopyInst(result, rhs));
+        }
+        else 
+        {
+            // The unary expression cannot be reduced
+            final IRAddress arg = getDestinationAddr(expr.first());
+            irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
+        }
 
         return result;
     }
