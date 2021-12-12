@@ -113,7 +113,7 @@ jobs:
         run: ls
 
       - name: Create staging directory
-        run: mkdir staging && cp ./torreyc-*.zip ./runtime.o staging
+        run: mkdir staging && cp ./torreyc-+([0-9]).+([0-9]).+([0-9]).zip ./runtime.o staging
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
