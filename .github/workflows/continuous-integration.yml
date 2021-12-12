@@ -112,13 +112,10 @@ jobs:
       - name: List directory contents
         run: ls
 
-      - name: Create staging directory
-        run: mkdir staging && cp ./torreyc-+([0-9]).+([0-9]).+([0-9]).zip ./runtime.o staging
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: artifact-package-runtime-with-jar
-          path: staging
+          path: .
           if-no-files-found: error
           retention-days: 3
