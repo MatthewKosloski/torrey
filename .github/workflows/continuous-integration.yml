@@ -20,7 +20,7 @@ jobs:
       - name: Compile with Maven
         run: mvn --update-snapshots compile
 
-      - name: Upload compiled artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: artifact-compile
@@ -35,22 +35,20 @@ jobs:
     needs: compile
     runs-on: ubuntu-latest
     steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Download compiled artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: artifact-compile
-
       - name: Test with Maven
         run: mvn --update-snapshots test
 
-  package:
-    name: Package
+  package_jar:
+    name: Package JAR
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -68,10 +66,42 @@ jobs:
       - name: Package with Maven
         run: mvn --update-snapshots package
 
-      - name: Upload packaged artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: artifact-package
+          name: artifact-package-jar
           path: target/torreyc-*.jar
-        
-    
+
+  build_runtime:
+    name: Build Runtime
+    needs: package_jar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+      
+      - name: Build runtime object file
+        run: gcc -c ./src/runtime/runtime.c -o runtime.o
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-build-runtime
+          path: ./runtime.o
+
+  package_runtime_with_jar:
+    name: Package Runtime with JAR
+    needs: build_runtime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+      - uses: actions/download-artifact@v2
+
+      - name: Create staging directory
+        run: mkdir staging && cp ./torreyc-*.zip ./runtime.o staging
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-package-runtime-with-jar
+          path: staging
