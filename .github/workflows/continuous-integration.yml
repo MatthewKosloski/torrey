@@ -29,6 +29,7 @@ jobs:
             ./pom.xml
             ./dependency-reduced-pom.xml
           if-no-files-found: error
+          retention-days: 3
 
   test:
     name: Test
@@ -71,6 +72,8 @@ jobs:
         with:
           name: artifact-package-jar
           path: target/torreyc-*.jar
+          if-no-files-found: error
+          retention-days: 3
 
   build_runtime:
     name: Build Runtime
@@ -88,6 +91,8 @@ jobs:
         with:
           name: artifact-build-runtime
           path: ./runtime.o
+          if-no-files-found: error
+          retention-days: 3
 
   # package_runtime_with_jar:
   #   name: Package Runtime with JAR
@@ -105,3 +110,5 @@ jobs:
   #       with:
   #         name: artifact-package-runtime-with-jar
   #         path: staging
+  #         if-no-files-found: error
+  #         retention-days: 3
