@@ -94,21 +94,21 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-  # package_runtime_with_jar:
-  #   name: Package Runtime with JAR
-  #   needs: build_runtime
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download all artifacts
-  #     - uses: actions/download-artifact@v2
+  package_runtime_with_jar:
+    name: Package Runtime with JAR
+    needs: build_runtime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+      - uses: actions/download-artifact@v2
 
-  #     - name: Create staging directory
-  #       run: mkdir staging && cp ./torreyc-*.zip ./runtime.o staging
+      - name: Create staging directory
+        run: mkdir staging && cp ./torreyc-*.zip ./runtime.o staging
 
-  #     - name: Upload artifacts
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: artifact-package-runtime-with-jar
-  #         path: staging
-  #         if-no-files-found: error
-  #         retention-days: 3
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-package-runtime-with-jar
+          path: staging
+          if-no-files-found: error
+          retention-days: 3
