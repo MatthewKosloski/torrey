@@ -25,6 +25,7 @@ jobs:
         with:
           name: artifact-compile
           path: /target
+          if-no-files-found: error
 
   test:
     name: Test
