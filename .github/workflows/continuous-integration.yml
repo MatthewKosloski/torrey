@@ -99,8 +99,15 @@ jobs:
     needs: build_runtime
     runs-on: ubuntu-latest
     steps:
-      - name: Download all artifacts
+      - name: Download artifact-package-jar
         uses: actions/download-artifact@v2
+        with:
+          name: artifact-package-jar
+
+      - name: Download artifact-build-runtime
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-build-runtime
 
       - name: Create staging directory
         run: mkdir staging && cp ./torreyc-*.zip ./runtime.o staging
