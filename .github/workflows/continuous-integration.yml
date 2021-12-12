@@ -1,0 +1,73 @@
+name: Continuous Integration
+
+on: [push]
+
+jobs:
+
+  compile:
+    name: Compile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+  
+      - name: Compile with Maven
+        run: mvn --update-snapshots compile
+
+      - name: Upload compiled artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-compile
+          path: /target
+
+  test:
+    name: Test
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Download compiled artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-compile
+
+      - name: Test with Maven
+        run: mvn --update-snapshots test
+
+  package:
+    name: Package
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Download compiled artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-compile
+
+      - name: Package with Maven
+        run: mvn --update-snapshots package
+
+      - name: Upload packaged artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-package
+          path: target/torreyc-*.jar
+        
+    
