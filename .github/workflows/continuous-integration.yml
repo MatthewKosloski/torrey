@@ -122,7 +122,7 @@ jobs:
     
     release:
       name: Release
-      needs: package_runtime_with_jar
+      # needs: package_runtime_with_jar
       runs-on: ubuntu-latest
       steps:
         - name: Set up Node.js
