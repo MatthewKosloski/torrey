@@ -4,7 +4,6 @@ tagFormat: '${version}'
 plugins:
   - '@semantic-release/commit-analyzer'
   - '@semantic-release/release-notes-generator'
-  - '@semantic-release/github'
-  - '@semantic-release/exec'
-    prepareCmd: './prepare-semantic-release.sh ${nextRelease.version}'
+  - - '@semantic-release/exec'
+    - prepareCmd: './prepare-semantic-release.sh ${nextRelease.version}'
 dryRun: true
