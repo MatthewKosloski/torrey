@@ -1,0 +1,8 @@
+branches:
+  - 'issues-34-ci-pipeline'
+tagFormat: '${version}'
+plugins:
+  - '@semantic-release/commit-analyzer'
+  - '@semantic-release/release-notes-generator'
+  - '@semantic-release/github'
+dryRun: true

@@ -136,4 +136,4 @@ jobs:
         - name: Generate a new release
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: npx semantic-release@18 --dry-run --branches "issues-34-ci-pipeline"
+          run: npx semantic-release@18
