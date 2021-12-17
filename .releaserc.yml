@@ -5,5 +5,5 @@ plugins:
   - '@semantic-release/commit-analyzer'
   - '@semantic-release/release-notes-generator'
   - - '@semantic-release/exec'
-    - verifyRelease: './prepare-semantic-release.sh ${nextRelease.version}'
+    - prepareRelease: './prepare-semantic-release.sh ${nextRelease.version}'
 dryRun: true
