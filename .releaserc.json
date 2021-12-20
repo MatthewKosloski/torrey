@@ -9,7 +9,7 @@
 		["@semantic-release/github", {
 		"assets": [
 			{
-				"path": "./target/torreyc-${nextRelease.version}.jar",
+				"path": "./target/torreyc-*.jar",
 				"label": "compiler"
 			}
 		]
