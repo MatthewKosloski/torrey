@@ -10,5 +10,5 @@
 			"prepareCmd": "./prepare-semantic-release.sh ${nextRelease.version}"
 		}]
 	],
-	"dryRun": true
+	"dryRun": false
 }
