@@ -7,7 +7,7 @@
 		"@semantic-release/commit-analyzer",
 		"@semantic-release/release-notes-generator",
 		["@semantic-release/exec", {
-			"prepareCmd": "./prepare-semantic-release.sh ${nextRelease.version}"
+			"prepareCmd": ".mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${nextRelease.version}"
 		}]
 	],
 	"dryRun": false
