@@ -8,7 +8,7 @@
 		"@semantic-release/release-notes-generator",
 		["@semantic-release/github", {
 		"assets": [
-			{"path": "./Vagrantfile", "label": "The Vagrantfile"}
+			{"path": "./target/-torreyc-${nextRelease.version}.jar", "label": "compiler"}
 		]
 		}],
 		["@semantic-release/exec", {
