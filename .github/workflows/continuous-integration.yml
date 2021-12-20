@@ -133,9 +133,6 @@ jobs:
           with:
             node-version: 'lts/*'
 
-        - name: Install the semantic-release/exec plugin
-          run: npm install @semantic-release/exec -D
-
         - name: Generate a new release
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
