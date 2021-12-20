@@ -15,7 +15,7 @@
 		]
 		}],
 		["@semantic-release/exec", {
-			"prepareCmd": "mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${nextRelease.version} && mvn --update-snapshots package"
+			"prepareCmd": "chmod o+x ./prepare-semantic-release.sh && bash ./prepare-semantic-release.sh ${nextRelease.version}"
 		}]
 	],
 	"dryRun": false
