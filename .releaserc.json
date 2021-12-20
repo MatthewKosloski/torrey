@@ -5,7 +5,10 @@
 	"tagFormat": "${version}",
 	"plugins": [
 		"@semantic-release/commit-analyzer",
-		"@semantic-release/release-notes-generator"
+		"@semantic-release/release-notes-generator",
+		["@semantic-release/exec", {
+			"prepareCmd": "./prepare-semantic-release.sh ${nextRelease.version}"
+		}]
 	],
 	"dryRun": true
 }
