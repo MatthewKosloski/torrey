@@ -48,24 +48,24 @@ jobs:
       - name: Test with Maven
         run: mvn --update-snapshots --no-transfer-progress test
 
-  # build_runtime:
-  #   name: Build Runtime
-  #   needs: test
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Get source code
-  #       uses: actions/checkout@v2
+  build_runtime:
+    name: Build Runtime
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
       
-  #     - name: Build runtime object file
-  #       run: gcc -c ./src/runtime/runtime.c -o runtime.o
+      - name: Build runtime object file
+        run: gcc -c ./src/runtime/runtime.c -o runtime.o
 
-  #     - name: Upload artifacts
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: artifact-build-runtime
-  #         path: ./runtime.o
-  #         if-no-files-found: error
-  #         retention-days: 3
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-build-runtime
+          path: ./runtime.o
+          if-no-files-found: error
+          retention-days: 3
     
     # release:
     #   name: Release
