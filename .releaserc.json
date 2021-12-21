@@ -1,6 +1,6 @@
 {
 	"branches": [
-		"issues-34-ci-pipeline"
+		"main"
 	],
 	"tagFormat": "${version}",
 	"plugins": [
