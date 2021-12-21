@@ -6,15 +6,20 @@
 	"plugins": [
 		"@semantic-release/commit-analyzer",
 		"@semantic-release/release-notes-generator",
-		["@semantic-release/github", {
-		"assets": [
-			{
-				"path": ["release/runtime.o", "release/torreyc-${nextRelease.gitTag}.jar"],
-				"label": "torreyc-${nextRelease.gitTag}.zip"
-			}
-		]
+		[
+			"@semantic-release/github", {
+			"assets": [
+				{
+					"path": [
+						"release/runtime.o", 
+						"release/torreyc-${nextRelease.gitTag}.jar"
+					],
+					"label": "torreyc-${nextRelease.gitTag}.zip"
+				}
+			]
 		}],
-		["@semantic-release/exec", {
+		[
+			"@semantic-release/exec", {
 			"prepareCmd": "chmod o+x ./prepare-semantic-release.sh && bash ./prepare-semantic-release.sh ${nextRelease.version}"
 		}]
 	],
