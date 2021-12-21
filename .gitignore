@@ -7,12 +7,11 @@
 *.pdf
 *.synctex.gz
 .vagrant
-target/**
-!target/torreyc-*.jar
+target
 .classpath
 .project
 .settings
 dependency-reduced-pom.xml
 *.torrey
 node_modules
-tests/**/*.jar
+*.jar
