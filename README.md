@@ -24,8 +24,17 @@ language.
 
 In an attempt to better my understanding of the low-level details that high-level languages abstract away, I am implementing my own novel programming language by constructing a compiler to translate the Lisp-like high-level language to an equivalent program in x86-64 assembly code. 
 
+## Developing Locally
 
-## Maven Build
+### Setup
+
+Before working locally, from the project root directory, run `setup.sh` to run various setup procedures (e.g., configuring the conventional commit message validation):
+
+```bash
+$ bash setup.sh
+```
+
+### Maven Build
 
 To build an executable (JAR file) via Maven, from the root directory, run:
 
@@ -33,7 +42,7 @@ To build an executable (JAR file) via Maven, from the root directory, run:
 mvn clean && mvn package
 ```
 
-This will create a new `target` directory in the project root containing a `torreyc-x.x.x.jar` file, where `x.x.x` is the semantic version number for the compiler.
+This will create a new `target` directory in the project root containing a `torreyc-x.x.x.jar` file, where `x.x.x` is the semantic version number for the compiler.  Additionally, this command will run the JUnit tests.
 
 ## Usage
 
