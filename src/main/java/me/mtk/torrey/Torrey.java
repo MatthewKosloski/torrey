@@ -14,6 +14,7 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.X8664PCLinuxTarget;
 public final class Torrey
 {
     // The semantic version number of the compiler.
+    // WARNING: Do not change the below line as it will break the CI pipeline!
     public static String SEMANTIC_VERSION = "3.0.8";
 
     private static TargetRegistry targetRegistry;
