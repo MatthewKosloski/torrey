@@ -23,7 +23,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: artifact-compile
+          name: artifact-build-compiler
           path: |
             ./target
             ./pom.xml
