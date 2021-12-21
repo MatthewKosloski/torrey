@@ -15,7 +15,7 @@ public final class Torrey
 {
     // The semantic version number of the compiler.
     // WARNING: Do not change the below line as it will break the CI pipeline!
-    public static String SEMANTIC_VERSION = "3.0.8";
+    public static String SEMANTIC_VERSION = "3.1.0";
 
     private static TargetRegistry targetRegistry;
     private static CompilerBackendFactory backendFactory;
