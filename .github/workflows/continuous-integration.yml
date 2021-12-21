@@ -93,6 +93,9 @@ jobs:
         - name: Install the semantic-release/github plugin
           run: npm install @semantic-release/github -D
 
+        - name: Install the semantic-release/git plugin
+          run: npm install @semantic-release/git -D
+
         - name: Generate a new release
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
