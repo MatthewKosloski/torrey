@@ -119,8 +119,11 @@ public final class Torrey
     public void showVersionInfo()
     {
         System.out.format("torreyc %s\n", SEMANTIC_VERSION);
-        System.out.println("This is free and open source software available at:");
+        System.out.println("The Compiler for the Torrey Programming Language");
         System.out.println("https://github.com/MatthewKosloski/torrey/");
+        System.out.println();
+        System.out.println("The latest release of the software can be found at:");
+        System.out.println("https://github.com/MatthewKosloski/torrey/releases/latest");
         System.exit(0);
     }
 
