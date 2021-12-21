@@ -124,7 +124,7 @@ public final class Torrey
         System.out.println();
         System.out.println("The latest release of the software can be found at:");
         System.out.println("https://github.com/MatthewKosloski/torrey/releases/latest");
-        System.exit(0);
+        System.exit(0)
     }
 
     public void showRegisteredTargets()
