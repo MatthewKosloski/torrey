@@ -66,7 +66,7 @@ jobs:
           path: ./runtime.o
           if-no-files-found: error
           retention-days: 3
-    
+
     semantic_release:
       name: Semantic Release
       needs: build_runtime
