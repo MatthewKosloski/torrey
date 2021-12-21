@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
 
-  compile:
-    name: Compile
+  build_compiler:
+    name: Build Compiler
     runs-on: ubuntu-latest
     steps:
       - name: Get source code
@@ -31,9 +31,9 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-  test:
-    name: Test
-    needs: compile
+  test_unit_integration:
+    name: Unit and Integration Tests
+    needs: build_compiler
     runs-on: ubuntu-latest
     steps:
       - name: Get source code
@@ -50,7 +50,7 @@ jobs:
 
   build_runtime:
     name: Build Runtime
-    needs: test
+    needs: test_unit_integration
     runs-on: ubuntu-latest
     steps:
       - name: Get source code
