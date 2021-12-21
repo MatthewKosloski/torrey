@@ -18,7 +18,7 @@ jobs:
           distribution: 'adopt'
   
       - name: Compile with Maven
-        run: mvn --update-snapshots compile
+        run: mvn --update-snapshots --no-transfer-progress compile
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -46,7 +46,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Test with Maven
-        run: mvn --update-snapshots test
+        run: mvn --update-snapshots --no-transfer-progress test
 
   # build_runtime:
   #   name: Build Runtime
