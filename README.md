@@ -24,8 +24,17 @@ language.
 
 In an attempt to better my understanding of the low-level details that high-level languages abstract away, I am implementing my own novel programming language by constructing a compiler to translate the Lisp-like high-level language to an equivalent program in x86-64 assembly code. 
 
+## Developing Locally
 
-## Maven Build
+### Setup
+
+Before working locally, from the project root directory, run `setup.sh` to run various setup procedures (e.g., configuring the conventional commit message validation):
+
+```bash
+$ bash setup.sh
+```
+
+### Maven Build
 
 To build an executable (JAR file) via Maven, from the root directory, run:
 
@@ -33,7 +42,7 @@ To build an executable (JAR file) via Maven, from the root directory, run:
 mvn clean && mvn package
 ```
 
-This will create a new `target` directory in the project root containing a `torreyc-x.x.x.jar` file, where `x.x.x` is the semantic version number for the compiler.
+This will create a new `target` directory in the project root containing a `torreyc-x.x.x.jar` file, where `x.x.x` is the semantic version number for the compiler.  Additionally, this command will run the JUnit tests.
 
 ## Usage
 
@@ -48,7 +57,7 @@ The input string must come from exactly one of two places: the standard input st
 To run the compiler with input from standard input, pipe the input into `java` like so:
 
 ```
-$ echo "(println 42 (* (/ 12 2) (+ 3 4)) (- 42))" | java -jar torreyc-3.0.0.jar && ./a.out
+$ echo "(println 42 (* (/ 12 2) (+ 3 4)) (- 42))" | java -jar torreyc-x.x.x.jar && ./a.out
 $ 42
 $ 42
 $ -42
@@ -67,7 +76,7 @@ To run the compiler with a file on the file system, provide the `-i` or `--in` f
 ```
 
 ```
-$ java -jar torreyc-3.0.0.jar -i foo.torrey && ./a.out
+$ java -jar torreyc-x.x.x.jar -i foo.torrey && ./a.out
 $ 5
 $ 45
 ```

@@ -1,0 +1,28 @@
+{
+	"branches": [
+		"main"
+	],
+	"tagFormat": "${version}",
+	"plugins": [
+		"@semantic-release/commit-analyzer",
+		"@semantic-release/release-notes-generator",
+		[
+			"@semantic-release/github", {
+			"assets": [
+				{
+					"path": "release.zip",
+					"label": "torreyc-${nextRelease.gitTag}.zip"
+				}
+			]
+		}],
+		[
+			"@semantic-release/exec", {
+			"prepareCmd": "chmod o+x ./prepare-semantic-release.sh && bash ./prepare-semantic-release.sh ${nextRelease.version}"
+		}],
+		["@semantic-release/git", {
+			"assets": ["src/main/java/me/mtk/torrey/Torrey.java", "pom.xml"],
+			"message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+		}]
+	],
+	"dryRun": false
+}
