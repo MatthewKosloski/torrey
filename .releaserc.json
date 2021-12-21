@@ -10,7 +10,7 @@
 			"@semantic-release/github", {
 			"assets": [
 				{
-					"path": "release.zip",
+					"path": "torreyc-${nextRelease.gitTag}.zip",
 					"label": "torreyc-${nextRelease.gitTag}.zip"
 				}
 			]
