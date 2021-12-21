@@ -71,6 +71,7 @@ jobs:
       name: Release
       # needs: build_runtime
       runs-on: ubuntu-latest
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       steps:
         - name: Get source code
           uses: actions/checkout@v2
