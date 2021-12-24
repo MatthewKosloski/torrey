@@ -1,4 +1,5 @@
 # The Torrey Programming Language
+[![GitHub Actions CI](https://github.com/microsoft/TypeScript/workflows/CI/badge.svg)](https://github.com/matthewkosloski/torrey/actions?query=workflow%3AContinuous%20Integration)
 
 This is the source code of the third compiler of the Torrey programming language.  [Here](https://github.com/MatthewKosloski/torrey/tree/c02) is the source code of the second compiler.
 
