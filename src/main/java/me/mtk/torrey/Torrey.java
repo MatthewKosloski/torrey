@@ -15,7 +15,7 @@ public final class Torrey
 {
     // The semantic version number of the compiler.
     // WARNING: Do not change the below line as it will break the CI pipeline!
-    public static String SEMANTIC_VERSION = "3.1.0";
+    public static String SEMANTIC_VERSION = "3.1.1";
 
     private static TargetRegistry targetRegistry;
     private static CompilerBackendFactory backendFactory;
@@ -120,8 +120,7 @@ public final class Torrey
     {
         System.out.format("torreyc %s\n", SEMANTIC_VERSION);
         System.out.println("The Compiler for the Torrey Programming Language");
-        System.out.println("https://github.com/MatthewKosloski/torrey/");
-        System.out.println();
+        System.out.println("https://github.com/MatthewKosloski/torrey/\n");
         System.out.println("The latest release of the software can be found at:");
         System.out.println("https://github.com/MatthewKosloski/torrey/releases/latest");
         System.exit(0);
