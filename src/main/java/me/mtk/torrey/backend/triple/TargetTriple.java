@@ -4,38 +4,38 @@ import me.mtk.torrey.backend.CompilerBackend;
 
 public abstract class TargetTriple
 {
-    private TargetArch arch;
-    private TargetVendor vendor;
-    private TargetSys sys;
+  private TargetArch arch;
+  private TargetVendor vendor;
+  private TargetSys sys;
 
-    public TargetTriple(TargetArch arch, TargetVendor vendor, TargetSys sys)
-    {
-        this.arch = arch;
-        this.vendor = vendor;
-        this.sys = sys;
-    }
+  public TargetTriple(TargetArch arch, TargetVendor vendor, TargetSys sys)
+  {
+    this.arch = arch;
+    this.vendor = vendor;
+    this.sys = sys;
+  }
 
-    public abstract CompilerBackend makeBackend();
+  public abstract CompilerBackend makeBackend();
 
-    public TargetArch arch()
-    {
-        return arch;
-    }
+  public TargetArch arch()
+  {
+    return arch;
+  }
 
-    public TargetVendor vendor()
-    {
-        return vendor;
-    }
+  public TargetVendor vendor()
+  {
+    return vendor;
+  }
 
-    public TargetSys sys()
-    {
-        return sys;
-    }
+  public TargetSys sys()
+  {
+    return sys;
+  }
 
-    public String toString()
-    {
-        return String.format("%s-%s-%s", arch, vendor, sys)
-            .toLowerCase();
-    }
+  public String toString()
+  {
+    return String.format("%s-%s-%s", arch, vendor, sys)
+      .toLowerCase();
+  }
 
 }

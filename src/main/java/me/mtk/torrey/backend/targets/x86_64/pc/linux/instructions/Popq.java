@@ -4,8 +4,8 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.Register;
 
 public final class Popq extends X86Inst
 {
-    public Popq(Register register)
-    {
-        super(OpType.POPQ, register, null);
-    }
+  public Popq(Register register)
+  {
+    super(OpType.POPQ, register, null);
+  }
 }

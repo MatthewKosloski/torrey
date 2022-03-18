@@ -54,7 +54,7 @@ else
 	    # The compiler terminated normally, so let's try to assemble and run.
 
         # This command will:
-        #   1. Assemble and link runtime object file with assembly code 
+        #   1. Assemble and link runtime object file with assembly code
         #      to produce an executable
         #   2. Execute the executable
         #   3. Delete the temporary assembly file and executable

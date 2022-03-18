@@ -7,14 +7,14 @@ import me.mtk.torrey.frontend.lexer.Token;
  */
 public final class ArithmeticExpr extends BinaryExpr
 {
-    public ArithmeticExpr(Token tok, Expr first, Expr second)
-    {
-        super(tok, first, second, DataType.INTEGER);
-    }
+  public ArithmeticExpr(Token tok, Expr first, Expr second)
+  {
+    super(tok, first, second, DataType.INTEGER);
+  }
 
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
+  @Override
+  public <T> T accept(ASTNodeVisitor<T> visitor)
+  {
+    return visitor.visit(this);
+  }
 }

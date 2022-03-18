@@ -15,29 +15,29 @@ import me.mtk.torrey.backend.triple.TargetTriple;
 public final class X8664PCLinuxBackend extends CompilerBackend
 {
 
-    public X8664PCLinuxBackend(TargetTriple triple)
-    {
-        super(triple);
-    }
+  public X8664PCLinuxBackend(TargetTriple triple)
+  {
+    super(triple);
+  }
 
-    public X86Program generate(IRProgram ir)
-    {
-        final X86Program x86Program = X86Generator.buildX86ProgramFromIRProgram(ir);
+  public X86Program generate(IRProgram ir)
+  {
+    final X86Program x86Program = X86Generator.buildX86ProgramFromIRProgram(ir);
 
-        debug("x86-64 program (output from Generator): %s\n",
-            x86Program.toString());
+    debug("x86-64 program (output from Generator): %s\n",
+      x86Program.toString());
 
-        if (config.stopAtCompile())
-            writeAndExit(x86Program.toString());
+    if (config.stopAtCompile())
+      writeAndExit(x86Program.toString());
 
-        return x86Program;
-    }
+    return x86Program;
+  }
 
-    public void assemble(TargetProgram program)
-    {
-        final Assembler assembler = new Assembler((X86Program) program);
-        assembler.setConfig(new TorreyConfig(config));
-        assembler.setInput(input);
-        assembler.run(); 
-    }
+  public void assemble(TargetProgram program)
+  {
+    final Assembler assembler = new Assembler((X86Program) program);
+    assembler.setConfig(new TorreyConfig(config));
+    assembler.setInput(input);
+    assembler.run();
+  }
 }

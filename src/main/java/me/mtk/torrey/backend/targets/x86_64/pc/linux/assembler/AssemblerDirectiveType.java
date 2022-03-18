@@ -1,19 +1,19 @@
 package me.mtk.torrey.backend.targets.x86_64.pc.linux.assembler;
 
-public enum AssemblerDirectiveType 
+public enum AssemblerDirectiveType
 {
-    GLOBL ("globl"),
-    TEXT  ("text");
+  GLOBL ("globl"),
+  TEXT  ("text");
 
-    private final String name;
+  private final String name;
 
-    AssemblerDirectiveType(String name)
-    {
-        this.name = name;
-    }
+  AssemblerDirectiveType(String name)
+  {
+    this.name = name;
+  }
 
-    public String toString()
-    {
-        return String.format(".%s", name);
-    }
+  public String toString()
+  {
+    return String.format(".%s", name);
+  }
 }

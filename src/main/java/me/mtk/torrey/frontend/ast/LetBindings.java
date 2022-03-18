@@ -9,31 +9,31 @@ import java.util.List;
  */
 public class LetBindings extends ASTNode
 {
-    public LetBindings(List<LetBinding> bindings) 
-    {
-        super(null);
+  public LetBindings(List<LetBinding> bindings)
+  {
+    super(null);
 
-        for (LetBinding binding : bindings)
-            addChild(binding);
-    }
-    
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
+    for (LetBinding binding : bindings)
+      addChild(binding);
+  }
 
-    @Override
-    public String toString()
-    {
-        final StringBuilder sb = new StringBuilder();
+  @Override
+  public <T> T accept(ASTNodeVisitor<T> visitor)
+  {
+    return visitor.visit(this);
+  }
 
-        sb.append("[");
-        for (int i = 0; i < children().size(); i++)
-            sb.append(children().get(i).toString())
-                .append(i == children().size() - 1 ? "" : " ");
-        sb.append("]");
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
 
-        return sb.toString();
-    }
+    sb.append("[");
+    for (int i = 0; i < children().size(); i++)
+      sb.append(children().get(i).toString())
+        .append(i == children().size() - 1 ? "" : " ");
+    sb.append("]");
+
+    return sb.toString();
+  }
 }

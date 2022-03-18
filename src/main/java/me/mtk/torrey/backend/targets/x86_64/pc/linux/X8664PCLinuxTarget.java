@@ -8,13 +8,13 @@ import me.mtk.torrey.backend.triple.TargetVendor;
 
 public final class X8664PCLinuxTarget extends TargetTriple
 {
-    public X8664PCLinuxTarget()
-    {
-        super(TargetArch.X86_64, TargetVendor.PC, TargetSys.LINUX);
-    }
+  public X8664PCLinuxTarget()
+  {
+    super(TargetArch.X86_64, TargetVendor.PC, TargetSys.LINUX);
+  }
 
-    public CompilerBackend makeBackend()
-    {
-        return new X8664PCLinuxBackend(this);
-    }
+  public CompilerBackend makeBackend()
+  {
+    return new X8664PCLinuxBackend(this);
+  }
 }

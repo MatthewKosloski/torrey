@@ -5,5 +5,5 @@ package me.mtk.torrey.backend.triple;
  */
 public enum TargetArch
 {
-    X86_64
+  X86_64
 }

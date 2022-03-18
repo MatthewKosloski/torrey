@@ -4,36 +4,36 @@ import java.util.List;
 
 public final class AssemblerDirective
 {
-    private AssemblerDirectiveType type;
-    private List<Object> data;
+  private AssemblerDirectiveType type;
+  private List<Object> data;
 
-    public AssemblerDirective(AssemblerDirectiveType type, List<Object> data)
+  public AssemblerDirective(AssemblerDirectiveType type, List<Object> data)
+  {
+    this.type = type;
+    this.data = data;
+  }
+
+  public AssemblerDirective(AssemblerDirectiveType type)
+  {
+    this(type, null);
+  }
+
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+
+    sb.append(type)
+      .append(" ");
+
+    if (data != null)
     {
-        this.type = type;
-        this.data = data;
+      for (Object datum : data)
+      {
+        sb.append(datum)
+          .append("\n");
+      }
     }
 
-    public AssemblerDirective(AssemblerDirectiveType type)
-    {
-        this(type, null);
-    }
-
-    public String toString()
-    {
-        final StringBuilder sb = new StringBuilder();
-        
-        sb.append(type)
-            .append(" ");
-
-        if (data != null)
-        {
-            for (Object datum : data)
-            {
-                sb.append(datum)
-                    .append("\n");
-            }
-        }
-
-        return sb.toString();
-    }
+    return sb.toString();
+  }
 }

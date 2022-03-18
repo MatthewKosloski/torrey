@@ -6,37 +6,37 @@ import me.mtk.torrey.frontend.symbols.Env;
 
 public class LetExpr extends Expr
 {
-    private Env environment;
+  private Env environment;
 
-    public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
-    {
-        // "let"
-        super(letTok, DataType.NIL);
+  public LetExpr(Token letTok, LetBindings bindings, List<Expr> exprList)
+  {
+    // "let"
+    super(letTok, DataType.NIL);
 
-        // The environment doesn't get created until semantic analysis.
-        environment = null;
+    // The environment doesn't get created until semantic analysis.
+    environment = null;
 
-        // (identifier expr)*
-        addChild(bindings);
+    // (identifier expr)*
+    addChild(bindings);
 
-        // expr*
-        for (Expr expr : exprList)
-            addChild(expr);
-    }
+    // expr*
+    for (Expr expr : exprList)
+      addChild(expr);
+  }
 
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
+  @Override
+  public <T> T accept(ASTNodeVisitor<T> visitor)
+  {
+    return visitor.visit(this);
+  }
 
-    public void setEnv(Env e)
-    {
-        environment = e;
-    }
+  public void setEnv(Env e)
+  {
+    environment = e;
+  }
 
-    public Env environment()
-    {
-        return environment;
-    }
+  public Env environment()
+  {
+    return environment;
+  }
 }

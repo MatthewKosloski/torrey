@@ -16,7 +16,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-  
+
       - name: Compile with Maven
         run: mvn --update-snapshots --no-transfer-progress compile
 
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Get source code
         uses: actions/checkout@v2
-      
+
       - name: Build runtime object file
         run: gcc -c ./src/runtime/runtime.c -o runtime.o
 
