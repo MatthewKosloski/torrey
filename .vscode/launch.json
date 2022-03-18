@@ -1,12 +1,12 @@
 {
-    "configurations": [
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Torrey",
-            "request": "launch",
-            "mainClass": "me.mtk.torrey.Torrey",
-            "cwd": "${workspaceFolder}/src/main/java/me/mtk/torrey",
-            "args": "-S -i ../../../../../../program.torrey"
-        }
-    ]
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CodeLens (Launch) - Torrey",
+      "request": "launch",
+      "mainClass": "me.mtk.torrey.Torrey",
+      "cwd": "${workspaceFolder}/src/main/java/me/mtk/torrey",
+      "args": "-S -i ../../../../../../program.torrey"
+    }
+  ]
 }

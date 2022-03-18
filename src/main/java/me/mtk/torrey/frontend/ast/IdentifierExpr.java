@@ -4,14 +4,14 @@ import me.mtk.torrey.frontend.lexer.Token;
 
 public class IdentifierExpr extends Expr
 {
-    public IdentifierExpr(Token t) 
-    {
-        super(t, DataType.NIL);
-    }
+  public IdentifierExpr(Token t)
+  {
+    super(t, DataType.NIL);
+  }
 
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
+  @Override
+  public <T> T accept(ASTNodeVisitor<T> visitor)
+  {
+    return visitor.visit(this);
+  }
 }

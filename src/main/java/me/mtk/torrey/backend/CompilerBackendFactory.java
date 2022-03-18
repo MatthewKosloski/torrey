@@ -5,21 +5,21 @@ package me.mtk.torrey.backend;
  */
 public final class CompilerBackendFactory
 {
-    private TargetRegistry registry;
+  private TargetRegistry registry;
 
-    public CompilerBackendFactory(TargetRegistry registry)
+  public CompilerBackendFactory(TargetRegistry registry)
+  {
+    this.registry = registry;
+  }
+
+  public CompilerBackend makeBackendFromTarget(String target)
+  {
+    if (registry.hasTarget(target))
     {
-        this.registry = registry;
+      return registry.get(target).makeBackend();
     }
 
-    public CompilerBackend makeBackendFromTarget(String target)
-    {
-        if (registry.hasTarget(target))
-        {
-            return registry.get(target).makeBackend();
-        }
-
-        // Maybe replace this with an empty optional??
-        return null;
-    }
+    // Maybe replace this with an empty optional??
+    return null;
+  }
 }

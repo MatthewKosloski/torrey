@@ -5,5 +5,5 @@ package me.mtk.torrey.backend.triple;
  */
 public enum TargetVendor
 {
-    PC
+  PC
 }

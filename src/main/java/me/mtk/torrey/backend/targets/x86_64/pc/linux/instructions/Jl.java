@@ -4,8 +4,8 @@ import me.mtk.torrey.backend.targets.x86_64.pc.linux.addressing.LabelAddress;
 
 public final class Jl extends X86Inst
 {
-    public Jl(LabelAddress label)
-    {
-        super(OpType.JL, label, null);
-    }
+  public Jl(LabelAddress label)
+  {
+    super(OpType.JL, label, null);
+  }
 }

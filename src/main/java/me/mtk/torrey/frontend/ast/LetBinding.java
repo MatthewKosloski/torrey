@@ -5,23 +5,23 @@ package me.mtk.torrey.frontend.ast;
  */
 public class LetBinding extends ASTNode
 {
-    public LetBinding(IdentifierExpr identifier, Expr expr) 
-    {
-        super(identifier.token());
+  public LetBinding(IdentifierExpr identifier, Expr expr)
+  {
+    super(identifier.token());
 
-        addChild(identifier);
-        addChild(expr);
-    }
+    addChild(identifier);
+    addChild(expr);
+  }
 
-    @Override
-    public <T> T accept(ASTNodeVisitor<T> visitor)
-    {
-        return visitor.visit(this);
-    }
+  @Override
+  public <T> T accept(ASTNodeVisitor<T> visitor)
+  {
+    return visitor.visit(this);
+  }
 
-    @Override
-    public String toString()
-    {
-        return String.format("%s %s", first(), second());
-    }
+  @Override
+  public String toString()
+  {
+    return String.format("%s %s", first(), second());
+  }
 }

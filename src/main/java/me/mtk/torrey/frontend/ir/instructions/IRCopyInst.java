@@ -10,21 +10,21 @@ import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
  */
 public final class IRCopyInst extends Quadruple
 {
-    /**
-     * Instantiates a new copy IR instruction.
-     * 
-     * @param lhs The left-hand side of the copy, that is,
-     * the destination. This must be a temporary address.
-     * @param rhs The right-hand side of the copy, that is,
-     * the source.
-     */
-    public IRCopyInst(IRTempAddress lhs, IRAddress rhs)
-    {
-        super(OpType.COPY, rhs, null, lhs);
-    }
+  /**
+   * Instantiates a new copy IR instruction.
+   *
+   * @param lhs The left-hand side of the copy, that is,
+   * the destination. This must be a temporary address.
+   * @param rhs The right-hand side of the copy, that is,
+   * the source.
+   */
+  public IRCopyInst(IRTempAddress lhs, IRAddress rhs)
+  {
+    super(OpType.COPY, rhs, null, lhs);
+  }
 
-    public String toString()
-    {
-        return String.format("%s %s %s", result, opType, arg1);
-    }
+  public String toString()
+  {
+    return String.format("%s %s %s", result, opType, arg1);
+  }
 }

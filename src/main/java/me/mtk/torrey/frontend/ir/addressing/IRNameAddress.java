@@ -5,8 +5,8 @@ package me.mtk.torrey.frontend.ir.addressing;
  */
 public final class IRNameAddress extends IRAddress
 {
-    public IRNameAddress(String name)
-    {
-        super(IRAddressingMode.NAME, name);
-    }
+  public IRNameAddress(String name)
+  {
+    super(IRAddressingMode.NAME, name);
+  }
 }

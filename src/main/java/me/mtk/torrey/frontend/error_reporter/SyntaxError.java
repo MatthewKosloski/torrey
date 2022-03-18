@@ -10,5 +10,5 @@ package me.mtk.torrey.frontend.error_reporter;
 @SuppressWarnings("serial")
 public class SyntaxError extends Exception
 {
-    public SyntaxError(String m) { super(m); }
+  public SyntaxError(String m) { super(m); }
 }

@@ -1,4 +1,4 @@
-# Update the local APT package index and then upgrade any 
+# Update the local APT package index and then upgrade any
 # upgradeable packages.
 apt-get update -y && apt-get upgrade -y
 

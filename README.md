@@ -17,13 +17,13 @@ thereby making it loosely coupled to the hardware. These high-level languages co
 to low-level languages (e.g., assembly languages), which are very tightly coupled to a computer
 and its architecture. While this abstraction has facilitated accessibility and the speed at which
 programming can take place, it has simultaneously (by design) “shielded” programmers, many
-of whom take the abstraction for granted. 
+of whom take the abstraction for granted.
 
 There are several different ways of implementing a
 high-level programming language, one of which is through _compilation_. A _compiler_ is a computer program that translates a program written in a source language to an equivalent program in a target
-language. 
+language.
 
-In an attempt to better my understanding of the low-level details that high-level languages abstract away, I am implementing my own novel programming language by constructing a compiler to translate the Lisp-like high-level language to an equivalent program in x86-64 assembly code. 
+In an attempt to better my understanding of the low-level details that high-level languages abstract away, I am implementing my own novel programming language by constructing a compiler to translate the Lisp-like high-level language to an equivalent program in x86-64 assembly code.
 
 ## Developing Locally
 
@@ -166,11 +166,11 @@ These types of addresses somewhat correspond to the different *addressing modes*
 ```
 irprogram    -> quadruple* ;
 
-quadruple    -> copy 
-              | unary 
-              | binary 
-              | param 
-              | call 
+quadruple    -> copy
+              | unary
+              | binary
+              | param
+              | call
               | if
               | label
               | goto;
@@ -193,7 +193,7 @@ labelid     -> "l0" | "l1" | "l2" | ... ;
 
 ## Adding Additional Backends
 
-At a high level, a compiler has two parts: a front-end and a back-end.  The _front-end_ is responsible for performing lexical analysis, syntax analysis, semantic analysis, and intermediate code generation. The _back-end_ translates this intermediate code to another language, either a high-level one (e.g., C++, Java, JavaScript, etc.) or a low-level one (e.g., x86, ARM, MIPS, etc.).  As alluded to previously, an intermediate representation makes it easier to compile down to more than one target language. For each target language that a compiler compiles down to, there is a separate backend. Currently, the Torrey compiler only supports, or _targets_, x86-64 assembly.  Thus, at this moment, there is only one backend and its source code is [here](https://github.com/MatthewKosloski/torrey/tree/c03/src/main/java/me/mtk/torrey/backend/targets/x86_64/pc/linux).  
+At a high level, a compiler has two parts: a front-end and a back-end.  The _front-end_ is responsible for performing lexical analysis, syntax analysis, semantic analysis, and intermediate code generation. The _back-end_ translates this intermediate code to another language, either a high-level one (e.g., C++, Java, JavaScript, etc.) or a low-level one (e.g., x86, ARM, MIPS, etc.).  As alluded to previously, an intermediate representation makes it easier to compile down to more than one target language. For each target language that a compiler compiles down to, there is a separate backend. Currently, the Torrey compiler only supports, or _targets_, x86-64 assembly.  Thus, at this moment, there is only one backend and its source code is [here](https://github.com/MatthewKosloski/torrey/tree/c03/src/main/java/me/mtk/torrey/backend/targets/x86_64/pc/linux).
 
 It is incredibly easy to add additional backends to support more target languages.  Here are the steps to do so:
 

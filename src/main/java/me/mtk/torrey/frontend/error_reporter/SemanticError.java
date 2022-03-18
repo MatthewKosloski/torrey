@@ -9,5 +9,5 @@ package me.mtk.torrey.frontend.error_reporter;
 @SuppressWarnings("serial")
 public class SemanticError extends Exception
 {
-    public SemanticError(String m) { super(m); }
+  public SemanticError(String m) { super(m); }
 }

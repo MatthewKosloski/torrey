@@ -5,7 +5,7 @@ package me.mtk.torrey.frontend.ast;
  * then it can be converted to a constant integer
  * expression.
  */
-public interface ConstantConvertable 
+public interface ConstantConvertable
 {
-    public int toConstant();
+  public int toConstant();
 }
