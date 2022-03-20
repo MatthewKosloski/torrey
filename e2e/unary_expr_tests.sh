@@ -7,7 +7,7 @@ run_unary_expr_tests () {
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no left parenthesis and no operand" \
+    "Should report a syntax error if no left parenthesis and no operand" \
     "-)" \
     "Encountered one or more syntax errors during parse:
 
@@ -21,7 +21,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no left parenthesis" \
+    "Should report a syntax error if no left parenthesis" \
     "- 69)" \
     "Encountered one or more syntax errors during parse:
 
@@ -35,7 +35,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no operand" \
+    "Should report a syntax error if no operand" \
     "(-)" \
     "Encountered one or more syntax errors during parse:
 
@@ -49,7 +49,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no right parenthesis and no operand" \
+    "Should report a syntax error if no right parenthesis and no operand" \
     "(-" \
     "Encountered one or more syntax errors during parse:
 
@@ -63,7 +63,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no right parenthesis" \
+    "Should report a syntax error if no right parenthesis" \
     "(- 420" \
     "Encountered one or more syntax errors during parse:
 
@@ -83,7 +83,7 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if operand is literal true" \
+    "Should report a semantic error if operand is literal true" \
     "(- true)" \
     "Encountered one or more syntax errors during parse:
 
@@ -97,7 +97,7 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if operand is literal false" \
+    "Should report a semantic error if operand is literal false" \
     "(- false)" \
     "Encountered one or more syntax errors during parse:
 
@@ -188,7 +188,7 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if operand is a print expression" \
+    "Should report a semantic error if operand is a print expression" \
     "(print
        (- (print 42)))" \
     "Encountered one or more syntax errors during parse:
@@ -203,7 +203,7 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if operand is a println expression" \
+    "Should report a semantic error if operand is a println expression" \
     "(print
        (- (println 42)))" \
     "Encountered one or more syntax errors during parse:

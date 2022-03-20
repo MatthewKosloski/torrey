@@ -7,7 +7,7 @@ run_println_expr_tests () {
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no left parenthesis and no operand" \
+    "Should report a syntax error if no left parenthesis and no operand" \
     "println)" \
     "Encountered one or more syntax errors during parse:
 
@@ -21,7 +21,7 @@ println)
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no left parenthesis" \
+    "Should report a syntax error if no left parenthesis" \
     "println 69)" \
     "Encountered one or more syntax errors during parse:
 
@@ -35,7 +35,7 @@ println 69)
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no operand" \
+    "Should report a syntax error if no operand" \
     "(println)" \
     "Encountered one or more syntax errors during parse:
 
@@ -49,7 +49,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no right parenthesis and no operand" \
+    "Should report a syntax error if no right parenthesis and no operand" \
     "(println" \
     "Encountered one or more syntax errors during parse:
 
@@ -63,7 +63,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
   assert_stderr \
     $1 \
-    "Should be a syntax error if no right parenthesis" \
+    "Should report a syntax error if no right parenthesis" \
     "(println 420" \
     "Encountered one or more syntax errors during parse:
 
@@ -172,7 +172,7 @@ Expected a closing parenthesis ')' (1:10)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if the operand is a print expression" \
+    "Should report a semantic error if the operand is a print expression" \
     "(println (print 42))" \
     "Encountered one or more semantic errors during type checking:
 
@@ -186,7 +186,7 @@ Cannot print operand 'print' because it does not evaluate to a known type (1:11)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if the operands are print expressions" \
+    "Should report a semantic error if the operands are print expressions" \
     "(println (print 42) (print (- 42)))" \
     "Encountered one or more semantic errors during type checking:
 
@@ -205,7 +205,7 @@ Cannot print operand 'print' because it does not evaluate to a known type (1:22)
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if the operand is a println expression" \
+    "Should report a semantic error if the operand is a println expression" \
     "(println (println 42))" \
     "Encountered one or more semantic errors during type checking:
 
@@ -219,7 +219,7 @@ Cannot print operand 'println' because it does not evaluate to a known type (1:1
 
   assert_stderr \
     $1 \
-    "Should be a semantic error if the operands are println expressions" \
+    "Should report a semantic error if the operands are println expressions" \
     "(println (println 42) (println (- 42)))" \
     "Encountered one or more semantic errors during type checking:
 
