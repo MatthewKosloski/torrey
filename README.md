@@ -211,26 +211,20 @@ The `tests` directory contains e2e tests, written in JavaScript, that assert on 
 
 ### Running the e2e tests
 
-1. Start up and enter the development virtual machine:
+1. Build the compiler jar from the project root directory:
 
 ```sh
-vagrant up && vagrant ssh
+mvn package
 ```
 
-2. Navigate to the `tests` directory:
+2. Navigate to the `e2e` directory:
 
 ```sh
-cd /vagrant/tests
+cd e2e
 ```
 
-3. Install the node modules:
+3. Run the tests:
 
 ```sh
-npm install
-```
-
-4. From the `/vagrant` directory, run:
-
-```sh
-mvn package -Dmaven.test.skip && cd tests && npm test && cd ../
+bash _run_all_tests.sh
 ```
