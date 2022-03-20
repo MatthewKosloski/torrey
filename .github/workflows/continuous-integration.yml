@@ -82,7 +82,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Package Compiler with Maven
-        run: mvn --update-snapshots --no-transfer-progress package
+        run: mvn --update-snapshots --no-transfer-progress package -Dmaven.test.skip
 
       - name: Run Tests
         run: cd e2e && bash _run_all_tests.sh
