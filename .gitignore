@@ -1,11 +1,6 @@
 *.o
 *.class
 *.exe.stackdump
-*.aux
-*.log
-*.out
-*.pdf
-*.synctex.gz
 .vagrant
 target
 .classpath
