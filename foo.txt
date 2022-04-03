@@ -1,9 +1,0 @@
-Encountered one or more syntax errors during parse:
-
-
-Expected an identifier but found '0' instead (1:7)
-
-(let [0bar 42] 0bar)
-      ^
-
-1 Error
