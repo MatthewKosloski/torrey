@@ -77,13 +77,13 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stdout \
     $1 \
-    "Should evaluate to zero if operand is literal 0" \
+    "Should evaluate to zero if the operand is literal 0" \
     "(print (- 0))" \
     "0"
 
   assert_stderr \
     $1 \
-    "Should report a semantic error if operand is literal true" \
+    "Should report a type error if the operand is literal true" \
     "(- true)" \
     "Encountered one or more syntax errors during parse:
 
@@ -97,7 +97,7 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stderr \
     $1 \
-    "Should report a semantic error if operand is literal false" \
+    "Should report a type error if the operand is literal false" \
     "(- false)" \
     "Encountered one or more syntax errors during parse:
 
@@ -111,7 +111,7 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stdout \
     $1 \
-    "Should evaluate to a positive integer if operand is an integer literal nested within a unary expression" \
+    "Should evaluate to a positive integer if the operand is an integer literal nested within a unary expression" \
     "(println
        (- (- 0))
        (- (- 1)))" \
@@ -120,13 +120,13 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stdout \
     $1 \
-    "Should evaluate to a negative integer if operand is an integer literal nested within a double unary expression" \
+    "Should evaluate to a negative integer if the operand is an integer literal nested within a double unary expression" \
     "(print (- (- (- 25))))" \
     "-25"
 
   assert_stdout \
     $1 \
-    "Should evaluate to zero if operand is 0 nested in a double unary expression" \
+    "Should evaluate to zero if the operand is 0 nested in a double unary expression" \
     "(print (- (- (- 0))))" \
     "0"
 
@@ -188,54 +188,89 @@ Expected a closing parenthesis ')' (1:4)
 
   assert_stderr \
     $1 \
-    "Should report a semantic error if operand is a print expression" \
+    "Should report a type error if the operand is a print expression" \
     "(print
        (- (print 42)))" \
-    "Encountered one or more syntax errors during parse:
-
-
-Expected a closing parenthesis ')' (1:4)
-
-(- 420
-   ^^^
-
-1 Error"
+    ""
 
   assert_stderr \
     $1 \
-    "Should report a semantic error if operand is a println expression" \
+    "Should report a type error if the operand is a println expression" \
     "(print
        (- (println 42)))" \
-    "Encountered one or more syntax errors during parse:
-
-
-Expected a closing parenthesis ')' (1:4)
-
-(- 420
-   ^^^
-
-1 Error"
+    ""
 
   assert_stdout \
     $1 \
-    "Should accept a let expression" \
+    "Should accept a let expression that evaluates to an integer" \
     "(print
        (- (let [] 42)))" \
     "-42"
 
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is a let expression that does not evaluate to an integer" \
+    "(- (let [] true))" \
+    ""
+
   assert_stdout \
     $1 \
-    "Should accept an if-then expression" \
+    "Should accept an if-then expression that evaluates to an integer" \
     "(print
        (- (if true 69420)))" \
     "-69420"
 
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is an if-then expression that does not evaluate to an integer" \
+    "(- (if true (== 2 3)))" \
+    ""
+
   assert_stdout \
     $1 \
-    "Should accept an if-then-else expression" \
+    "Should accept an if-then-else expression that evaluates to an integer" \
     "(print
        (- (if false 0 1)))" \
     "-1"
+
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is an if-then-else expression that does not evaluate to an integer" \
+    "(- (if
+         false
+         (>= 1 2)
+         (< 5 6)))" \
+    ""
+
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is a relational equal to expression" \
+    "(- (== 32 10))" \
+    ""
+
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is a relational less than expression" \
+    "(- (< 32 10))" \
+    ""
+
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is a relational less than or equal to expression" \
+    "(- (<= 32 10))" \
+    ""
+
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is a relational greater than expression" \
+    "(- (> 32 10))" \
+    ""
+
+  assert_stderr \
+    $1 \
+    "Should report a type error if the operand is a relational greater than or equal to expression" \
+    "(- (>= 32 10))" \
+    ""
 
   echo -e "\n"
 }
