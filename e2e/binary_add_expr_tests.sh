@@ -472,7 +472,7 @@ Expected a closing parenthesis ')' (1:6)
 
   assert_stdout \
     $1 \
-    "Should compute the sum of two let expressions that evaluate to identiers that evaluate to integers" \
+    "Should compute the sum of two let expressions that evaluate to identifiers that evaluate to integers" \
     "(print (+
        (let [a 32] a)
        (let [a 10] a)))" \
