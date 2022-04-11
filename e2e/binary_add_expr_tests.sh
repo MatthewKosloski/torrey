@@ -443,7 +443,7 @@ Expected a closing parenthesis ')' (1:6)
     "Should compute the sum of a let expression that evaluates to an integer and an integer literal" \
     "(print (+
        (let [] 0)
-       1)" \
+       1))" \
     "1"
 
   assert_stdout \
@@ -467,7 +467,7 @@ Expected a closing parenthesis ')' (1:6)
     "Should compute the sum of a let expression that evaluates to an identifier that evaluates to an integer and an integer literal" \
     "(print (+
        (let [a 0] a)
-       1)" \
+       1))" \
     "1"
 
   assert_stdout \
@@ -476,6 +476,54 @@ Expected a closing parenthesis ')' (1:6)
     "(print (+
        (let [a 32] a)
        (let [a 10] a)))" \
+    "42"
+
+  assert_stdout \
+    $1 \
+    "Should compute the sum of an integer literal and an if expression that evaluates to an integer" \
+    "(print (+
+       1
+       (if true 41)))" \
+    "42"
+
+  assert_stdout \
+    $1 \
+    "Should compute the sum of an if expression that evaluates to an integer and an integer literal" \
+    "(print (+
+       (if true 41)
+       1))" \
+    "42"
+
+  assert_stdout \
+    $1 \
+    "Should compute the sum of two if expressions that evaluate to integers" \
+    "(print (+
+       (if true 32)
+       (if true 10)))" \
+    "42"
+
+  assert_stdout \
+    $1 \
+    "Should compute the sum of an integer literal and an if-else expression that evaluates to an integer" \
+    "(print (+
+       1
+       (if false 0 41)))" \
+    "42"
+
+  assert_stdout \
+    $1 \
+    "Should compute the sum of an if-else expression that evaluates to an integer and an integer literal" \
+    "(print (+
+       (if false 0 41)
+       1))" \
+    "42"
+
+  assert_stdout \
+    $1 \
+    "Should compute the sum of two if-else expressions that evaluate to integers" \
+    "(print (+
+       (if false 0 32)
+       (if false 0 10)))" \
     "42"
 
   echo -e "\n"
