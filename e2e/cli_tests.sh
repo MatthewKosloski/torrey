@@ -339,11 +339,6 @@ call print, 1"
     $compiler_path \
     "--no-stdout -S"
 
-  assert_torreyc_stdout_empty \
-    "Should not output anything when given the --no-stdout -S flags" \
-    $compiler_path \
-    ""
-
   assert_exec_stdout_equalto_with_infile \
     "Should accept input from a local file via the -i flag" \
     $compiler_path \
