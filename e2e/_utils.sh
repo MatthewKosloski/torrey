@@ -249,17 +249,11 @@ _log_and_record_result_for_stdout_assertion () {
   # Ensure stderr file exists on fs
   if [ -f "$stderr_file" ]; then
     local actual_stderr=$(cat $stderr_file)
-  else
-    >&2 echo -e "Cannot find file $stderr_file\nExiting"
-    exit 1
   fi
 
   # Ensure stdout file exists on fs
   if [ -f "$stdout_file" ]; then
     local actual_stdout=$(cat $stdout_file)
-  else
-    >&2 echo -e "Cannot find file $stdout_file\nExiting"
-    exit 1
   fi
 
   # Performs side-effects
@@ -270,7 +264,8 @@ _log_and_record_result_for_stdout_assertion () {
     "$expected_stdout" "$actual_stdout" "$actual_stderr"
 
   # Cleanup temp files
-  rm $stdout_file $stderr_file
+  if [ -f "$stdout_file" ]; then rm $stdout_file; fi
+  if [ -f "$stderr_file" ]; then rm $stderr_file; fi
 }
 
 # Preconditions:
@@ -287,9 +282,6 @@ _log_and_record_result_for_stderr_assertion () {
 
   if [ -f "$stderr_file" ]; then
     local actual_stderr=$(cat $stderr_file)
-  else
-    >&2 echo -e "Cannot find file $stderr_file\nExiting"
-    exit 1
   fi
 
   # Performs side-effects
@@ -297,7 +289,7 @@ _log_and_record_result_for_stderr_assertion () {
   # Performs side-effects
   _record_result_for_stderr_assertion "$expected_stderr" "$actual_stderr"
 
-  rm $stderr_file
+  if [ -f "$stderr_file" ]; then rm $stderr_file; fi
 }
 
 _log_result_for_stdout_assertion () {
