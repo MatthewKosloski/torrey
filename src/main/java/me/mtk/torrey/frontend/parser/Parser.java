@@ -80,7 +80,7 @@ public abstract class Parser
   /**
    * Returns the first token of lookahead.
    *
-   * @return The second token of lookahead or null
+   * @return The first token of lookahead or null
    * if there are no more tokens to peek.
    */
   public Token peek()
