@@ -85,13 +85,29 @@ Expected a closing parenthesis ')' (1:7)
     "Should report a type error if the operand is literal true" \
     $1 \
     "(- true)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:4)
+
+(- true)
+   ^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is literal false" \
     $1 \
     "(- false)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:4)
+
+(- false)
+   ^^^^^
+
+1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should evaluate to a positive integer if the operand is an integer literal nested within a unary expression" \
@@ -175,14 +191,30 @@ Expected a closing parenthesis ')' (1:7)
     $1 \
     "(print
        (- (print 42)))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'NIL' instead (2:12)
+
+(- (print 42)))
+    ^^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is a println expression" \
     $1 \
     "(print
        (- (println 42)))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'NIL' instead (2:12)
+
+(- (println 42)))
+    ^^^^^^^
+
+1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should accept a let expression that evaluates to an integer" \
@@ -195,7 +227,15 @@ Expected a closing parenthesis ')' (1:7)
     "Should report a type error if the operand is a let expression that does not evaluate to an integer" \
     $1 \
     "(- (let [] true))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (let [] true))
+    ^^^
+
+1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should accept an if-then expression that evaluates to an integer" \
@@ -208,7 +248,15 @@ Expected a closing parenthesis ')' (1:7)
     "Should report a type error if the operand is an if-then expression that does not evaluate to an integer" \
     $1 \
     "(- (if true (== 2 3)))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (if true (== 2 3)))
+    ^^
+
+1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should accept an if-then-else expression that evaluates to an integer" \
@@ -224,37 +272,85 @@ Expected a closing parenthesis ')' (1:7)
          false
          (>= 1 2)
          (< 5 6)))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (if
+    ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is a relational equal to expression" \
     $1 \
     "(- (== 32 10))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (== 32 10))
+    ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is a relational less than expression" \
     $1 \
     "(- (< 32 10))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (< 32 10))
+    ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is a relational less than or equal to expression" \
     $1 \
     "(- (<= 32 10))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (<= 32 10))
+    ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is a relational greater than expression" \
     $1 \
     "(- (> 32 10))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (> 32 10))
+    ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is a relational greater than or equal to expression" \
     $1 \
     "(- (>= 32 10))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(- (>= 32 10))
+    ^^
+
+1 Error"
 
   echo -e "\n"
 }
