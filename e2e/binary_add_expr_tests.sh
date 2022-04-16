@@ -104,79 +104,195 @@ Expected a closing parenthesis ')' (1:7)
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are boolean literals" \
+    "Should report two type errors if both operands are boolean literals" \
     $1 \
     "(+ false true)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:4)
+
+(+ false true)
+   ^^^^^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:10)
+
+(+ false true)
+         ^^^^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a boolean literal" \
     $1 \
     "(+ true 4)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:4)
+
+(+ true 4)
+   ^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a boolean literal" \
     $1 \
     "(+ 4 false)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:6)
+
+(+ 4 false)
+     ^^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are print expressions" \
+    "Should report two type errors if both operands are print expressions" \
     $1 \
     "(+ (print 1) (print 2))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:5)
+
+(+ (print 1) (print 2))
+    ^^^^^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:15)
+
+(+ (print 1) (print 2))
+              ^^^^^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a print expression" \
     $1 \
     "(+ (print 1) 4)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:5)
+
+(+ (print 1) 4)
+    ^^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a print expression" \
     $1 \
     "(+ 4 (print 66))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:7)
+
+(+ 4 (print 66))
+      ^^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are println expressions" \
+    "Should report two type errors if both operands are println expressions" \
     $1 \
     "(+ (println 1) (println 2))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:5)
+
+(+ (println 1) (println 2))
+    ^^^^^^^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:17)
+
+(+ (println 1) (println 2))
+                ^^^^^^^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a println expression" \
     $1 \
     "(+ (println 1) 4)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:5)
+
+(+ (println 1) 4)
+    ^^^^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a println expression" \
     $1 \
     "(+ 4 (println 66))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'NIL' instead (1:7)
+
+(+ 4 (println 66))
+      ^^^^^^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are identifiers that do not evaluate to integers" \
+    "Should report two type errors if both operands are identifiers that do not evaluate to integers" \
     $1 \
     "(let [a true b false]
       (+ a b))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (2:10)
+
+(+ a b))
+   ^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (2:12)
+
+(+ a b))
+     ^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is an identifier that does not evaluate to an integer" \
     $1 \
     "(let [a true b 5]
       (+ a b))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (2:10)
+
+(+ a b))
+   ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is an identifier that does not evaluate to an integer" \
     $1 \
     "(let [a 5 b true]
       (+ a b))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (2:12)
+
+(+ a b))
+     ^
+
+1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should compute the sum of two integer literals" \
@@ -344,91 +460,236 @@ Expected a closing parenthesis ')' (1:7)
     "Should report a type error if the first operand is a relational equal to expression" \
     $1 \
     "(+ (== 2 3) 1)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (== 2 3) 1)
+    ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a relational equal to expression" \
     $1 \
     "(+ 1 (== 2 3))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:7)
+
+(+ 1 (== 2 3))
+      ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are relational equal to expressions" \
+    "Should report two type errors if both operands are relational equal to expressions" \
     $1 \
-    "(+ 1 (== 2 3))" \
-    ""
+    "(+ (== 3 2) (== 2 3))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (== 3 2) (== 2 3))
+    ^^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:14)
+
+(+ (== 3 2) (== 2 3))
+             ^^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a relational less than expression" \
     $1 \
     "(+ (< 2 3) 1)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (< 2 3) 1)
+    ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a relational less than expression" \
     $1 \
     "(+ 1 (< 2 3))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:7)
+
+(+ 1 (< 2 3))
+      ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are relational less than expressions" \
+    "Should report two type errors if both operands are relational less than expressions" \
     $1 \
-    "(+ 1 (< 2 3))" \
-    ""
+    "(+ (< 3 2) (< 2 3))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (< 3 2) (< 2 3))
+    ^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:13)
+
+(+ (< 3 2) (< 2 3))
+            ^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a relational less than or equal to expression" \
     $1 \
     "(+ (<= 2 3) 1)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (<= 2 3) 1)
+    ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a relational less than or equal to expression" \
     $1 \
     "(+ 1 (<= 2 3))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:7)
+
+(+ 1 (<= 2 3))
+      ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are relational less than or equal to expressions" \
+    "Should report two type errors if both operands are relational less than or equal to expressions" \
     $1 \
-    "(+ 1 (<= 2 3))" \
-    ""
+    "(+ (<= 3 2) (<= 2 3))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (<= 3 2) (<= 2 3))
+    ^^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:14)
+
+(+ (<= 3 2) (<= 2 3))
+             ^^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a relational greater than expression" \
     $1 \
     "(+ (> 2 3) 1)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (> 2 3) 1)
+    ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a relational greater than expression" \
     $1 \
     "(+ 1 (> 2 3))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:7)
+
+(+ 1 (> 2 3))
+      ^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are relational greater than expressions" \
+    "Should report two type errors if both operands are relational greater than expressions" \
     $1 \
-    "(+ 1 (> 2 3))" \
-    ""
+    "(+ (> 3 2) (> 2 3))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (> 3 2) (> 2 3))
+    ^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:13)
+
+(+ (> 3 2) (> 2 3))
+            ^
+
+2 Errors"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the first operand is a relational greater than or equal to expression" \
     $1 \
     "(+ (>= 2 3) 1)" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (>= 2 3) 1)
+    ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the second operand is a relational greater than or equal to expression" \
     $1 \
     "(+ 1 (>= 2 3))" \
-    ""
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:7)
+
+(+ 1 (>= 2 3))
+      ^^
+
+1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if both operands are relational greater than or equal to expressions" \
+    "Should report two type errors if both operands are relational greater than or equal to expressions" \
     $1 \
-    "(+ 1 (>= 2 3))" \
-    ""
+    "(+ (>= 3 2) (>= 2 3))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:5)
+
+(+ (>= 3 2) (>= 2 3))
+    ^^
+
+Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' instead (1:14)
+
+(+ (>= 3 2) (>= 2 3))
+             ^^
+
+2 Errors"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should compute the sum of an integer literal and a let expression that evaluates to an integer" \
