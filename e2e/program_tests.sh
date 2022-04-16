@@ -49,6 +49,63 @@ foobar
 
 1 Error"
 
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error when program is a left parenthesis" \
+    $1 \
+    "(" \
+    "Encountered one or more syntax errors during parse:
+
+
+Expected a unary, binary, or print expression but found '' instead (1:2)
+
+(
+ ^
+
+1 Error"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error when program is a right parenthesis" \
+    $1 \
+    ")" \
+    "Encountered one or more syntax errors during parse:
+
+
+Expected an integer, unary, binary, print, let, or identifier expression but found ')' instead (1:1)
+
+)
+^
+
+1 Error"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error when program is an unexpected character" \
+    $1 \
+    "@" \
+    "Encountered one or more syntax errors during lexing:
+
+
+Unexpected character '@' (1:1)
+
+@
+^
+
+1 Error"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error when there is an unexpected character after an expression" \
+    $1 \
+    "(let [x 42]
+       (print x))%" \
+    "Encountered one or more syntax errors during lexing:
+
+
+Unexpected character '%' (2:18)
+
+(print x))%
+          ^
+
+1 Error"
+
   assert_exec_stdout_equalto_with_stdin \
     "Should accept exactly one expression" \
     $1 \
