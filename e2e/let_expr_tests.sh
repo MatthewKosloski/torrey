@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 source _utils.sh
 
@@ -48,13 +48,13 @@ Expected an opening bracket '[' (1:5)
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error if no right bracket" \
+    "Should report a syntax error when there is no identifier after the opening bracket" \
     $1 \
     "(let [)" \
     "Encountered one or more syntax errors during parse:
 
 
-Expected an identifier but found ')' instead (1:7)
+Expected a closing bracket ']' or the start of an identifier but found ')' instead (1:7)
 
 (let [)
       ^
@@ -62,21 +62,35 @@ Expected an identifier but found ')' instead (1:7)
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error if no right parenthesis and no bindings list" \
+    "Should report a syntax error if no left bracket" \
     $1 \
     "(let" \
     "Encountered one or more syntax errors during parse:
 
 
-Expected an integer, unary, binary, print, let, or identifier expression but found ')' instead (1:3)
+Expected an opening bracket '[' (1:5)
 
-(-)
-  ^
+(let
+    ^
 
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error if no right parenthesis" \
+    "Should report a syntax error if no right bracket when there is a binding" \
+    $1 \
+    "(let [x 1)" \
+    "Encountered one or more syntax errors during parse:
+
+
+Expected a closing bracket ']' or the start of an identifier but found ')' instead (1:10)
+
+(let [x 1)
+         ^
+
+1 Error"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error if no right parenthesis when there are no bindings" \
     $1 \
     "(let []" \
     "Encountered one or more syntax errors during parse:
@@ -85,7 +99,21 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 Expected a closing parenthesis ')' (1:7)
 
 (let []
-      ^
+       ^
+
+1 Error"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error if no right parenthesis when there is a binding" \
+    $1 \
+    "(let [x 500]" \
+    "Encountered one or more syntax errors during parse:
+
+
+Expected a closing parenthesis ')' (1:12)
+
+(let [x 500]
+           ^
 
 1 Error"
 
@@ -216,7 +244,7 @@ Unexpected character '?' (1:7)
     "Encountered one or more syntax errors during parse:
 
 
-Expected an identifier but found '-' instead (1:7)
+Expected a closing bracket ']' or the start of an identifier but found '-' instead (1:7)
 
 (let [-foo] -foo)
       ^
@@ -241,7 +269,7 @@ Expected an identifier but found '-' instead (1:7)
     "Encountered one or more syntax errors during parse:
 
 
-Expected an identifier but found '1' instead (1:7)
+Expected a closing bracket ']' or the start of an identifier but found '1' instead (1:7)
 
 (let [1foo] 1foo)
       ^

@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 source _utils.sh
 
@@ -54,9 +54,9 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
     "Encountered one or more syntax errors during parse:
 
 
-Expected an integer, unary, binary, print, let, or identifier expression but found ')' instead (1:7)
+Expected the start of an expression but found nothing instead (1:7)
 
-(print)
+(print
       ^
 
 1 Error"

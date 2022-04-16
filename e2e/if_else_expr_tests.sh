@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 source _utils.sh
 

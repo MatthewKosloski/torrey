@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 source _utils.sh
 
@@ -36,7 +36,7 @@ run_program_tests () {
     "false"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error when given an identifier" \
+    "Should report a syntax error when given an identifier that is not scoped to an environment" \
     $1 \
     "foobar" \
     "Encountered one or more semantic errors during environment building:

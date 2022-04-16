@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 source _utils.sh
 
@@ -49,35 +49,49 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error if no right parenthesis and no test expression" \
+    "Should report a syntax error if no right parenthesis and no test expression and no branch" \
     $1 \
     "(if" \
     "Encountered one or more syntax errors during parse:
 
 
-Expected an integer, unary, binary, print, let, or identifier expression but found ')' instead (1:3)
+Expected the start of an expression but found nothing instead (1:4)
 
-(-)
-  ^
+(if
+   ^
+
+1 Error"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a syntax error if no right parenthesis and no branch" \
+    $1 \
+    "(if true" \
+    "Encountered one or more syntax errors during parse:
+
+
+Expected the start of an expression but found nothing instead (1:9)
+
+(if true
+        ^
 
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a syntax error if no right parenthesis" \
     $1 \
-    "(if true" \
+    "(if true 1" \
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:7)
+Expected a closing parenthesis ')' (1:10)
 
-(let []
-      ^
+(if true 1
+          ^
 
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error if no then expression" \
+    "Should report a syntax error if no branch" \
     $1 \
     "(if true)" \
     "Encountered one or more syntax errors during parse:
@@ -133,7 +147,7 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
 1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should not take the then branch if the test evaluates to zero" \
+    "Should not take the branch if the test evaluates to zero" \
     $1 \
     "(if 0
         (print 42))
@@ -153,7 +167,7 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
     ""
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should not take the then branch if the test evaluates to false" \
+    "Should not take the branch if the test evaluates to false" \
     $1 \
     "(if false
         (print 42))
@@ -183,7 +197,7 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
     ""
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should take the then branch if the test evaluates to a negative integer" \
+    "Should take the branch if the test evaluates to a negative integer" \
     $1 \
     "(if (- 1)
         (print 42))
@@ -201,7 +215,7 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
     "424242424242"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should take the then branch if the test evaluates to a positive integer" \
+    "Should take the branch if the test evaluates to a positive integer" \
     $1 \
     "(if 1
         (print 42))
@@ -221,7 +235,7 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
     "42424242424242"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should take the then branch if the test evaluates to true" \
+    "Should take the branch if the test evaluates to true" \
     $1 \
     "(if true
         (print 42))
