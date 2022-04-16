@@ -125,16 +125,14 @@ public final class CompilerFrontend extends Compiler
     final Binder binder = new Binder(new ErrorReporter(input));
     binder.visit(ast);
 
-    if (config.debug())
-      debug("AST (output from Binder): \n%s",
-        ppVisitor.visit(ast));
+    debug("AST (output from Binder): \n%s",
+      ppVisitor.visit(ast));
 
     // Reduces complex expressions (both arithmetic and logical).
     final ConstantFolder constantFolder = new ConstantFolder();
     constantFolder.visit(ast);
 
-    if (config.debug())
-      debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
+    debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
       ppVisitor.visit(ast));
 
     // Type-checks operands to expressions and decorates
@@ -145,10 +143,6 @@ public final class CompilerFrontend extends Compiler
 
     debug("Optimized AST (output from TypeChecker): \n%s",
       ppVisitor.visit(ast));
-
-    if (config.debug())
-      debug("Optimized AST (output from TypeChecker): \n%s",
-        ppVisitor.visit(ast));
 
     return ast;
   }
