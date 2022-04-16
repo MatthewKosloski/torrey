@@ -180,7 +180,7 @@ Registered targets (triples):
     "--not-a-valid-flag" \
     "Was passed main parameter '--not-a-valid-flag' but no main parameter was defined in your arg class"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Smoke: Should output x86-64 when x86_64-pc-linux is passed to the --target flag" \
     $compiler_path \
     "--target x86_64-pc-linux -S" \
@@ -202,7 +202,7 @@ conclusion:
   popq %rbp
   movq'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Smoke: Should use the x86_64-pc-linux backend when no --target provided" \
     $compiler_path \
     "-S" \
@@ -224,7 +224,7 @@ conclusion:
   popq %rbp
   movq'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Smoke: Should ouput a sequence of tokens when given the -L flag" \
     $compiler_path \
     "-L" \
@@ -232,7 +232,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Smoke: Should ouput an AST when given the -p flag" \
     $compiler_path \
     "-p" \
