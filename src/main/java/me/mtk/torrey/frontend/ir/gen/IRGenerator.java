@@ -99,30 +99,9 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
     {
       final TokenType tokType = expr.token().type();
       final IRTempAddress result = new IRTempAddress();
+      final IRAddress arg = getDestinationAddr(expr.first());
 
-      if (expr.getFold() != null)
-      {
-        // The unary expression can be reduced to a constant
-        // expression, so create a constant address.
-        int foldedConstant;
-        if (expr.getFold() instanceof ConstantConvertable)
-        {
-          foldedConstant = ((ConstantConvertable) expr.getFold()).toConstant();
-        }
-        else
-        {
-          throw new Error(String.format("Unhandled expression type %s",
-            expr.getFold().getClass().getSimpleName()));
-        }
-        final IRConstAddress rhs = new IRConstAddress(foldedConstant);
-        irProgram.addQuad(new IRCopyInst(result, rhs));
-      }
-      else
-      {
-        // The unary expression cannot be reduced
-        final IRAddress arg = getDestinationAddr(expr.first());
-        irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
-      }
+      irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
 
       return result;
     }
@@ -138,33 +117,11 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
     public IRAddress visit(ArithmeticExpr expr)
     {
         final IRTempAddress result = new IRTempAddress();
+        final TokenType tokType = expr.token().type();
+        final IRAddress arg1 = getDestinationAddr(expr.first());
+        final IRAddress arg2 = getDestinationAddr(expr.second());
 
-        if (expr.getFold() != null)
-        {
-          // The binary expression can be reduced to a constant
-          // expression, so create a constant address.
-          int foldedConstant;
-          if (expr.getFold() instanceof ConstantConvertable)
-          {
-            foldedConstant = ((ConstantConvertable) expr.getFold()).toConstant();
-          }
-          else
-          {
-            throw new Error(String.format("Unhandled expression type %s",
-              expr.getFold().getClass().getSimpleName()));
-          }
-          final IRConstAddress rhs = new IRConstAddress(foldedConstant);
-          irProgram.addQuad(new IRCopyInst(result, rhs));
-        }
-        else
-        {
-          // The binary expression cannot be reduced and thus
-          // an arithmetic instruction must be emitted.
-          final TokenType tokType = expr.token().type();
-          final IRAddress arg1 = getDestinationAddr(expr.first());
-          final IRAddress arg2 = getDestinationAddr(expr.second());
-          irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
-        }
+        irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
 
         return result;
     }

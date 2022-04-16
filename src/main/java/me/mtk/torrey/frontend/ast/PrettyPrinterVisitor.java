@@ -69,11 +69,7 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
     if (node instanceof Expr)
       jo.put("evalType", ((Expr) node).evalType())
         .put("node_type", node.getClass().getSimpleName());
-    if (node instanceof Foldable)
-    {
-      final Expr fold = ((Foldable) node).getFold();
-      jo.put("fold", fold != null ? parse(fold) : "null");
-    }
+
     if (node instanceof LetExpr)
     {
       final LetExpr letExpr = (LetExpr) node;

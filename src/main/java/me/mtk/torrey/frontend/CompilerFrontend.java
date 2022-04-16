@@ -128,13 +128,6 @@ public final class CompilerFrontend extends Compiler
     debug("AST (output from Binder): \n%s",
       ppVisitor.visit(ast));
 
-    // Reduces complex expressions (both arithmetic and logical).
-    final ConstantFolder constantFolder = new ConstantFolder();
-    constantFolder.visit(ast);
-
-    debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
-      ppVisitor.visit(ast));
-
     // Type-checks operands to expressions and decorates
     // the AST with type information.
     final TypeChecker typeChecker = new TypeChecker

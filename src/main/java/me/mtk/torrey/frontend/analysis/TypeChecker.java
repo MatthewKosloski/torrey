@@ -120,9 +120,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
         first.evalType());
     }
 
-    if (expr.getFold().isFalsy())
-      expr.makeFalsy();
-
       return expr.evalType();
   }
 
@@ -167,9 +164,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
       reporter.error(second.token(), ErrorMessages.DivisionByZero,
         operator.rawText());
     }
-
-    if (expr.getFold().isFalsy())
-      expr.makeFalsy();
 
     return expr.evalType();
   }
