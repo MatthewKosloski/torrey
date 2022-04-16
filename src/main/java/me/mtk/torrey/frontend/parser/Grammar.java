@@ -104,8 +104,18 @@ public class Grammar extends Parser
       return identifier();
     }
 
-    reporter.throwSyntaxError(peek(), ErrorMessages.ExpectedExpr,
-      peek().rawText());
+    if (peek().rawText().equals("\0"))
+    {
+      // lookahead token is EOF
+      reporter.throwSyntaxError(peek(), ErrorMessages.ExpectedStartOfExprButNothing);
+    }
+    else
+    {
+      reporter.throwSyntaxError(
+        peek(),
+        ErrorMessages.ExpectedExpr,
+        peek().rawText());
+    }
 
     return null;
   }
@@ -230,7 +240,7 @@ public class Grammar extends Parser
         if (!peek(TokenType.IDENTIFIER))
         {
           reporter.throwSyntaxError(peek(),
-            ErrorMessages.ExpectedIdentifier,
+            ErrorMessages.ExpectedIdentifierOrClosingBracket,
             peek().rawText());
         }
         else
