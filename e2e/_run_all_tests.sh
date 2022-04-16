@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 source program_tests.sh
 source print_expr_tests.sh
 source println_expr_tests.sh
