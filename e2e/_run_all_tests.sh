@@ -68,7 +68,13 @@ run_if_else_expr_tests ./$compiler_file_name
 run_cli_tests ./$compiler_file_name
 
 # Display statistics
-echo -e "Ran $count_total tests\n Passed: $count_passed\n Failed: $count_failed"
+echo -e "Ran $count_total tests\n Passed: $count_passed"
+# If awk is available to us, calculate percentage of tests that passed
+if [ "$(type -t awk)" == "file" ]; then
+  percent_passed=$(echo - | awk "{print $count_passed / $count_total * 100}")
+  echo "  ($percent_passed%)"
+fi
+echo -e " Failed: $count_failed"
 
 # Cleanup
 if [ -f "a.out" ]; then rm a.out; fi
