@@ -26,10 +26,10 @@ if false 0 1)
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:13)
+Expected a closing parenthesis ')' (1:14)
 
 (if false 0 1
-            ^
+             ^
 
 1 Error"
 

@@ -96,7 +96,7 @@ Expected a closing bracket ']' or the start of an identifier but found ')' inste
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:7)
+Expected a closing parenthesis ')' (1:8)
 
 (let []
        ^
@@ -110,10 +110,10 @@ Expected a closing parenthesis ')' (1:7)
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:12)
+Expected a closing parenthesis ')' (1:13)
 
 (let [x 500]
-           ^
+            ^
 
 1 Error"
 

@@ -83,7 +83,7 @@ Expected the start of an expression but found nothing instead (1:9)
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:10)
+Expected a closing parenthesis ')' (1:11)
 
 (if true 1
           ^

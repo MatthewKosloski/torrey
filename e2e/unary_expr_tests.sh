@@ -68,10 +68,10 @@ Expected the start of an expression but found nothing instead (1:3)
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:4)
+Expected a closing parenthesis ')' (1:7)
 
 (- 420
-   ^^^
+      ^
 
 1 Error"
 
@@ -85,29 +85,13 @@ Expected a closing parenthesis ')' (1:4)
     "Should report a type error if the operand is literal true" \
     $1 \
     "(- true)" \
-    "Encountered one or more syntax errors during parse:
-
-
-Expected a closing parenthesis ')' (1:4)
-
-(- 420
-   ^^^
-
-1 Error"
+    ""
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the operand is literal false" \
     $1 \
     "(- false)" \
-    "Encountered one or more syntax errors during parse:
-
-
-Expected a closing parenthesis ')' (1:4)
-
-(- 420
-   ^^^
-
-1 Error"
+    ""
 
   assert_exec_stdout_equalto_with_stdin \
     "Should evaluate to a positive integer if the operand is an integer literal nested within a unary expression" \

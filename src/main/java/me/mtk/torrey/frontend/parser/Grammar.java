@@ -319,7 +319,7 @@ public class Grammar extends Parser
   private void consumeRightParen() throws SyntaxError
   {
       if (!match(TokenType.RPAREN))
-        reporter.throwSyntaxError(lookahead(0),
+        reporter.throwSyntaxError(peek(),
           ErrorMessages.ExpectedClosingParen);
   }
 

@@ -96,10 +96,10 @@ Expected the start of an expression but found nothing instead (1:5)
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:6)
+Expected a closing parenthesis ')' (1:7)
 
 (+ 4 5
-     ^
+      ^
 
 1 Error"
 

@@ -68,10 +68,10 @@ Expected the start of an expression but found nothing instead (1:7)
     "Encountered one or more syntax errors during parse:
 
 
-Expected a closing parenthesis ')' (1:8)
+Expected a closing parenthesis ')' (1:11)
 
 (print 420
-       ^^^
+          ^
 
 1 Error"
 
