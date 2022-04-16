@@ -4,53 +4,7 @@
 # Assertion functions
 # -------------------
 
-# Old APIs
-
-assert_stdout () {
-  echo "$3" | java -jar $1 -o a.out 2> stderr.txt && ./a.out > stdout.txt
-
-  if [ -f "stderr.txt" ]; then local actual_stderr=$(cat stderr.txt); fi
-  if [ -f "stdout.txt" ]; then local actual_stdout=$(cat stdout.txt); fi
-
-  if [[ $actual_stderr != "" ]]; then
-    echo -e "  \033[31m[FAILED]\033[0m $2"
-    echo -e "    Expected stdout: \"$4\"\n    Actual stderr: \"$actual_stderr\""
-    count_failed=$(($count_failed+1))
-  elif [[ $actual_stdout != $4 ]]; then
-    echo -e "  \033[31m[FAILED]\033[0m $2"
-    echo -e "    Expected stdout: \"$4\"\n    Actual stdout: \"$actual_stdout\""
-    count_failed=$(($count_failed+1))
-  else
-    echo -e "  \033[32m[PASSED]\033[0m $2"
-    count_passed=$(($count_passed+1))
-  fi
-
-  if [ -f "stderr.txt" ]; then rm stderr.txt; fi
-  if [ -f "stdout.txt" ]; then rm stdout.txt; fi
-
-  count_total=$(($count_total+1))
-}
-
-assert_stderr () {
-  echo "$3" | java -jar $1 -o a.out 2> stderr.txt
-
-  if [ -f "stderr.txt" ]; then local actual_stderr=$(cat stderr.txt); fi
-
-  if [[ "$actual_stderr" = "$4" ]]; then
-    echo -e "  \033[32m[PASSED]\033[0m $2"
-    count_passed=$(($count_passed+1))
-  else
-    echo -e "  \033[31m[FAILED]\033[0m $2"
-    echo -e "    Expected stderr: \"$4\"\n    Actual stderr: \"$actual_stderr\""
-    count_failed=$(($count_failed+1))
-  fi
-
-  if [ -f "stderr.txt" ]; then rm stderr.txt; fi
-
-  count_total=$(($count_total+1))
-}
-
-# New APIs
+# Helpers for asserting against the compiler's standard output
 
 assert_torreyc_stdout_empty () {
   local test_title=$1
@@ -70,6 +24,16 @@ assert_torreyc_stdout_equalto () {
 }
 
 assert_torreyc_stdout_equalto_with_stdin () {
+  local test_title=$1
+  local compiler_path=$2
+  local cli_args=""
+  local stdin=$3
+  local expected_stdout=$4
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
+    "$test_title" $compiler_path "$cli_args" "$stdin" "$expected_stdout"
+}
+
+assert_torreyc_stdout_equalto_with_stdin_and_cli_args () {
   local test_title=$1
   local compiler_path=$2
   local cli_args=$3
@@ -98,6 +62,17 @@ assert_torreyc_stdout_contains_with_stdin () {
     "$test_title" $compiler_path "$cli_args" "$stdin" "$expected_stdout" 1
 }
 
+# Helpers for asserting against the compiler's standard error
+
+assert_torreyc_stderr_empty () {
+  local test_title=$1
+  local compiler_path=$2
+  local cli_args=$3
+  local expected_stderr=""
+  _assert_torreyc_stderr_equalto \
+    "$test_title" $compiler_path "$cli_args" "$expected_stderr"
+}
+
 assert_torreyc_stderr_equalto () {
   local test_title=$1
   local compiler_path=$2
@@ -107,7 +82,27 @@ assert_torreyc_stderr_equalto () {
     "$test_title" $compiler_path "$cli_args" "$expected_stderr"
 }
 
+assert_torreyc_stderr_empty_with_stdin () {
+  local test_title=$1
+  local compiler_path=$2
+  local cli_args=""
+  local stdin=$3
+  local expected_stderr=""
+  assert_torreyc_stderr_equalto_with_stdin_and_cli_args \
+    "$test_title" $compiler_path "$cli_args" "$stdin" "$expected_stderr"
+}
+
 assert_torreyc_stderr_equalto_with_stdin () {
+  local test_title=$1
+  local compiler_path=$2
+  local cli_args=""
+  local stdin=$3
+  local expected_stderr=$4
+  assert_torreyc_stderr_equalto_with_stdin_and_cli_args \
+    "$test_title" $compiler_path "$cli_args" "$stdin" "$expected_stderr"
+}
+
+assert_torreyc_stderr_equalto_with_stdin_and_cli_args () {
   local stderr_file="torreyc_stderr.txt"
 
   local compiler_path=$2
@@ -121,7 +116,20 @@ assert_torreyc_stderr_equalto_with_stdin () {
   _log_and_record_result_for_stderr_assertion $stderr_file "$test_title" "$expected_stderr"
 }
 
+# Helpers for asserting against the standard output of executables
+
 assert_exec_stdout_equalto_with_stdin () {
+  local exec_path="a.out"
+  local cli_args="-o $exec_path"
+  local test_title=$1
+  local compiler_path=$2
+  local stdin=$3
+  local expected_stdout=$4
+  assert_exec_stdout_equalto_with_stdin_and_cli_args \
+    "$test_title" $compiler_path "$cli_args" "$stdin" "$exec_path" "$expected_stdout"
+}
+
+assert_exec_stdout_equalto_with_stdin_and_cli_args () {
   local stdout_file="torreyc_stdout.txt"
   local stderr_file="torreyc_stderr.txt"
 
@@ -312,13 +320,13 @@ _log_result_for_stdout_assertion () {
     # Actual stdout does not equal expected, fail test
     echo -e "$failed_prefix"
     if [[ "$verbosity" != "$VERBOSITY_QUIET" ]]; then
-      echo -e "\n\tExpected stdout: \"$expected_stdout\"\n\tActual stderr: \"$actual_stderr\""
+      echo -e "\n\tExpected stdout: \"$expected_stdout\"\n\tActual stdout: \"$actual_stdout\""
     fi
   elif [[ "$equalto_or_contains" -eq 1 && "$actual_stdout" != *"$expected_stdout"* ]]; then
     # Actual stdout does not contain expected, fail test
     echo -e "$failed_prefix"
     if [[ "$verbosity" != "$VERBOSITY_QUIET" ]]; then
-      echo -e "\n\tExpected stdout: \"$expected_stdout\"\n\tActual stderr: \"$actual_stderr\""
+      echo -e "\n\tExpected stdout: \"$expected_stdout\"\n\tActual stdout: \"$actual_stdout\""
     fi
   else
     # We did not get stderr and actual stdout equals expected, pass test
