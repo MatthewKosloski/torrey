@@ -67,9 +67,11 @@ public final class TorreyIOUtils
       final StringBuffer sb = new StringBuffer();
       int ascii;
       while ((ascii = in.read()) != -1)
+      {
         sb.append((char) ascii);
+      }
 
-      return sb.toString();
+      return sb.toString().trim();
     }
 
     // The estimated number of bytes that can be read
