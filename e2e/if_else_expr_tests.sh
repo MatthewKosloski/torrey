@@ -5,9 +5,9 @@ source _utils.sh
 run_if_else_expr_tests () {
   echo "Tests for \"(\" \"if\" expr expr expr \")\""
 
-  assert_stderr \
-    $1 \
+  assert_torreyc_stderr_equalto_with_stdin \
     "Should report a syntax error if no left parenthesis" \
+    $1 \
     "if false 0 1)" \
     "Encountered one or more syntax errors during parse:
 
@@ -19,9 +19,9 @@ if false 0 1)
 
 1 Error"
 
-  assert_stderr \
-    $1 \
+  assert_torreyc_stderr_equalto_with_stdin \
     "Should report a syntax error if no right parenthesis" \
+    $1 \
     "(if false 0 1" \
     "Encountered one or more syntax errors during parse:
 
@@ -33,9 +33,9 @@ Expected a closing parenthesis ')' (1:13)
 
 1 Error"
 
-  assert_stderr \
-    $1 \
+  assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the test is a print expression" \
+    $1 \
     "(if (print 1) 1 0)" \
     "Encountered one or more semantic errors during type checking:
 
@@ -47,9 +47,9 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
 
 1 Error"
 
-  assert_stderr \
-    $1 \
+  assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the test is a println expression" \
+    $1 \
     "(if (println 1) 1 0)" \
     "Encountered one or more semantic errors during type checking:
 
@@ -61,9 +61,9 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
 
 1 Error"
 
-  assert_stderr \
-    $1 \
+  assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the test is an empty let expression" \
+    $1 \
     "(if (let []) 1 0)" \
     "Encountered one or more semantic errors during type checking:
 
@@ -75,9 +75,9 @@ An expression of type 'NIL' cannot be tested for truthiness (1:6)
 
 1 Error"
 
-  assert_stderr \
-    $1 \
+  assert_torreyc_stderr_equalto_with_stdin \
     "Should report a type error if the branches evaluate to different types" \
+    $1 \
     "(if true (print 0) false)
      (if true (print 0) (== 0 1))
      (if true (print 0) (< 1 0))
@@ -250,9 +250,9 @@ Both branches to an if expression must evaluate to the same types (32:7)
 
 27 Errors"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should not report a type error if the branches are print(ln) expressions" \
+    $1 \
     "(if true (print 1) (print 0))
      (if true (print 1) (println 0))
      (if true (println 1) (print 0))
@@ -260,23 +260,23 @@ Both branches to an if expression must evaluate to the same types (32:7)
     "111
 1"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should not report a type error if the branches are empty let and print expressions" \
+    $1 \
     "(if true (let []) (print 0))
      (if true (print 1) (let []))" \
     "1"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should not report a type error if the branches are empty let and println expressions" \
+    $1 \
     "(if true (let []) (println 0))
      (if true (println 1) (let []))" \
     "1"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should take the else branch if the test evaluates to zero" \
+    $1 \
     "(if 0
         (print 1)
         (print 0))
@@ -301,9 +301,9 @@ Both branches to an if expression must evaluate to the same types (32:7)
          (print 0))" \
     "0000000"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should take the else branch if the test evaluates to false" \
+    $1 \
     "(if false
         (print 1)
         (print 0))
@@ -343,9 +343,9 @@ Both branches to an if expression must evaluate to the same types (32:7)
          (print 0))" \
     "000000000000"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should take the then branch if the test evaluates to a negative integer" \
+    $1 \
     "(if (- 1)
         (print 1)
         (print 0))
@@ -367,9 +367,9 @@ Both branches to an if expression must evaluate to the same types (32:7)
          (print 0))" \
     "111111"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should take the then branch if the test evaluates to a positive integer" \
+    $1 \
     "(if 1
         (print 1)
         (print 0))
@@ -394,9 +394,9 @@ Both branches to an if expression must evaluate to the same types (32:7)
          (print 0))" \
     "1111111"
 
-  assert_stdout \
-    $1 \
+  assert_exec_stdout_equalto_with_stdin \
     "Should take the then branch if the test evaluates to true" \
+    $1 \
     "(if true
         (print 1)
         (print 0))
