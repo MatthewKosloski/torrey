@@ -10,3 +10,5 @@ dependency-reduced-pom.xml
 *.torrey
 *.jar
 *.log
+*.out
+*.txt
