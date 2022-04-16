@@ -167,7 +167,7 @@ https://github.com/MatthewKosloski/torrey/releases/latest"
 Registered targets (triples):
   x86_64-pc-linux"
 
-  assert_torreyc_stderr_equalto_with_stdin \
+  assert_torreyc_stderr_equalto_with_stdin_and_cli_args \
     "Should report error if invalid target passed to --target flag" \
     $compiler_path \
     "--target invalid-target" \
@@ -532,7 +532,7 @@ conclusion:
   movq $0, %rax
   retq'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -L -p -ir and -S flags, in that order" \
     $compiler_path \
     "-L -p -ir -S" \
@@ -540,7 +540,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -L -p -S and -ir flags, in that order" \
     $compiler_path \
     "-L -p -S -ir" \
@@ -548,7 +548,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -L -ir -S and -p flags, in that order" \
     $compiler_path \
     "-L -ir -S -p" \
@@ -556,7 +556,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -L -ir -p and -S flags, in that order" \
     $compiler_path \
     "-L -ir -p -S" \
@@ -564,7 +564,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -L -S -p and -ir flags, in that order" \
     $compiler_path \
     "-L -S -p -ir" \
@@ -572,7 +572,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -L -S -ir and -p flags, in that order" \
     $compiler_path \
     "-L -S -ir -p" \
@@ -580,7 +580,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -p -ir -S -L flags, in that order" \
     $compiler_path \
     "-p -ir -S -L" \
@@ -588,7 +588,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -p -ir -L -S flags, in that order" \
     $compiler_path \
     "-p -ir -L -S" \
@@ -596,7 +596,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -p -L -ir -S flags, in that order" \
     $compiler_path \
     "-p -L -ir -S" \
@@ -604,7 +604,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -p -L -S -ir flags, in that order" \
     $compiler_path \
     "-p -L -S -ir" \
@@ -612,7 +612,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -p -S -L -ir flags, in that order" \
     $compiler_path \
     "-p -S -L -ir" \
@@ -620,7 +620,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -p -S -ir -L flags, in that order" \
     $compiler_path \
     "-p -S -ir -L" \
@@ -628,7 +628,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -ir -p -L -S flags, in that order" \
     $compiler_path \
     "-ir -p -L -S" \
@@ -636,7 +636,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -ir -p -S -L flags, in that order" \
     $compiler_path \
     "-ir -p -S -L" \
@@ -644,7 +644,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -ir -S -L -p flags, in that order" \
     $compiler_path \
     "-ir -S -L -p" \
@@ -652,7 +652,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -ir -S -p -L flags, in that order" \
     $compiler_path \
     "-ir -S -p -L" \
@@ -660,7 +660,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -ir -L -S -p flags, in that order" \
     $compiler_path \
     "-ir -L -S -p" \
@@ -668,7 +668,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -ir -L -p -S flags, in that order" \
     $compiler_path \
     "-ir -L -p -S" \
@@ -676,7 +676,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -S -p -ir -L flags, in that order" \
     $compiler_path \
     "-S -p -ir -L" \
@@ -684,7 +684,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -S -p -L -ir flags, in that order" \
     $compiler_path \
     "-S -p -L -ir" \
@@ -692,7 +692,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -S -ir -L -p flags, in that order" \
     $compiler_path \
     "-S -ir -L -p" \
@@ -700,7 +700,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -S -ir -p -L flags, in that order" \
     $compiler_path \
     "-S -ir -p -L" \
@@ -708,7 +708,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -S -L -ir -p flags, in that order" \
     $compiler_path \
     "-S -L -ir -p" \
@@ -716,7 +716,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should lex when given the -S -L -p -ir flags, in that order" \
     $compiler_path \
     "-S -L -p -ir" \
@@ -724,7 +724,7 @@ conclusion:
     "<'42',INTEGER,1:1,1:3>
 <'',EOF,-1:-1,-1:-1>"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should parse when given the -p -ir -S flags, in that order" \
     $compiler_path \
     "-p -ir -S" \
@@ -752,7 +752,7 @@ conclusion:
   "token": "null"
 }'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should parse when given the -p -S -ir flags, in that order" \
     $compiler_path \
     "-p -S -ir" \
@@ -780,7 +780,7 @@ conclusion:
   "token": "null"
 }'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should parse when given the -ir -S -p flags, in that order" \
     $compiler_path \
     "-ir -S -p" \
@@ -808,7 +808,7 @@ conclusion:
   "token": "null"
 }'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should parse when given the -ir -p -S flags, in that order" \
     $compiler_path \
     "-ir -p -S" \
@@ -836,7 +836,7 @@ conclusion:
   "token": "null"
 }'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should parse when given the -S -p -ir flags, in that order" \
     $compiler_path \
     "-S -p -ir" \
@@ -864,7 +864,7 @@ conclusion:
   "token": "null"
 }'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should parse when given the -S -ir -p flags, in that order" \
     $compiler_path \
     "-S -ir -p" \
@@ -892,14 +892,14 @@ conclusion:
   "token": "null"
 }'
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should generate IR when given the -ir -S flags, in that order" \
     $compiler_path \
     "-ir -S" \
     "42" \
     "t0 = 42"
 
-  assert_torreyc_stdout_equalto_with_stdin \
+  assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Should generate IR when given the -S -ir flags, in that order" \
     $compiler_path \
     "-S -ir" \
