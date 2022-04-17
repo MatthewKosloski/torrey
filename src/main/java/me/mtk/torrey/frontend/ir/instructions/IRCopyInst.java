@@ -4,7 +4,7 @@ import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 
 /**
- * Represents a simply "x = y" copy instruction,
+ * Represents a simple "x = y" copy instruction,
  * where the contents at address y are stored in
  * the temp address x.
  */
