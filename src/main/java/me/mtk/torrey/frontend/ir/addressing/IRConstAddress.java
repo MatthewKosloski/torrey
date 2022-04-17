@@ -12,7 +12,7 @@ public final class IRConstAddress extends IRAddress
 
   public IRConstAddress(boolean constant)
   {
-    super(IRAddressingMode.CONSTANT, constant);
+    super(IRAddressingMode.CONSTANT, constant ? 1 : 0);
   }
 
   public IRConstAddress(String constantStr)

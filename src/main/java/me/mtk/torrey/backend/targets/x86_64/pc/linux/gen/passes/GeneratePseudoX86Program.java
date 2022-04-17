@@ -91,11 +91,11 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
     else
     {
       // The test condition is a primitive boolean expression.
-      final boolean bool = (Boolean) inst.arg1().value();
+      final int bool = (Integer) inst.arg1().value();
       x86.addInst(new Movq(new Immediate(0), Register.R10));
       x86.addInst(new Movq(new Immediate(1), Register.R11));
       x86.addInst(new Cmp(Register.R11, Register.R10));
-      x86.addInst(bool ? new Jne(labelAddr) : new Je(labelAddr));
+      x86.addInst(bool == 1 ? new Jne(labelAddr) : new Je(labelAddr));
     }
   }
 
