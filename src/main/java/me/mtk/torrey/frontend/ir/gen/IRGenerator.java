@@ -345,8 +345,16 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
           elseLabel));
       }
 
+      final IRTempAddress branchResult = new IRTempAddress();
+
       // Recursively generate IR instructions for the then branch
-      expr.consequent().accept(this);
+      final IRAddress consequentResult = expr.consequent().accept(this);
+
+      if (consequentResult != null)
+      {
+        // Update lhs of the then branch result
+        irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResult);
+      }
 
       // After the then branch, we should jump to the done label
       // to skip over the else block
@@ -357,12 +365,18 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       irProgram.addQuad(new IRLabelInst(elseLabel));
 
       // Recursively generate IR instructions for the else block
-      expr.alternative().accept(this);
+      final IRAddress alternativeResult = expr.alternative().accept(this);
+
+      if (alternativeResult != null)
+      {
+        // Update lhs of the else branch result
+        irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResult);
+      }
 
       // Generate the done label
       irProgram.addQuad(new IRLabelInst(doneLabel));
 
-      return null;
+      return branchResult;
     }
 
     /*

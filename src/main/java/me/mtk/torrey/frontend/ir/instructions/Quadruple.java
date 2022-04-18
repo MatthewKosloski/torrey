@@ -205,4 +205,9 @@ public abstract class Quadruple
   {
     return result;
   }
+
+  public void setResult(IRAddress newResult)
+  {
+    result = newResult;
+  }
 }
