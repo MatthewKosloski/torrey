@@ -69,16 +69,14 @@ mvn test
 
 ### End-to-End Tests
 
-End-to-end (e2e) tests are used to test: the compiler runtime, the compiler's CLI, the standard output of executables creates by the compiler, and the standard error of the compiler.
-
-The `e2e` directory contains the e2e tests, written in Bash, that assert on the standard output of executables produced by the compiler (via the `assert_stdout` utility function) and the standard error of the compiler (via the `assert_stderr` utility function).
+The end-to-end (e2e) tests live in the `e2e` directory and are used to test: the compiler runtime, the compiler's CLI, the standard output of executables creates by the compiler, and the standard output and error of the compiler.
 
 To run the e2e tests, perform the following:
 
 1. From the project root directory, build the compiler jarfile:
 
 ```sh
-mvn package
+mvn package -DskipTests
 ```
 
 2. Navigate to the `e2e` directory:
@@ -87,7 +85,7 @@ mvn package
 cd e2e
 ```
 
-3. Run the test script:
+3. From the `e2e` directory, run the test script:
 
 ```sh
 bash _run_all_tests.sh
