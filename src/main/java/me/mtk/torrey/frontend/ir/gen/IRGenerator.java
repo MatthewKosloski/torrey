@@ -116,14 +116,14 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      */
     public IRAddress visit(ArithmeticExpr expr)
     {
-        final IRTempAddress result = new IRTempAddress();
-        final TokenType tokType = expr.token().type();
-        final IRAddress arg1 = getDestinationAddr(expr.first());
-        final IRAddress arg2 = getDestinationAddr(expr.second());
+      final IRTempAddress result = new IRTempAddress();
+      final TokenType tokType = expr.token().type();
+      final IRAddress arg1 = getDestinationAddr(expr.first());
+      final IRAddress arg2 = getDestinationAddr(expr.second());
 
-        irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
+      irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
 
-        return result;
+      return result;
     }
 
     /**
