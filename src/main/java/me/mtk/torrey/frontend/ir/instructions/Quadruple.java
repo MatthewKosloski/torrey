@@ -66,6 +66,7 @@ public abstract class Quadruple
           case STAR: return OpType.MULT;
           case SLASH: return OpType.DIV;
           case EQUAL: return OpType.EQUAL;
+          case NOT: return OpType.NEQUAL;
           case LT: return OpType.LT;
           case LTE: return OpType.LTE;
           case GT: return OpType.GT;
