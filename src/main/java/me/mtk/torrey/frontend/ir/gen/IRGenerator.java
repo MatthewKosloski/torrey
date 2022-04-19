@@ -264,7 +264,12 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // in the symbol table.
       top.get(id).setAddress(result);
 
-      irProgram.addQuad(new IRCopyInst(result, rhs));
+      // Ensure the rhs is not null. The rhs can be null if the
+      // bounded expression does not evaluate to a value
+      if (rhs != null)
+      {
+        irProgram.addQuad(new IRCopyInst(result, rhs));
+      }
 
       return null;
     }

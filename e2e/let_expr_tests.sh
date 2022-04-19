@@ -479,17 +479,17 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
          (if a 0 1)))' \
     "1"
 
-  assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if an identifier is bounded to a print expression" \
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow an identifier to be bounded to a print expression" \
     $1 \
-    '(let [a (print 1)])' \
-    ""
+    '(let [a (print 2)])' \
+    "2"
 
-  assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if an identifier is bounded to a println expression" \
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow an identifier to be bounded to a println expression" \
     $1 \
-    '(let [a (println 1)])' \
-    ""
+    '(let [a (println 2)])' \
+    "2"
 
   assert_exec_stdout_equalto_with_stdin \
     "Should allow an identifier to be bounded to an if expression" \
