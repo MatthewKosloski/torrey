@@ -204,22 +204,17 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // to the identifiers and populate the symbol table.
       ((LetBindings) expr.first()).accept(this);
 
-      if (expr.children().size() > 1)
+      // Recursively generate IR instructions for the body expressions
+      for (int i = 1; i < expr.children().size(); i++)
       {
-        // The expression has one or more expressions
-        // in its body, so generate IR instructions
-        // for these expressions.
+        final Expr child = (Expr) expr.children().get(i);
+        final IRAddress addr = child.accept(this);
 
-        for (int i = 1; i < expr.children().size(); i++)
-        {
-          final Expr child = (Expr) expr.children().get(i);
-          final IRAddress addr = child.accept(this);
-
-          // Return the destination address of the last
-          // expression of the body.
-          if (i == expr.children().size() - 1)
-            return addr;
-        }
+        // Return the destination address of the last
+        // expression of the body.
+        if (i == expr.children().size() - 1)
+          return addr;
+      }
       }
 
       // Restore the previous environment.
