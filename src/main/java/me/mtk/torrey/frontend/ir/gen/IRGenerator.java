@@ -215,7 +215,6 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
         if (i == expr.children().size() - 1)
           return addr;
       }
-      }
 
       // Restore the previous environment.
       top = prevEnv;
