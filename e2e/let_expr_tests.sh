@@ -507,11 +507,11 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
          a))' \
     "1"
 
-  assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a syntax error if an identifier is bounded to an empty let expression" \
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow an identifier to be bounded to an empty let expression" \
     $1 \
     '(let [a (let [])])' \
-    "69"
+    ""
 
   echo -e "\n"
 }
