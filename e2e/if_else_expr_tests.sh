@@ -34,28 +34,110 @@ Expected a closing parenthesis ')' (1:14)
 1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should not take the branch if the test is a print expression" \
+    "Should take the then branch if the test is an arbitrarily nested if-then expression that is truthy" \
     $1 \
-    "(if (print 1)
+    "(if
+      (if true 999)
       (print 1)
+      (print 0))
+    (if
+      (if
+        (if true 999)
+        999)
+      (print 2)
+      (print 0))
+    (if
+      (if
+        (if
+          (if true 999) 998)
+        997)
+      (print 3)
       (print 0))" \
-    "1"
+    "123"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should not take the branch if the test is a println expression" \
+    "Should take the else branch if the test is an arbitrarily nested if-then expression that is falsy" \
     $1 \
-    "(if (println 1)
+    "(if
+      (if true 0)
       (print 1)
+      (print 0))
+    (if
+      (if
+        (if true 999)
+        0)
+      (print 2)
+      (print 0))
+    (if
+      (if
+        (if
+          (if true 999) 998)
+        0)
+      (print 3)
       (print 0))" \
-    "1"
+    "000"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should not take the branch if the test is an empty let expression" \
+    "Should take the then branch if the test is an arbitrarily nested if-then-else expression that is truthy" \
     $1 \
-    "(if (let [])
+    "(if
+      (if false 0 400)
       (print 1)
+      (print 0))
+    (if
+      (if
+        (if
+          false
+          500
+          0)
+        0
+        501)
+      (print 2)
+      (print 0))
+    (if
+      (if
+        (if
+          (if false
+            0
+            602)
+          601
+          0)
+        600
+        0)
+      (print 3)
       (print 0))" \
-    ""
+    "123"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the else branch if the test is an arbitrarily nested if-then-else expression that is falsy" \
+    $1 \
+    "(if
+      (if false 400 0)
+      (print 1)
+      (print 0))
+    (if
+      (if
+        (if
+          false
+          500
+          0)
+        501
+        0)
+      (print 2)
+      (print 0))
+    (if
+      (if
+        (if
+          (if false
+            0
+            602)
+          601
+          0)
+        0
+        600)
+      (print 3)
+      (print 0))" \
+    "000"
 
 # Should report a type error if the branches evaluate to different types
 
