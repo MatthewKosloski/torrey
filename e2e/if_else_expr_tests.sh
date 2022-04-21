@@ -33,47 +33,29 @@ Expected a closing parenthesis ')' (1:14)
 
 1 Error"
 
-  assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if the test is a print expression" \
+  assert_exec_stdout_equalto_with_stdin \
+    "Should not take the branch if the test is a print expression" \
     $1 \
-    "(if (print 1) 1 0)" \
-    "Encountered one or more semantic errors during type checking:
+    "(if (print 1)
+      (print 1)
+      (print 0))" \
+    "1"
 
-
-An expression of type 'NIL' cannot be tested for truthiness (1:6)
-
-(if (print 1) 1 0)
-     ^^^^^
-
-1 Error"
-
-  assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if the test is a println expression" \
+  assert_exec_stdout_equalto_with_stdin \
+    "Should not take the branch if the test is a println expression" \
     $1 \
-    "(if (println 1) 1 0)" \
-    "Encountered one or more semantic errors during type checking:
+    "(if (println 1)
+      (print 1)
+      (print 0))" \
+    "1"
 
-
-An expression of type 'NIL' cannot be tested for truthiness (1:6)
-
-(if (println 1) 1 0)
-     ^^^^^^^
-
-1 Error"
-
-  assert_torreyc_stderr_equalto_with_stdin \
-    "Should report a type error if the test is an empty let expression" \
+  assert_exec_stdout_equalto_with_stdin \
+    "Should not take the branch if the test is an empty let expression" \
     $1 \
-    "(if (let []) 1 0)" \
-    "Encountered one or more semantic errors during type checking:
-
-
-An expression of type 'NIL' cannot be tested for truthiness (1:6)
-
-(if (let []) 1 0)
-     ^^^
-
-1 Error"
+    "(if (let [])
+      (print 1)
+      (print 0))" \
+    ""
 
 # Should report a type error if the branches evaluate to different types
 
@@ -464,6 +446,93 @@ Both branches to an if expression must evaluate to the same types (1:2)
     "(if true (let []) (println 0))
      (if true (println 1) (let []))" \
     "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the else branch if the test is a print expression" \
+    $1 \
+    "(if (print 42)
+      (print 1)
+      (print 0))" \
+    "420"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the else branch if the test is a println expression" \
+    $1 \
+    "(if (println 42)
+      (print 1)
+      (print 0))" \
+    "42
+0"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the else branch if the test is an empty let expression" \
+    $1 \
+    "(if (let [])
+      (print 1)
+      (print 0))" \
+    "0"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the else branch if the test is an if-then expression that does not evaluate to a type" \
+    $1 \
+    "(if
+      (if true (let []))
+      (print 1)
+      (print 0))
+    (if
+      (if false (let []))
+      (print 1)
+      (print 0))" \
+    "00"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the then branch if the test is an if-then expression that is truthy" \
+    $1 \
+    "(if
+      (if true 1)
+      (print 42)
+      (print 0))" \
+    "42"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the then branch if the test is an if-then expression that is falsy" \
+    $1 \
+    "(if
+      (if true 0)
+      (print 42)
+      (print 0))" \
+    "0"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the else branch if the test is an if-then-else expression that does not evaluate to a type" \
+    $1 \
+    "(if
+      (if true (let []) (print 777))
+      (print 1)
+      (print 0))
+    (if
+      (if false (print 555) (let []))
+      (print 1)
+      (print 0))" \
+    "00"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the then branch if the test is an if-then-else expression that is truthy" \
+    $1 \
+    "(if
+      (if true 1 0)
+      (print 42)
+      (print 0))" \
+    "42"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should take the then branch if the test is an if-then-else expression that is falsy" \
+    $1 \
+    "(if
+      (if true 0 1)
+      (print 42)
+      (print 0))" \
+    "0"
 
   # Should take the else branch if the test evaluates to zero
 

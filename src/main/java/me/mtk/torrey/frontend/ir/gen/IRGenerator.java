@@ -157,7 +157,8 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * given print expression.
      *
      * @param expr A print expression.
-     * @return null.
+     * @return A null address, indicating that this expression
+     * does not evaluate to a value.
      */
     public IRAddress visit(PrintExpr expr)
     {
@@ -180,7 +181,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       irProgram.addQuads(params);
       irProgram.addQuad(new IRCallInst(procName, numParams));
 
-      return null;
+      return new IRNullAddress();
     }
 
     /**
@@ -190,8 +191,9 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @param expr A let expression.
      * @return If the let expression has one or more
      * expressions in its body, then the destination address
-     * of the last expression of the body is returned; null
-     * otherwise.
+     * of the last expression of the body is returned; otherwise,
+     * a null address is returned, indicating that the let expression
+     * does not evaluate to a value.
      */
     public IRAddress visit(LetExpr expr)
     {
@@ -219,7 +221,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // Restore the previous environment.
       top = prevEnv;
 
-      return null;
+      return new IRNullAddress();
     }
 
     /**
@@ -258,9 +260,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // in the symbol table.
       top.get(id).setAddress(result);
 
-      // Ensure the rhs is not null. The rhs can be null if the
-      // bounded expression does not evaluate to a value
-      if (rhs != null)
+      if (!(rhs instanceof IRNullAddress))
       {
         irProgram.addQuad(new IRCopyInst(result, rhs));
       }
@@ -284,43 +284,15 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 
     public IRAddress visit(IfExpr expr)
     {
-      // Generate IR instructions for the test condition,
-      // returning the address of label of the alternate branch.
-      IRLabelAddress doneLabel = null;
-      if (expr.test() instanceof CompareExpr)
-        // The test condition is a comparison, so generate
-        // IR instructions for the comparison.
-        doneLabel = (IRLabelAddress) expr.test().accept(this);
-      else
-      {
-        // The test condition is not a comparison, so generate
-        // an if-then instruction.
-        doneLabel = new IRLabelAddress();
-        irProgram.addQuad(new IRIfInst(
-          new IRConstAddress(!expr.isTruthy()), doneLabel));
-      }
-
-      // Generate IR instructions for the consequent branch.
-      final IRAddress consequentBranchAddr = expr.consequent().accept(this);
-
-      // The result of this if expression will be stored in this temp.
-      final IRTempAddress result = new IRTempAddress();
-
-      // If we have an address of the last expression in the
-      // consequent branch, then store it in the temp.
-      if (consequentBranchAddr != null)
-        irProgram.addQuad(new IRCopyInst(result, consequentBranchAddr));
-
-      // Finally, generate the done label instruction.
-      irProgram.addQuad(new IRLabelInst(doneLabel));
-
-      return result;
-    }
-
-    public IRAddress visit(IfThenElseExpr expr)
-    {
       // Recursively generate IR instructions for the test condition
-      final IRAddress testAddr = expr.test().accept(this);
+      IRAddress testResultAddr = expr.test().accept(this);
+
+      if (testResultAddr instanceof IRNullAddress)
+      {
+        // The test condition does not evaluate to a value, so
+        // we'll convert its NullAddress to a constant
+        testResultAddr = ((IRNullAddress) testResultAddr).toIRConstantAddress();
+      }
 
       // Jump to the else label if the test condition is false
       final IRLabelAddress elseLabel = new IRLabelAddress();
@@ -331,7 +303,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
         // and jump to the else label if the test evaluates to 0
         irProgram.addQuad(new IRIfInst(
           TokenType.NOT,
-          testAddr,
+          testResultAddr,
           new IRConstAddress(0),
           elseLabel));
       }
@@ -339,20 +311,20 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       {
         irProgram.addQuad(new IRIfInst(
           TokenType.EQUAL,
-          testAddr,
+          testResultAddr,
           new IRConstAddress(1),
           elseLabel));
       }
 
-      final IRTempAddress branchResult = new IRTempAddress();
+      final IRTempAddress branchResultAddr = new IRTempAddress();
 
       // Recursively generate IR instructions for the then branch
-      final IRAddress consequentResult = expr.consequent().accept(this);
+      final IRAddress consequentResultAddr = expr.consequent().accept(this);
 
-      if (consequentResult != null)
+      if (consequentResultAddr instanceof IRTempAddress)
       {
-        // Update lhs of the then branch result
-        irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResult);
+        // Update lhs of the then branch
+        irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResultAddr);
       }
 
       // After the then branch, we should jump to the done label
@@ -363,19 +335,32 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // Start of else block
       irProgram.addQuad(new IRLabelInst(elseLabel));
 
-      // Recursively generate IR instructions for the else block
-      final IRAddress alternativeResult = expr.alternative().accept(this);
-
-      if (alternativeResult != null)
+      if (expr instanceof IfThenElseExpr)
       {
-        // Update lhs of the else branch result
-        irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResult);
+        // Recursively generate an explicit else branch
+        final IRAddress alternativeResultAddr = ((IfThenElseExpr) expr).alternative().accept(this);
+
+        if (alternativeResultAddr instanceof IRTempAddress)
+        {
+          // Update lhs of the else branch
+          irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResultAddr);
+        }
+      }
+      else
+      {
+        // Generate an implicit else branch
+        irProgram.addQuad(new IRCopyInst(branchResultAddr, new IRConstAddress(0)));
       }
 
       // Generate the done label
       irProgram.addQuad(new IRLabelInst(doneLabel));
 
-      return branchResult;
+      return branchResultAddr;
+    }
+
+    public IRAddress visit(IfThenElseExpr expr)
+    {
+      return visit((IfExpr)expr);
     }
 
     /*
