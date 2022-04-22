@@ -321,10 +321,14 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // Recursively generate IR instructions for the then branch
       final IRAddress consequentResultAddr = expr.consequent().accept(this);
 
+      // Indicates whether the expression evaluates to a value
+      boolean hasResult = false;
+
       if (consequentResultAddr instanceof IRTempAddress)
       {
         // Update lhs of the then branch
         irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResultAddr);
+        hasResult = true;
       }
 
       // After the then branch, we should jump to the done label
@@ -344,6 +348,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
         {
           // Update lhs of the else branch
           irProgram.quads().get(irProgram.quads().size() - 1).setResult(branchResultAddr);
+          hasResult = true;
         }
       }
       else
@@ -355,7 +360,13 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // Generate the done label
       irProgram.addQuad(new IRLabelInst(doneLabel));
 
-      return branchResultAddr;
+      if (hasResult)
+      {
+        return branchResultAddr;
+      } else
+      {
+        return new IRNullAddress();
+      }
     }
 
     public IRAddress visit(IfThenElseExpr expr)
