@@ -53,7 +53,10 @@ public final class Torrey
         torrey.showRegisteredTargets();
 
       if (config.help())
+      {
         jcmdr.usage();
+        System.exit(0);
+      }
 
       // Check stdin first.
       String input = TorreyIOUtils.readFromStdin();
