@@ -161,11 +161,9 @@ https://github.com/MatthewKosloski/torrey/releases/latest"
     "Should output a list of available targets when given the --target-list flag" \
     $compiler_path \
     "--target-list" \
-    "Usage: --target <triple>,
-  where <triple> is of the form <arch>-<vendor>-<sys>
-
-Registered targets (triples):
-  x86_64-pc-linux"
+    "Usage: --target <triple>, where <triple> is of the form <arch>-<vendor>-<sys>
+  Registered targets (triples):
+    x86_64-pc-linux"
 
   assert_torreyc_stderr_equalto_with_stdin_and_cli_args \
     "Should report error if invalid target passed to --target flag" \
@@ -230,7 +228,7 @@ conclusion:
     "-L" \
     "42" \
     "<'42',INTEGER,1:1,1:3>
-<'',EOF,-1:-1,-1:-1>"
+<'',EOF,1:3,1:3>"
 
   assert_torreyc_stdout_equalto_with_stdin_and_cli_args \
     "Smoke: Should ouput an AST when given the -p flag" \
