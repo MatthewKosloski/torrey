@@ -295,6 +295,195 @@ Expected operand to operator '+' to be type 'INTEGER' but found type 'BOOLEAN' i
 1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of addition when a is negative" \
+    $1 \
+    "
+    ; Zero is called the identity element of addition
+    (let [a (- 1)]
+       (if (== (+ a 0) (+ 0 a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of addition when a is zero" \
+    $1 \
+    "
+     ; Zero is called the identity element of addition
+     (let [a 0]
+       (if (== (+ a 0) (+ 0 a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of addition when a is positive" \
+    $1 \
+    "
+     ; Zero is called the identity element of addition
+     (let [a 1]
+       (if (== (+ a 0) (+ 0 a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of addition when a and b are negative" \
+    $1 \
+    "
+    ; The order in which you add two numbers
+    ; does not change the result
+     (let [a (- 1) b (- 2)]
+       (if (== (+ a b) (+ b a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of addition when a and b are zero" \
+    $1 \
+    "
+    ; The order in which you add two numbers
+    ; does not change the result
+    (let [a 0 b a]
+       (if (== (+ a b) (+ b a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of addition when a and b are positive" \
+    $1 \
+    "
+     ; The order in which you add two numbers
+     ; does not change the result
+     (let [a 1 b 2]
+       (if (== (+ a b) (+ b a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of addition when a, b, and c are negative" \
+    $1 \
+    "
+    ; When you add three real numbers, the grouping
+    ; (or association) of the numbers does not change
+    ; the result
+    (let [a (- 1) b (- 2) c (- 3)]
+       (if (== (+ c (+ a b)) (+ a (+ b c)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of addition when a, b, and c are zero" \
+    $1 \
+    "
+    ; When you add three real numbers, the grouping
+    ; (or association) of the numbers does not change
+    ; the result
+    (let [a 0 b a c a]
+       (if (== (+ c (+ a b)) (+ a (+ b c)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of addition when a, b, and c are positive" \
+    $1 \
+    "
+    ; When you add three real numbers, the grouping
+    ; (or association) of the numbers does not change
+    ; the result
+    (let [a 1 b 2 c 3]
+       (if (== (+ c (+ a b)) (+ a (+ b c)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites of addition when a is negative" \
+    $1 \
+    "
+    ; A number and its opposite are additive inverses
+    ; of each other because their sum is zero
+    (let [a (- 1)]
+       (if (== (+ a (- a)) 0)
+         (print 1)
+         (print 0))
+      (if (== (+ (- a) a) 0)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites of addition when a is zero" \
+    $1 \
+    "
+    ; A number and its opposite are additive inverses
+    ; of each other because their sum is zero
+    (let [a 0]
+       (if (== (+ a (- a)) 0)
+         (print 1)
+         (print 0))
+      (if (== (+ (- a) a) 0)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites of addition when a is positive" \
+    $1 \
+    "
+    ; A number and its opposite are additive inverses
+    ; of each other because their sum is zero
+    (let [a 1]
+       (if (== (+ a (- a)) 0)
+         (print 1)
+         (print 0))
+      (if (== (+ (- a) a) 0)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites of a sum when a and b are negative" \
+    $1 \
+    "
+    ; The opposite of a sum of real numbers
+    ; is equal to the sum of the opposites
+    (let [a (- 1) b (- 2)]
+       (if (== (- (+ a b)) (+ (- a) (- b)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites of a sum when a and b are zero" \
+    $1 \
+    "
+    ; The opposite of a sum of real numbers
+    ; is equal to the sum of the opposites
+    (let [a 0 b a]
+       (if (== (- (+ a b)) (+ (- a) (- b)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites of a sum when a and b are positive" \
+    $1 \
+    "
+    ; The opposite of a sum of real numbers
+    ; is equal to the sum of the opposites
+    (let [a 1 b 2]
+       (if (== (- (+ a b)) (+ (- a) (- b)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
     "Should compute the sum of two integer literals" \
     $1 \
     "(print (+ 2 3))" \
