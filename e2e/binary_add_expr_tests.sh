@@ -5,6 +5,45 @@ source _utils.sh
 run_binary_add_expr_tests () {
   echo "Tests for \"(\" \"+\" expr expr \")\""
 
+  assert_exec_stdout_equalto_with_stdin \
+    "Should not require white space between the operator and the first operand" \
+    $1 \
+    "(print (+32 10))" \
+    "42"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow arbitrary white space between the opening parenthesis and the operator" \
+    $1 \
+    "(print ( + 32 10) (  + 32 10) (
+
+
+        +  32 10))" \
+    "424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow arbitrary white space between the last operand and the closing parenthesis" \
+    $1 \
+    "(print (+ 32 10 ) (+ 32 10  ) (+ 32 10
+    ) (+ 32 10
+
+      ))" \
+    "42424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow arbitrary white space around and between operands" \
+    $1 \
+    "(print (+ 32  10) (+ 32   10) (+ 32
+
+    10) (+
+
+
+       32
+
+
+
+          10       ))" \
+    "42424242"
+
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a syntax error if no left parenthesis and no operands" \
     $1 \
