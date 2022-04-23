@@ -4,6 +4,9 @@ source print_expr_tests.sh
 source println_expr_tests.sh
 source unary_expr_tests.sh
 source binary_add_expr_tests.sh
+source binary_sub_expr_tests.sh
+source binary_mult_expr_tests.sh
+source binary_div_expr_tests.sh
 source let_expr_tests.sh
 source if_expr_tests.sh
 source if_else_expr_tests.sh
@@ -62,6 +65,9 @@ run_print_expr_tests ./$compiler_file_name
 run_println_expr_tests ./$compiler_file_name
 run_unary_expr_tests ./$compiler_file_name
 run_binary_add_expr_tests ./$compiler_file_name
+run_binary_sub_expr_tests ./$compiler_file_name
+run_binary_mult_expr_tests ./$compiler_file_name
+run_binary_div_expr_tests ./$compiler_file_name
 run_let_expr_tests ./$compiler_file_name
 run_if_expr_tests ./$compiler_file_name
 run_if_else_expr_tests ./$compiler_file_name
