@@ -6,6 +6,16 @@ run_program_tests () {
   echo "Tests for program"
 
   assert_torreyc_stderr_empty_with_stdin \
+    "Should accept a program of just comments" \
+    $1 \
+    "
+    ; this
+    ; is a
+    ; program of
+    ; comments :D
+    "
+
+  assert_torreyc_stderr_empty_with_stdin \
     "Should accept an empty program without error" \
     $1 \
     ""
