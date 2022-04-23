@@ -267,6 +267,99 @@ Expected operand to operator '-' to be type 'INTEGER' but found type 'BOOLEAN' i
 1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of subtraction when a is negative" \
+    $1 \
+    "
+    ; Subtracting zero from a real number does not change it
+    (let [a (- 1)]
+       (if (== (- a 0) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of subtraction when a is zero" \
+    $1 \
+    "
+     ; Subtracting zero from a real number does not change it
+     (let [a 0]
+       (if (== (- a 0) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of subtraction when a is positive" \
+    $1 \
+    "
+     ; Subtracting zero from a real number does not change it
+     (let [a 1]
+       (if (== (- a 0) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of subtraction when a and b are negative" \
+    $1 \
+    "
+    ; The order in which you subtract two numbers
+    ; does indeed change the result
+     (let [a (- 1) b (- 2)]
+       (if (== (- a b) (- b a))
+         (print 0)
+         (print 1)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of subtraction when a and b are positive" \
+    $1 \
+    "
+     ; The order in which you subtract two numbers
+     ; does indeed change the result
+     (let [a 1 b 2]
+       (if (== (- a b) (- b a))
+         (print 0)
+         (print 1)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of subtraction when a, b, and c are negative" \
+    $1 \
+    "
+    ; When you subtract three real numbers, the grouping
+    ; (or association) of the numbers changes the value
+    (let [a (- 1) b (- 2) c (- 3)]
+       (if (== (- c (- a b)) (- a (- b c)))
+         (print 0)
+         (print 1)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of subtraction when a, b, and c are positive" \
+    $1 \
+    "
+    ; When you subtract three real numbers, the grouping
+    ; (or association) of the numbers changes the value
+    (let [a 1 b 2 c 3]
+       (if (== (- c (- a b)) (- a (- b c)))
+         (print 0)
+         (print 1)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the inverse property of subtraction when a, b, and c are whole numbers" \
+    $1 \
+    "
+    ; If a, b, and c are whole numbers such that
+    ; a - b = c, then b + c = a
+    (let [a 1 b 2 c (- a b)]
+       (if (== (+ b c) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
     "Should compute the difference of two integer literals" \
     $1 \
     "(print (- 2 3))" \
