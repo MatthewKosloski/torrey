@@ -1,16 +1,16 @@
 # !/bin/bash
-source program_tests.sh
-source print_expr_tests.sh
-source println_expr_tests.sh
-source unary_minus_expr_tests.sh
-source binary_arithmetic_add_expr_tests.sh
-source binary_arithmetic_sub_expr_tests.sh
-source binary_arithmetic_mult_expr_tests.sh
-source binary_arithmetic_div_expr_tests.sh
-source let_expr_tests.sh
-source if_expr_tests.sh
-source if_else_expr_tests.sh
-source cli_tests.sh
+source ./specs/program_tests.sh
+source ./specs/io/stdout/print_tests.sh
+source ./specs/io/stdout/println_tests.sh
+source ./specs/operators/unary/minus_tests.sh
+source ./specs/operators/binary/arithmetic/addition_tests.sh
+source ./specs/operators/binary/arithmetic/subtraction_tests.sh
+source ./specs/operators/binary/arithmetic/multiplication_tests.sh
+source ./specs/operators/binary/arithmetic/division_tests.sh
+source ./specs/let_tests.sh
+source ./specs/control_flow/if/if_then_tests.sh
+source ./specs/control_flow/if/if_then_else_tests.sh
+source ./specs/cli_tests.sh
 
 count_total=0
 count_passed=0
@@ -69,8 +69,8 @@ run_binary_arithmetic_sub_expr_tests ./$compiler_file_name
 run_binary_arithmetic_mult_expr_tests ./$compiler_file_name
 run_binary_arithmetic_div_expr_tests ./$compiler_file_name
 run_let_expr_tests ./$compiler_file_name
-run_if_expr_tests ./$compiler_file_name
-run_if_else_expr_tests ./$compiler_file_name
+run_if_then_expr_tests ./$compiler_file_name
+run_if_then_else_expr_tests ./$compiler_file_name
 run_cli_tests ./$compiler_file_name
 
 # Display statistics

@@ -2,7 +2,7 @@
 
 source _utils.sh
 
-run_if_else_expr_tests () {
+run_if_then_else_expr_tests () {
   echo "Tests for \"(\" \"if\" expr expr expr \")\""
 
   assert_torreyc_stderr_equalto_with_stdin \
