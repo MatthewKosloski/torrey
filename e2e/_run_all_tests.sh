@@ -2,7 +2,7 @@
 source program_tests.sh
 source print_expr_tests.sh
 source println_expr_tests.sh
-source unary_expr_tests.sh
+source unary_minus_expr_tests.sh
 source binary_arithmetic_add_expr_tests.sh
 source binary_arithmetic_sub_expr_tests.sh
 source binary_arithmetic_mult_expr_tests.sh
@@ -63,7 +63,7 @@ fi
 run_program_tests ./$compiler_file_name
 run_print_expr_tests ./$compiler_file_name
 run_println_expr_tests ./$compiler_file_name
-run_unary_expr_tests ./$compiler_file_name
+run_unary_minus_expr_tests ./$compiler_file_name
 run_binary_arithmetic_add_expr_tests ./$compiler_file_name
 run_binary_arithmetic_sub_expr_tests ./$compiler_file_name
 run_binary_arithmetic_mult_expr_tests ./$compiler_file_name
