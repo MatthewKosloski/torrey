@@ -334,6 +334,99 @@ Expected operand to operator '/' to be type 'INTEGER' but found type 'BOOLEAN' i
 1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of division when a is negative" \
+    $1 \
+    "
+    ; For every real number a, a/1=a
+    (let [a (- 1)]
+       (if (== (/ a 1) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of division when a is zero" \
+    $1 \
+    "
+    ; For every real number a, a/1=a
+    (let [a 0]
+       (if (== (/ a 1) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of division when a is positive" \
+    $1 \
+    "
+    ; For every real number a, a/1=a
+    (let [a 2]
+       (if (== (/ a 1) a)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the division by itself property when a is negative" \
+    $1 \
+    "
+    ; For any non-zero real number a, a/a=1
+    (let [a (- 1)]
+       (if (== (/ a a) 1)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the division by itself property when a is positive" \
+    $1 \
+    "
+    ; For any non-zero real number a, a/a=1
+    (let [a 2]
+       (if (== (/ a a) 1)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a type error if the divisor is zero" \
+    $1 \
+    "
+    ; Division by 0 is meaningless
+    (/ 1 0)" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Division by zero (2:10)
+
+(/ 1 0)
+     ^
+
+1 Error"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the division of 0 by any non-zero real number property when a is negative" \
+    $1 \
+    "
+    ; Zero divided by any non-zero real number a results in a quotient of zero
+    (let [a (- 1)]
+       (if (== (/ 0 a) 0)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the division of 0 by any non-zero real number property when a is positive" \
+    $1 \
+    "
+    ; Zero divided by any non-zero real number a results in a quotient of zero
+    (let [a 2]
+       (if (== (/ 0 a) 0)
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
     "Should compute the quotient of two integer literals" \
     $1 \
     "(print (/ 2 3))" \
