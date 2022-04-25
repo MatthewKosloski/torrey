@@ -334,6 +334,286 @@ Expected operand to operator '*' to be type 'INTEGER' but found type 'BOOLEAN' i
 1 Error"
 
   assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of multiplication when a is negative" \
+    $1 \
+    "
+    ; For every real number a, a*1=a and 1*a=a
+    (let [a (- 1)]
+       (if (== (* a 1) a)
+         (print 1)
+         (print 0))
+       (if (== (* 1 a) a)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of multiplication when a is zero" \
+    $1 \
+    "
+    ; For every real number a, a*1=a and 1*a=a
+    (let [a 0]
+       (if (== (* a 1) a)
+         (print 1)
+         (print 0))
+       (if (== (* 1 a) a)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the identity property of multiplication when a is positive" \
+    $1 \
+    "
+    ; For every real number a, a*1=a and 1*a=a
+    (let [a 2]
+       (if (== (* a 1) a)
+         (print 1)
+         (print 0))
+       (if (== (* 1 a) a)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the inverse property of multiplication when a is negative" \
+    $1 \
+    "
+    ; For all non-zero real numbers a, a*(1/a)=1 and (1/a)*a=1
+    (let [a (- 1)]
+       (if (== (* a (/ 1 a)) 1)
+         (print 1)
+         (print 0))
+       (if (== (* (/ 1 a) a) 1)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the inverse property of multiplication when a is positive" \
+    $1 \
+    "
+    ; For all non-zero real numbers a, a*(1/a)=1 and (1/a)*a=1
+    (let [a (- 1)]
+       (if (== (* a (/ 1 a)) 1)
+         (print 1)
+         (print 0))
+       (if (== (* (/ 1 a) a) 1)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the multiplicative property of multiplication when a is negative" \
+    $1 \
+    "
+    ; For every real number a, a*0=0 and 0*a=0
+    (let [a (- 1)]
+       (if (== (* a 0) 0)
+         (print 1)
+         (print 0))
+       (if (== (* 0 a) 0)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the multiplicative property of multiplication when a is zero" \
+    $1 \
+    "
+    ; For every real number a, a*0=0 and 0*a=0
+    (let [a 0]
+       (if (== (* a 0) 0)
+         (print 1)
+         (print 0))
+       (if (== (* 0 a) 0)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the multiplicative property of multiplication when a is positive" \
+    $1 \
+    "
+    ; For every real number a, a*0=0 and 0*a=0
+    (let [a 1]
+       (if (== (* a 0) 0)
+         (print 1)
+         (print 0))
+       (if (== (* 0 a) 0)
+         (print 1)
+         (print 0)))" \
+    "11"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of multiplication when a and b are negative" \
+    $1 \
+    "
+    ; For all real numbers a and b, a*b=b*a
+    (let [a (- 1) b (- 2)]
+       (if (== (* a b) (* b a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of multiplication when a and b are zero" \
+    $1 \
+    "
+    ; For all real numbers a and b, a*b=b*a
+    (let [a 0 b a]
+       (if (== (* a b) (* b a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the commutative property of multiplication when a and b are positive" \
+    $1 \
+    "
+    ; For all real numbers a and b, a*b=b*a
+    (let [a 1 b 2]
+       (if (== (* a b) (* b a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of multiplication when a, b, and c are negative" \
+    $1 \
+    "
+    ; For all real numbers a, b, c,
+    ; (a * b)c = a(b * c) .
+    ; That is, when you multiply any three real numbers,
+    ; the grouping (or association) of the numbers does
+    ; not change the result
+    (let [a (- 1) b (- 2) c ( -3)]
+       (if (== (* (* a b) c) (* a (* b c)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of multiplication when a, b, and c are zero" \
+    $1 \
+    "
+    ; For all real numbers a, b, c,
+    ; (a * b)c = a(b * c) .
+    ; That is, when you multiply any three real numbers,
+    ; the grouping (or association) of the numbers does
+    ; not change the result
+    (let [a 0 b a c a]
+       (if (== (* (* a b) c) (* a (* b c)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the associative property of multiplication when a, b, and c are positive" \
+    $1 \
+    "
+    ; For all real numbers a, b, c,
+    ; (a * b)c = a(b * c) .
+    ; That is, when you multiply any three real numbers,
+    ; the grouping (or association) of the numbers does
+    ; not change the result
+    (let [a 1 b 2 c 3]
+       (if (== (* (* a b) c) (* a (* b c)))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the multiplicative property of -1 when a is negative" \
+    $1 \
+    "
+    ; For all real numbers a,
+    ; a(-1) = -a and (-1)a = -a
+    (let [a (- 1)]
+       (if (== (* a (- 1)) (* (- 1) a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the multiplicative property of -1 when a is zero" \
+    $1 \
+    "
+    ; For all real numbers a,
+    ; a(-1) = -a and (-1)a = -a
+    (let [a 0]
+       (if (== (* a (- 1)) (* (- 1) a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the multiplicative property of -1 when a is positive" \
+    $1 \
+    "
+    ; For all real numbers a,
+    ; a(-1) = -a and (-1)a = -a
+    (let [a 2]
+       (if (== (* a (- 1)) (* (- 1) a))
+         (print 1)
+         (print 0)))" \
+    "1"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites in products with a and b are negative" \
+    $1 \
+    "
+    ; For every real number a and b,
+    ; (- a)b = -ab, a(-b) = -ab, and (-a)(-b) = ab
+    (let [a (- 1) b (- 2)]
+       (if (== (* (- a) b) (- (* a b)))
+         (print 1)
+         (print 0))
+       (if (== (* a (- b)) (- (* a b)))
+         (print 1)
+         (print 0))
+      (if (== (* (- a) (- b)) (* a b))
+         (print 1)
+         (print 0)))" \
+    "111"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites in products with a and b are zero" \
+    $1 \
+    "
+    ; For every real number a and b,
+    ; (- a)b = -ab, a(-b) = -ab, and (-a)(-b) = ab
+    (let [a 0 b a]
+       (if (== (* (- a) b) (- (* a b)))
+         (print 1)
+         (print 0))
+       (if (== (* a (- b)) (- (* a b)))
+         (print 1)
+         (print 0))
+      (if (== (* (- a) (- b)) (* a b))
+         (print 1)
+         (print 0)))" \
+    "111"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should respect the property of opposites in products with a and b are positive" \
+    $1 \
+    "
+    ; For every real number a and b,
+    ; (- a)b = -ab, a(-b) = -ab, and (-a)(-b) = ab
+    (let [a 1 b 2]
+       (if (== (* (- a) b) (- (* a b)))
+         (print 1)
+         (print 0))
+       (if (== (* a (- b)) (- (* a b)))
+         (print 1)
+         (print 0))
+      (if (== (* (- a) (- b)) (* a b))
+         (print 1)
+         (print 0)))" \
+    "111"
+
+  assert_exec_stdout_equalto_with_stdin \
     "Should compute the product of two integer literals" \
     $1 \
     "(print (* 2 3))" \
