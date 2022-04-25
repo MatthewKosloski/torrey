@@ -2,7 +2,7 @@
 
 source _utils.sh
 
-run_binary_add_expr_tests () {
+run_binary_arithmetic_add_expr_tests () {
   echo "Tests for \"(\" \"+\" expr expr \")\""
 
   assert_exec_stdout_equalto_with_stdin \
