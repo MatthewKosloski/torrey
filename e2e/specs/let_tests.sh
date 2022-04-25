@@ -5,6 +5,116 @@ source _utils.sh
 run_let_expr_tests () {
   echo "Tests for \"(\" \"let\" \"[\" (identifier expr)* \"]\" expr* \")\""
 
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow zero or more white space characters between the opening parenthesis and the let keyword" \
+    $1 \
+    "(print
+      (let [x 42] x)
+      ( let [x 42] x)
+      (  let [x 42] x)
+      (
+let [x 42] x)
+      (
+
+let [x 42] x))" \
+    "4242424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow zero or more white space characters between the let keyword and the opening bracket" \
+    $1 \
+    "(print
+      (let[x 42] x)
+      (let [x 42] x)
+      (let  [x 42] x)
+      (let
+[x 42] x)
+      (let
+
+[x 42] x))" \
+    "4242424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow zero or more white space characters between the opening bracket and the first identifier" \
+    $1 \
+    "(print
+      (let [x 42] x)
+      (let [ x 42] x)
+      (let [  x 42] x)
+      (let [
+x 42] x)
+      (let [
+
+x 42] x))" \
+    "4242424242"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report an error if there is no white space between an identifier and the expression bounded to the identifier" \
+    $1 \
+    "(let [x42])" \
+    "Encountered one or more syntax errors during parse:
+
+
+Expected an integer, unary, binary, print, let, or identifier expression but found ']' instead (1:10)
+
+(let [x42])
+         ^
+
+1 Error"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow one or more white space characters between an identifier and the expression bounded to the identifier" \
+    $1 \
+    "(print
+      (let [x 42] x)
+      (let [x  42] x)
+      (let [x
+42] x)
+      (let [x
+
+42] x))" \
+    "42424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow zero or more white space characters between the last bounded expression and the closing bracket" \
+    $1 \
+    "(print
+      (let [x 42] x)
+      (let [x 42 ] x)
+      (let [x 42  ] x)
+      (let [x 42
+] x)
+      (let [x 42
+
+] x))" \
+    "4242424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow zero or more white space characters between the closing bracket and the first body expression" \
+    $1 \
+    "(print
+      (let [x 42]x)
+      (let [x 42] x)
+      (let [x 42]  x)
+      (let [x 42]
+x)    (let [x 42]
+
+x))" \
+    "4242424242"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should allow zero or more white space characters between the last body expression and the closing parenthesis" \
+    $1 \
+    "(print
+      (let [x 42] x)
+      (let [x 42] x )
+      (let [x 42] x  )
+      (let [x 42] x
+)
+      (let [x 42] x
+
+))" \
+    "4242424242"
+
   assert_torreyc_stderr_equalto_with_stdin \
     "Should report a syntax error if no left parenthesis and no bindings list" \
     $1 \
@@ -122,6 +232,15 @@ Expected a closing parenthesis ')' (1:13)
     $1 \
     "(let [])" \
     ""
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should return the value to which the last body expression evaluates" \
+    $1 \
+    "(print (let [x 40]
+      (+ x 0)
+      (+ x 1)
+      (+ x 2)))" \
+    "42"
 
   assert_torreyc_stderr_equalto_with_stdin \
     "Should allow an empty bindings list with a body expression" \
