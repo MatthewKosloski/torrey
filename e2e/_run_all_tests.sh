@@ -1,16 +1,16 @@
 # !/bin/bash
-source ./specs/program_tests.sh
-source ./specs/io/stdout/print_tests.sh
-source ./specs/io/stdout/println_tests.sh
-source ./specs/operators/unary/minus_tests.sh
-source ./specs/operators/binary/arithmetic/addition_tests.sh
-source ./specs/operators/binary/arithmetic/subtraction_tests.sh
-source ./specs/operators/binary/arithmetic/multiplication_tests.sh
-source ./specs/operators/binary/arithmetic/division_tests.sh
-source ./specs/let_tests.sh
-source ./specs/control_flow/if/if_then_tests.sh
-source ./specs/control_flow/if/if_then_else_tests.sh
-source ./specs/cli_tests.sh
+source ./tests/program_tests.sh
+source ./tests/io/stdout/print_tests.sh
+source ./tests/io/stdout/println_tests.sh
+source ./tests/operators/unary/minus_tests.sh
+source ./tests/operators/binary/arithmetic/addition_tests.sh
+source ./tests/operators/binary/arithmetic/subtraction_tests.sh
+source ./tests/operators/binary/arithmetic/multiplication_tests.sh
+source ./tests/operators/binary/arithmetic/division_tests.sh
+source ./tests/let_tests.sh
+source ./tests/control_flow/if/if_then_tests.sh
+source ./tests/control_flow/if/if_then_else_tests.sh
+source ./tests/cli_tests.sh
 
 count_total=0
 count_passed=0
