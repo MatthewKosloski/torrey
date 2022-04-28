@@ -577,7 +577,7 @@ Both branches to an if expression must evaluate to the same types (1:2)
     "42"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should take the then branch if the test is an if-then expression that is falsy" \
+    "Should take the else branch if the test is an if-then expression that is falsy" \
     $1 \
     "(if
       (if true 0)
@@ -608,7 +608,7 @@ Both branches to an if expression must evaluate to the same types (1:2)
     "42"
 
   assert_exec_stdout_equalto_with_stdin \
-    "Should take the then branch if the test is an if-then-else expression that is falsy" \
+    "Should take the else branch if the test is an if-then-else expression that is falsy" \
     $1 \
     "(if
       (if true 0 1)
