@@ -632,7 +632,7 @@ Expected operand to operator '>' to be type 'INTEGER' but found type 'NIL' inste
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report two type errors if both operands are if-then-else expressions that evaluate to booleans" \
+    "Should report two type errors if both operands are print expressions" \
     $1 \
     "(> (print 1) (print 2))" \
     "Encountered one or more semantic errors during type checking:
@@ -679,7 +679,7 @@ Expected operand to operator '>' to be type 'INTEGER' but found type 'NIL' inste
 1 Error"
 
   assert_torreyc_stderr_equalto_with_stdin \
-    "Should report two type errors if both operands are if-then-else expressions that evaluate to booleans" \
+    "Should report two type errors if both operands are println expressions" \
     $1 \
     "(> (println 1) (println 2))" \
     "Encountered one or more semantic errors during type checking:
