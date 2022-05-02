@@ -339,16 +339,10 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
     // Type-check the consequent and its child nodes.
     expr.consequent().accept(this);
 
-    Expr.DataType evalType = Expr.DataType.NIL;
-    if (expr.test().isTruthy())
-      // The test condition is true, so the type of
-      // this if expression is the type of the consequent.
-      evalType = expr.consequent().evalType();
-    else
-      // The test condition is false, so this if expression is false.
-      expr.makeFalsy();
-
-    expr.setEvalType(evalType);
+    // The if-then expression evaluates to the
+    // same type as its consequent (even though it
+    // may never execute the consequent).
+    expr.setEvalType(expr.consequent().evalType());
 
     return expr.evalType();
   }
