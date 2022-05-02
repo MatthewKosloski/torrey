@@ -7,6 +7,9 @@ source ./tests/operators/binary/arithmetic/addition_tests.sh
 source ./tests/operators/binary/arithmetic/subtraction_tests.sh
 source ./tests/operators/binary/arithmetic/multiplication_tests.sh
 source ./tests/operators/binary/arithmetic/division_tests.sh
+source ./tests/operators/binary/relational/equals_tests.sh
+source ./tests/operators/binary/relational/less_than_tests.sh
+source ./tests/operators/binary/relational/greater_than_tests.sh
 source ./tests/let_tests.sh
 source ./tests/control_flow/if/if_then_tests.sh
 source ./tests/control_flow/if/if_then_else_tests.sh
@@ -68,6 +71,9 @@ run_binary_arithmetic_add_expr_tests ./$compiler_file_name
 run_binary_arithmetic_sub_expr_tests ./$compiler_file_name
 run_binary_arithmetic_mult_expr_tests ./$compiler_file_name
 run_binary_arithmetic_div_expr_tests ./$compiler_file_name
+run_binary_relational_equals_expr_tests ./$compiler_file_name
+run_binary_relational_less_than_expr_tests ./$compiler_file_name
+run_binary_relational_greater_than_expr_tests ./$compiler_file_name
 run_let_expr_tests ./$compiler_file_name
 run_if_then_expr_tests ./$compiler_file_name
 run_if_then_else_expr_tests ./$compiler_file_name
