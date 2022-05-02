@@ -629,7 +629,7 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
     "Encountered one or more semantic errors during type checking:
 
 
-Cannot print operand 'if' because it does not evaluate to a known type (2:8)
+Cannot print operand 'if' because it does not evaluate to a known type (4:8)
 
 (if false (let [])))
  ^^
