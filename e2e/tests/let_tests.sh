@@ -479,6 +479,20 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
 
 1 Error"
 
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report a type error if the expression bounded to an identifier evaluates to nil" \
+    $1 \
+    '(let [a true b (let [])] 0)' \
+    "Encountered one or more semantic errors during type checking:
+
+
+The expression bounded to identifier 'b' cannot be of type 'NIL' (1:14)
+
+(let [a true b (let [])] 0)
+             ^
+
+1 Error"
+
 
   assert_exec_stdout_equalto_with_stdin \
     "Should allow the expressions bounded to identifiers to reference previously defined identifiers" \
