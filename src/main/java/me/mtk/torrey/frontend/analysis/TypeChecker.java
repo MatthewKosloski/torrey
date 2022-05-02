@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.analysis;
 
 import me.mtk.torrey.frontend.ast.*;
+import me.mtk.torrey.frontend.ast.Expr.DataType;
 import me.mtk.torrey.frontend.error_reporter.*;
 import me.mtk.torrey.frontend.lexer.*;
 import me.mtk.torrey.frontend.symbols.*;
@@ -72,55 +73,22 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
     final Expr first = (Expr) expr.first();
     final Expr second = (Expr) expr.second();
 
-    // Type check the operands.
+    // Evaluate and type-check the operands
     first.accept(this);
     second.accept(this);
 
     final Token operator = expr.token();
 
-    final boolean areInts = first.evalType() == Expr.DataType.INTEGER
-      && second.evalType() == Expr.DataType.INTEGER;
-    final boolean areBools = first.evalType() == Expr.DataType.BOOLEAN
-      && second.evalType() == Expr.DataType.BOOLEAN;
-    final boolean onlyFirstIsInt = first.evalType() == Expr.DataType.INTEGER
-      && second.evalType() != Expr.DataType.INTEGER;
-    final boolean onlyFirstIsBool = first.evalType() == Expr.DataType.BOOLEAN
-      && second.evalType() != Expr.DataType.BOOLEAN;
-
-    if (onlyFirstIsInt)
+    if (operator.isType(TokenType.LT, TokenType.LTE, TokenType.GT, TokenType.GTE))
     {
-      // The first operand is an integer. Expected the second
-      // operand to also be an integer.
-      reporter.error(
-        second.token(),
-        ErrorMessages.ExpectedOperandToBe,
-        operator.rawText(),
-        Expr.DataType.INTEGER,
-        second.evalType());
+      typeCheckLessThanGreaterThanExprOperands(first, second, operator);
     }
-    else if (onlyFirstIsBool)
+    else if (operator.isType(TokenType.EQUAL))
     {
-      // The first operand is a boolean. Expected the second
-      // operand to also be a boolean.
-      reporter.error(second.token(),
-      ErrorMessages.ExpectedOperandToBe,
-        operator.rawText(),
-        Expr.DataType.BOOLEAN,
-        second.evalType());
-    }
-    else if (!(areInts || areBools))
-    {
-      // Either both operands are not integers or
-      // both operands are not booleans.
-      reporter.error(first.token(),
-        ErrorMessages.ExpectedOperandToBeEither,
-        operator.rawText(),
-        Expr.DataType.INTEGER,
-        Expr.DataType.BOOLEAN,
-        first.evalType());
+      typeCheckEqualityExprOperands(first, second, operator);
     }
 
-      return expr.evalType();
+    return expr.evalType();
   }
 
   /**
@@ -387,6 +355,105 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
     expr.setEvalType(evalType);
 
     return expr.evalType();
+  }
+
+  private void typeCheckLessThanGreaterThanExprOperands(Expr first, Expr second, Token operator)
+  {
+    if (first.evalType() != DataType.INTEGER)
+    {
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        first.evalType());
+    }
+
+    if (second.evalType() != DataType.INTEGER)
+    {
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        second.evalType());
+    }
+  }
+
+  private void typeCheckEqualityExprOperands(Expr first, Expr second, Token operator)
+  {
+    final boolean firstIsIntOrBool = first.evalType() == Expr.DataType.INTEGER
+      || first.evalType() == Expr.DataType.BOOLEAN;
+    final boolean secondIsIntOrBool = second.evalType() == Expr.DataType.INTEGER
+      || second.evalType() == Expr.DataType.BOOLEAN;
+    final boolean onlyFirstIsInt = first.evalType() == Expr.DataType.INTEGER
+      && second.evalType() != Expr.DataType.INTEGER;
+    final boolean onlyFirstIsBool = first.evalType() == Expr.DataType.BOOLEAN
+      && second.evalType() != Expr.DataType.BOOLEAN;
+    final boolean onlySecondIsInt = second.evalType() == Expr.DataType.INTEGER
+      && first.evalType() != Expr.DataType.INTEGER;
+    final boolean onlySecondIsBool = second.evalType() == Expr.DataType.BOOLEAN
+      && first.evalType() != Expr.DataType.BOOLEAN;
+
+    if (onlyFirstIsInt)
+    {
+      // The first operand is an integer but the second operand is not.
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        second.evalType());
+    }
+    else if (onlyFirstIsBool)
+    {
+      // The first operand is a boolean but the second operand is not.
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.BOOLEAN,
+        second.evalType());
+    }
+    else if (onlySecondIsInt)
+    {
+      // The second operand is an integer but the first operand is not.
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        first.evalType());
+    }
+    else if (onlySecondIsBool)
+    {
+      // The second operand is an boolean but the first operand is not.
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.BOOLEAN,
+        first.evalType());
+    }
+    else if (!firstIsIntOrBool && !secondIsIntOrBool)
+    {
+      // Both operands are something other than integer or boolean.
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBeEither,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        Expr.DataType.BOOLEAN,
+        first.evalType());
+
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBeEither,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        Expr.DataType.BOOLEAN,
+        second.evalType());
+    }
   }
 
 }
