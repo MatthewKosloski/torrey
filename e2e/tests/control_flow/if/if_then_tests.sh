@@ -599,5 +599,43 @@ Expected an integer, unary, binary, print, let, or identifier expression but fou
          (print 1)))" \
     "1"
 
+  assert_exec_stdout_equalto_with_stdin \
+    "Should implicitly evaluate to zero when the branch evaluates to an integer and is not taken" \
+    $1 \
+    "(print
+       (if false 42))" \
+    "0"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should implicitly evaluate to false when the branch evaluates to a boolean and is not taken" \
+    $1 \
+    "(println
+       (if
+         (==
+           ; This if-then expression should implicitly
+           ; evaluate to false
+           (if false true)
+           false)
+         1))" \
+    "1"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should implicitly evaluate to nil when the branch evaluates to nil and is not taken" \
+    $1 \
+    "(print
+      ; This if-then expression should implicitly
+      ; evaluate to nil
+      (if false (let [])))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Cannot print operand 'if' because it does not evaluate to a known type (2:8)
+
+(if false (let [])))
+ ^^
+
+1 Error"
+
+
   echo -e "\n"
 }
