@@ -7,5 +7,5 @@ package me.mtk.torrey.frontend.ast;
  */
 public interface ConstantConvertable
 {
-  public long toConstant();
+  public int toConstant();
 }
