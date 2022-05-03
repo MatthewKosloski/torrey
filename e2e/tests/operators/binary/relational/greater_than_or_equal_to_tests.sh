@@ -1128,7 +1128,7 @@ Expected operand to operator '>=' to be type 'INTEGER' but found type 'BOOLEAN' 
   assert_exec_stdout_equalto_with_stdin \
     "Should evaluate to false if both operands are subtraction expressions and the second is greater than the first" \
     $1 \
-    "(if (>= (- 2 3) (- 1 999)) (print 1) (print 0))" \
+    "(if (>= (- 1 999) (- 2 3)) (print 1) (print 0))" \
     "0"
 
   assert_exec_stdout_equalto_with_stdin \
