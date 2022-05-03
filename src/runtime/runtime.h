@@ -3,7 +3,7 @@
 #include <inttypes.h>
 
 // Print an integer to standard output
-void print_int(int64_t x);
+void torrey_print_int(int64_t x);
 
 // Print a new line character to standard output
-void print_nl(void);
+void torrey_print_nl(void);

@@ -4,8 +4,8 @@ public final class Global extends X86Address
 {
   public enum RuntimeProcedure
   {
-    PRINT_INT ("print_int"),
-    PRINT_NL ("print_nl");
+    PRINT_INT ("torrey_print_int"),
+    PRINT_NL ("torrey_print_nl");
 
     private final String terminalSymbol;
 
