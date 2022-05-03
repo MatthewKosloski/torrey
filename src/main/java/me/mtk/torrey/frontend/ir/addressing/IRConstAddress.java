@@ -5,7 +5,7 @@ package me.mtk.torrey.frontend.ir.addressing;
  */
 public final class IRConstAddress extends IRAddress
 {
-  public IRConstAddress(int constant)
+  public IRConstAddress(long constant)
   {
     super(IRAddressingMode.CONSTANT, constant);
   }
@@ -17,6 +17,6 @@ public final class IRConstAddress extends IRAddress
 
   public IRConstAddress(String constantStr)
   {
-    super(IRAddressingMode.CONSTANT, Integer.parseInt(constantStr));
+    super(IRAddressingMode.CONSTANT, Long.parseLong(constantStr));
   }
 }

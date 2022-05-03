@@ -202,7 +202,7 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
   private void gen(IRCallInst inst)
   {
     final String procName = (String) inst.arg1().value();
-    final int numParams = (int) inst.arg2().value();
+    final long numParams = (long) inst.arg2().value();
 
     if (procName.equals("print") || procName.equals("println"))
     {
