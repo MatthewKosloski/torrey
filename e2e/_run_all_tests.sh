@@ -21,7 +21,8 @@ count_total=0
 count_passed=0
 count_failed=0
 
-compiler_file_name="torreyc-3.1.2.jar"
+compiler_version="3.1.2"
+compiler_file_name="torreyc-$compiler_version.jar"
 compiler_target_path="../target/$compiler_file_name"
 runtime_source_path="../src/runtime/runtime.c"
 

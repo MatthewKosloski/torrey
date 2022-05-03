@@ -10,7 +10,7 @@ run_cli_tests () {
     "Should output version information when given the -v flag" \
     $compiler_path \
     "-v" \
-    "torreyc 3.1.2
+    "torreyc $compiler_version
 The Compiler for the Torrey Programming Language
 https://github.com/MatthewKosloski/torrey/
 
@@ -21,7 +21,7 @@ https://github.com/MatthewKosloski/torrey/releases/latest"
     "Should output version information when given the --version flag" \
     $compiler_path \
     "--version" \
-    "torreyc 3.1.2
+    "torreyc $compiler_version
 The Compiler for the Torrey Programming Language
 https://github.com/MatthewKosloski/torrey/
 
@@ -33,7 +33,7 @@ https://github.com/MatthewKosloski/torrey/releases/latest"
   #   "Should output usage information when given the -h flag" \
   #   $compiler_path \
   #   "-h" \
-  #   "Usage: java -jar torreyc-3.1.2.jar [options]
+  #   "Usage: java -jar torreyc-$compiler_version.jar [options]
   # Options:
   #   --help, -h
   #     Display this information.
@@ -77,7 +77,7 @@ https://github.com/MatthewKosloski/torrey/releases/latest"
   #   "Should output usage information when given the --help flag" \
   #   $compiler_path \
   #   "--help" \
-  #   "Usage: java -jar torreyc-3.1.2.jar [options]
+  #   "Usage: java -jar torreyc-$compiler_version.jar [options]
   # Options:
   #   --help, -h
   #     Display this information.
@@ -121,7 +121,7 @@ https://github.com/MatthewKosloski/torrey/releases/latest"
   #   "Should output usage information when given no flags" \
   #   $compiler_path \
   #   "" \
-  #   "Usage: java -jar torreyc-3.1.2.jar [options]
+  #   "Usage: java -jar torreyc-$compiler_version.jar [options]
   # Options:
   #   --help, -h
   #     Display this information.
