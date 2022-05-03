@@ -14,14 +14,14 @@ public final class IntegerExpr extends PrimitiveExpr
     super(t, DataType.INTEGER);
   }
 
-  public IntegerExpr(int constant)
+  public IntegerExpr(long constant)
   {
     this(new Token(TokenType.INTEGER, constant + ""));
   }
 
-  public int toConstant()
+  public long toConstant()
   {
-    return Integer.parseInt(token().rawText());
+    return Long.parseLong(token().rawText());
   }
 
   @Override

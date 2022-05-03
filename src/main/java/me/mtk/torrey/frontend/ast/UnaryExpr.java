@@ -18,9 +18,9 @@ public final class UnaryExpr extends Expr implements ConstantConvertable
     return visitor.visit(this);
   }
 
-  public int toConstant()
+  public long toConstant()
   {
     final String rawText = first().token().rawText();
-    return Integer.parseInt(rawText) * -1;
+    return Long.parseLong(rawText) * -1;
   }
 }
