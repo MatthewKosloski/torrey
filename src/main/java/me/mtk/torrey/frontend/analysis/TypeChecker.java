@@ -144,9 +144,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    */
   public Expr.DataType visit(BooleanExpr expr)
   {
-    if (!expr.toBoolean())
-      expr.makeFalsy();
-
     return expr.evalType();
   }
 
@@ -158,9 +155,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    */
   public Expr.DataType visit(IntegerExpr expr)
   {
-    if (expr.toConstant() == 0)
-      expr.makeFalsy();
-
     return expr.evalType();
   }
 
@@ -186,8 +180,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
           ErrorMessages.UndefinedOperandToPrint,
           childExpr.token().rawText());
     }
-
-    expr.makeFalsy();
 
     return Expr.DataType.NIL;
   }
@@ -218,9 +210,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
         operand.evalType());
     }
 
-    if (operand.isFalsy())
-      expr.makeFalsy();
-
     return expr.evalType();
   }
 
@@ -228,9 +217,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
   {
     final String id = expr.token().rawText();
     final Symbol sym = top.get(id);
-
-    if (sym.expr().isFalsy())
-      expr.makeFalsy();
 
     expr.setEvalType(sym.expr().evalType());
     return expr.evalType();
@@ -256,9 +242,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
       // as the type of its last expression.
       final Expr lastExpr = (Expr) expr.last();
       expr.setEvalType(lastExpr.evalType());
-
-      if (lastExpr.isFalsy())
-        expr.makeFalsy();
 
       return expr.evalType();
     }
@@ -334,25 +317,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
         ErrorMessages.BothBranchesToIfMustBeSameType);
     }
 
-    Expr.DataType evalType = Expr.DataType.NIL;
-    if (expr.test().isTruthy())
-    {
-      // The test condition is true, so the type of
-      // this if expression is the type of the consequent.
-      evalType = expr.consequent().evalType();
-    }
-    else
-    {
-      // The test condition is false, so the type of this
-      // if expression is the type of the alternative.
-      evalType = expr.alternative().evalType();
-
-      // The test condition is false, so this if
-      // expression is false.
-      expr.makeFalsy();
-    }
-
-    expr.setEvalType(evalType);
+    expr.setEvalType(expr.consequent().evalType());
 
     return expr.evalType();
   }
