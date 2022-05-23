@@ -52,4 +52,10 @@ public abstract class Expr extends ASTNode
   {
     return evalType;
   }
+
+  public static boolean isChildOfUnaryMinusExpr(Expr expr)
+  {
+    return expr.parent() instanceof UnaryExpr
+      && expr.parent().token().type() == TokenType.MINUS;
+  }
 }
