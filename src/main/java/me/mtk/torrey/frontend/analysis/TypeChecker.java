@@ -155,6 +155,29 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    */
   public Expr.DataType visit(IntegerExpr expr)
   {
+    final String rawText = expr.token().rawText();
+    final String lowerLimit = (Long.MIN_VALUE + "").substring(1);
+    final String upperLimit = Long.MAX_VALUE + "";
+
+    if (expr.parent() instanceof UnaryExpr
+      && rawText.length() == lowerLimit.length()
+      && rawText.compareTo(lowerLimit) > 0)
+    {
+      reporter.error(
+        expr.token(),
+        ErrorMessages.IntegerUnderflow,
+        rawText);
+    }
+    else if (!(expr.parent() instanceof UnaryExpr)
+      && rawText.length() == upperLimit.length()
+      && rawText.compareTo(upperLimit) > 0)
+    {
+      reporter.error(
+        expr.token(),
+        ErrorMessages.IntegerOverflow,
+        rawText);
+    }
+
     return expr.evalType();
   }
 

@@ -74,7 +74,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
     public IRAddress visit(IntegerExpr expr)
     {
       final IRTempAddress result = new IRTempAddress();
-      final IRConstAddress rhs = new IRConstAddress(expr.token().rawText());
+      final IRConstAddress rhs = new IRConstAddress(expr.toConstant());
       irProgram.addQuad(new IRCopyInst(result, rhs));
       return result;
     }
@@ -102,7 +102,14 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       final IRTempAddress result = new IRTempAddress();
       final IRAddress arg = getDestinationAddr(expr.first());
 
-      irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
+      if (expr.token().type() == TokenType.MINUS && expr.first() instanceof IntegerExpr)
+      {
+        irProgram.addQuad(new IRCopyInst(result, arg));
+      }
+      else
+      {
+        irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
+      }
 
       return result;
     }
@@ -385,10 +392,20 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
     private IRAddress getDestinationAddr(Expr expr)
     {
       IRAddress addr = null;
+
       if (expr instanceof IntegerExpr)
-        addr = new IRConstAddress(expr.token().rawText());
+      {
+        long constant = Expr.isChildOfUnaryMinusExpr(expr)
+          ? Long.parseLong(String.format("-%s", expr.token().rawText()))
+          : ((IntegerExpr)expr).toConstant();
+
+        addr = new IRConstAddress(constant);
+      }
       else
+      {
         addr = expr.accept(this);
+      }
+
       return addr;
     }
 

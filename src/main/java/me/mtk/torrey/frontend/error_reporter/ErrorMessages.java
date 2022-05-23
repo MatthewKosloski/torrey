@@ -31,4 +31,6 @@ public final class ErrorMessages
   public static final String UndefinedOperandToPrint = "Cannot print operand '%s' because it does not evaluate to a known type";
   public static final String CannotBeTestedForTruthiness = "An expression of type '%s' cannot be tested for truthiness";
   public static final String BothBranchesToIfMustBeSameType = "Both branches to an if expression must evaluate to the same types";
+  public static final String IntegerUnderflow = "Encountered integer underflow from operand '%s'";
+  public static final String IntegerOverflow = "Encountered integer overflow from operand '%s'";
 }
