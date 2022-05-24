@@ -16,6 +16,8 @@ source ./tests/let_tests.sh
 source ./tests/control_flow/if/if_then_tests.sh
 source ./tests/control_flow/if/if_then_else_tests.sh
 source ./tests/cli_tests.sh
+source ./tests/integer_underflow.sh
+source ./tests/integer_overflow.sh
 
 count_total=0
 count_passed=0
@@ -67,6 +69,8 @@ fi
 # At this point, we can now run all e2e tests.
 # Run tests, passing in the path to the compiler jar as the first argument
 run_program_tests ./$compiler_file_name
+run_integer_underflow_tests ./$compiler_file_name
+run_integer_overflow_tests ./$compiler_file_name
 run_print_expr_tests ./$compiler_file_name
 run_println_expr_tests ./$compiler_file_name
 run_unary_minus_expr_tests ./$compiler_file_name
