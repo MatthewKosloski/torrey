@@ -92,7 +92,8 @@ public final class CompilerFrontend extends Compiler
       new ErrorReporter(input), tokens.tokens());
     final Program ast = grammar.parse();
 
-    final String prettyAST = ppVisitor.visit(ast);
+    ppVisitor.visit(ast);
+    final String prettyAST = ppVisitor.getPrint();
 
     debug("AST (output from Grammar): \n%s", prettyAST);
 
@@ -125,8 +126,10 @@ public final class CompilerFrontend extends Compiler
     final Binder binder = new Binder(new ErrorReporter(input));
     binder.visit(ast);
 
+    ppVisitor.visit(ast);
+    String prettyAST = ppVisitor.getPrint();
     debug("AST (output from Binder): \n%s",
-      ppVisitor.visit(ast));
+    prettyAST);
 
     // Type-checks operands to expressions and decorates
     // the AST with type information.
@@ -134,8 +137,10 @@ public final class CompilerFrontend extends Compiler
       (new ErrorReporter(input));
     typeChecker.visit(ast);
 
+    ppVisitor.visit(ast);
+    prettyAST = ppVisitor.getPrint();
     debug("Optimized AST (output from TypeChecker): \n%s",
-      ppVisitor.visit(ast));
+      prettyAST);
 
     return ast;
   }

@@ -10,29 +10,73 @@ import me.mtk.torrey.frontend.symbols.Symbol;
 /**
  * Pretty prints an AST by producing a JSON representation.
  */
-public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
+public final class PrettyPrinterVisitor implements ASTNodeVisitor
 {
+
+  private JSONObject nextJSONObject;
+
   /**
    * Returns a JSON representation of the given AST.
    * @param program The root node of an AST.
    */
-  public String visit(Program program)
+  public void visit(Program program)
   {
-    return parse(program).toString(2);
+    parse(program);
   }
 
-  public JSONObject visit(LetExpr expr) { return parse(expr); }
-  public JSONObject visit(LetBinding binding) { return parse(binding); }
-  public JSONObject visit(LetBindings bindings) { return parse(bindings); }
-  public JSONObject visit(IdentifierExpr expr) { return parse(expr); }
-  public JSONObject visit(ArithmeticExpr expr) { return parse(expr); }
-  public JSONObject visit(CompareExpr expr) { return parse(expr); }
-  public JSONObject visit(UnaryExpr expr) { return parse(expr); }
-  public JSONObject visit(IntegerExpr expr) { return parse(expr); }
-  public JSONObject visit(BooleanExpr expr) { return parse(expr); }
-  public JSONObject visit(IfExpr expr) { return parse(expr); }
-  public JSONObject visit(IfThenElseExpr expr) { return parse(expr); }
-  public JSONObject visit(PrintExpr expr) { return parse(expr); }
+  public void visit(LetExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(LetBinding binding)
+  {
+    parse(binding);
+  }
+  public void visit(LetBindings bindings)
+  {
+    parse(bindings);
+  }
+  public void visit(IdentifierExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(ArithmeticExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(CompareExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(UnaryExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(IntegerExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(BooleanExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(IfExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(IfThenElseExpr expr)
+  {
+    parse(expr);
+  }
+  public void visit(PrintExpr expr)
+  {
+    parse(expr);
+  }
+
+  public String getPrint()
+  {
+    return nextJSONObject.toString(2);
+  }
 
   /*
     * Constructs a JSON object representation of the
@@ -49,19 +93,28 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
     * @param node An ASTNode from which to construct a JSON object.
     * @return The JSON object representation of the given node.
     */
-  private JSONObject parse(ASTNode node)
+  private void parse(ASTNode node)
   {
     final JSONObject jo = new JSONObject();
     final JSONArray ja = new JSONArray();
 
-    jo.put("token", node.token() == null
-      ? "null"
-      : parse(node.token()));
+    if (node.token() == null)
+    {
+      jo.put("token", "null");
+    }
+    else
+    {
+      parse(node.token());
+      jo.put("token", nextJSONObject);
+    }
 
     if (node.children().size() != 0)
     {
       for (ASTNode child : node.children())
-        ja.put(child.accept(this));
+      {
+        child.accept(this);
+        ja.put(nextJSONObject);
+      }
       jo.put("children", ja);
     }
 
@@ -73,12 +126,19 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
     if (node instanceof LetExpr)
     {
       final LetExpr letExpr = (LetExpr) node;
-      jo.put("environment", letExpr.environment() == null
-        ? "null"
-        : parse(letExpr.environment()));
+
+      if (letExpr.environment() == null)
+      {
+        jo.put("environment", "null");
+      }
+      else
+      {
+        parse(letExpr.environment());
+        jo.put("environment", nextJSONObject);
+      }
     }
 
-    return jo;
+    nextJSONObject = jo;
   }
 
   /*
@@ -98,22 +158,37 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
     * @param tok A Token from which to construct a JSON object.
     * @return The JSON object representation of the given Token.
     */
-  private JSONObject parse(Token tok)
+  private void parse(Token tok)
   {
     final JSONObject jo = new JSONObject()
       .put("rawText", tok.rawText())
-      .put("type", tok.type())
-      .put("startPos", tok.startPos() != null
-        ? parse(tok.startPos())
-        : "null")
-      .put("endPos", tok.startPos() != null
-        ? parse(tok.endPos())
-        : "null")
-      .put("beginIndex", tok.beginIndex())
-      .put("beginLineIndex", tok.beginLineIndex())
-      .put("endIndex", tok.endIndex());
+      .put("type", tok.type());
 
-    return jo;
+      if (tok.startPos() == null)
+      {
+        jo.put("startPos", "null");
+      }
+      else
+      {
+        parse(tok.endPos());
+        jo.put("environment", nextJSONObject);
+      }
+
+      if (tok.endPos() == null)
+      {
+        jo.put("endPos", "null");
+      }
+      else
+      {
+        parse(tok.endPos());
+        jo.put("endPos", nextJSONObject);
+      }
+
+      jo.put("beginIndex", tok.beginIndex())
+        .put("beginLineIndex", tok.beginLineIndex())
+        .put("endIndex", tok.endIndex());
+
+    nextJSONObject = jo;
   }
 
   /*
@@ -126,33 +201,42 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
     * @param pos A Position from which to construct a JSON object.
     * @return The JSON object representation of the given Position.
     */
-  private JSONObject parse(Position pos)
+  private void parse(Position pos)
   {
     final JSONObject jo = new JSONObject()
       .put("line", pos.line())
       .put("col", pos.col());
 
-    return jo;
+    nextJSONObject = jo;
   }
 
-  private JSONObject parse(Env env)
+  private void parse(Env env)
   {
     final JSONObject jo = new JSONObject();
     final JSONObject table = new JSONObject();
 
     env.symtab().forEach((id, sym) ->
-      table.put(id, parse(sym)));
+    {
+      parse(sym);
+      table.put(id, nextJSONObject);
+    });
 
-    jo.put("node_type", env.getClass().getSimpleName())
-      .put("parent", env.parent() == null
-        ? "null"
-        : parse(env.parent()))
-      .put("table", table);
+    jo.put("node_type", env.getClass().getSimpleName());
 
-    return jo;
+    if (env.parent() == null)
+    {
+      jo.put("parent", "null");
+    }
+    else
+    {
+      parse(env.parent());
+      jo.put("parent", nextJSONObject);
+    }
+
+    nextJSONObject = jo;
   }
 
-  private JSONObject parse(Symbol sym)
+  private void parse(Symbol sym)
   {
     final JSONObject jo = new JSONObject();
 
@@ -161,6 +245,6 @@ public final class PrettyPrinterVisitor implements ASTNodeVisitor<Object>
       .put("category", sym.category())
       .put("exprToString", sym.expr());
 
-    return jo;
+    nextJSONObject = jo;
   }
 }

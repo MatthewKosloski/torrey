@@ -15,7 +15,7 @@ import me.mtk.torrey.frontend.symbols.Env;
  * of three-address code represented as a collection of quadruples
  * of the form (operator, argument1, argument2, result).
  */
-public final class IRGenerator implements ASTNodeVisitor<IRAddress>
+public final class IRGenerator implements ASTNodeVisitor
 {
     // The IR Program being generated.
     private IRProgram irProgram;
@@ -26,6 +26,9 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 
     // The current environment.
     private Env top;
+
+    // The most recently calculated address.
+    private IRAddress nextAddress;
 
     /**
      * Instantiates a new IRGenVisitor with an abstract
@@ -60,32 +63,36 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @param Program The root AST node.
      * @return null.
      */
-    public IRAddress visit(Program program)
+    public void visit(Program program)
     {
       // For every AST node, call the appropriate
       // visit() method to generate the IR instruction
       // corresponding to that node.
       for (ASTNode child : program.children())
+      {
         child.accept(this);
-
-      return null;
+      }
     }
 
-    public IRAddress visit(IntegerExpr expr)
+    public void visit(IntegerExpr expr)
     {
       final IRTempAddress result = new IRTempAddress();
       final IRConstAddress rhs = new IRConstAddress(expr.toConstant());
+
       irProgram.addQuad(new IRCopyInst(result, rhs));
-      return result;
+
+      nextAddress = result;
     }
 
-    public IRAddress visit(BooleanExpr expr)
+    public void visit(BooleanExpr expr)
     {
       final IRTempAddress result = new IRTempAddress();
       final boolean bool = expr.token().type() == TokenType.TRUE;
       final IRConstAddress rhs = new IRConstAddress(bool);
+
       irProgram.addQuad(new IRCopyInst(result, rhs));
-      return result;
+
+      nextAddress = result;
     }
 
     /**
@@ -96,7 +103,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @return The destination address of the
      * result of the given AST node.
      */
-    public IRAddress visit(UnaryExpr expr)
+    public void visit(UnaryExpr expr)
     {
       final TokenType tokType = expr.token().type();
       final IRTempAddress result = new IRTempAddress();
@@ -111,7 +118,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
         irProgram.addQuad(new IRUnaryInst(tokType, arg, result));
       }
 
-      return result;
+      nextAddress = result;
     }
 
     /**
@@ -122,7 +129,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @return The destination address of the
      * result of the arithmetic instruction.
      */
-    public IRAddress visit(ArithmeticExpr expr)
+    public void visit(ArithmeticExpr expr)
     {
       final IRTempAddress result = new IRTempAddress();
       final TokenType tokType = expr.token().type();
@@ -131,7 +138,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 
       irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
 
-      return result;
+      nextAddress = result;
     }
 
     /**
@@ -141,7 +148,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @param expr A binary comparison expression.
      * @return The label of the false branch.
      */
-    public IRAddress visit(CompareExpr expr)
+    public void visit(CompareExpr expr)
     {
       final TokenType tokType = expr.token().type();
       final IRLabelAddress label = new IRLabelAddress();
@@ -156,7 +163,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       irProgram.addQuad(new IRCopyInst(comparisonResult, new IRConstAddress(1)));
       irProgram.addQuad(new IRLabelInst(label));
 
-      return comparisonResult;
+      nextAddress = comparisonResult;
     }
 
     /**
@@ -167,7 +174,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @return A null address, indicating that this expression
      * does not evaluate to a value.
      */
-    public IRAddress visit(PrintExpr expr)
+    public void visit(PrintExpr expr)
     {
       // Accumulate the param instructions to be
       // inserted directly before the call instruction.
@@ -176,8 +183,8 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // Generate the instructions for the parameters.
       for (ASTNode child : expr.children())
       {
-        IRAddress paramTemp = child.accept(this);
-        params.add(new IRParamInst(paramTemp));
+        child.accept(this);
+        params.add(new IRParamInst(nextAddress));
       }
 
       final IRNameAddress procName = new IRNameAddress(
@@ -188,7 +195,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       irProgram.addQuads(params);
       irProgram.addQuad(new IRCallInst(procName, numParams));
 
-      return new IRNullAddress();
+      nextAddress = new IRNullAddress();
     }
 
     /**
@@ -202,7 +209,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * a null address is returned, indicating that the let expression
      * does not evaluate to a value.
      */
-    public IRAddress visit(LetExpr expr)
+    public void visit(LetExpr expr)
     {
       // Cache the previous environment and activate
       // the environment of this expression.
@@ -213,22 +220,31 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       // to the identifiers and populate the symbol table.
       ((LetBindings) expr.first()).accept(this);
 
+      IRAddress returnAddress = null;
+
       // Recursively generate IR instructions for the body expressions
       for (int i = 1; i < expr.children().size(); i++)
       {
         final Expr child = (Expr) expr.children().get(i);
-        final IRAddress addr = child.accept(this);
+        child.accept(this);
 
         // Return the destination address of the last
         // expression of the body.
         if (i == expr.children().size() - 1)
-          return addr;
+        {
+          returnAddress = nextAddress;
+        }
       }
 
       // Restore the previous environment.
       top = prevEnv;
 
-      return new IRNullAddress();
+      if (returnAddress == null)
+      {
+        returnAddress = new IRNullAddress();
+      }
+
+      nextAddress = returnAddress;
     }
 
     /**
@@ -238,11 +254,12 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @param bindings A LetBindings AST node.
      * @return null.
      */
-    public IRAddress visit(LetBindings bindings)
+    public void visit(LetBindings bindings)
     {
-      for (ASTNode n : bindings.children())
-        ((LetBinding) n).accept(this);
-      return null;
+      for (ASTNode binding : bindings.children())
+      {
+        ((LetBinding) binding).accept(this);
+      }
     }
 
      /**
@@ -254,7 +271,7 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @param bindings A LetBinding AST node.
      * @return null.
      */
-    public IRAddress visit(LetBinding binding)
+    public void visit(LetBinding binding)
     {
       final IRTempAddress result = new IRTempAddress();
       final String id = binding.first().token().rawText();
@@ -271,8 +288,6 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       {
         irProgram.addQuad(new IRCopyInst(result, rhs));
       }
-
-      return null;
     }
 
     /**
@@ -284,15 +299,16 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
      * @return The destination address of the expression
      * bound to the given identifier.
      */
-    public IRAddress visit(IdentifierExpr expr)
+    public void visit(IdentifierExpr expr)
     {
-      return top.get(expr.token().rawText()).address();
+      nextAddress = top.get(expr.token().rawText()).address();
     }
 
-    public IRAddress visit(IfExpr expr)
+    public void visit(IfExpr expr)
     {
       // Recursively generate IR instructions for the test condition
-      IRAddress testResultAddr = expr.test().accept(this);
+      expr.test().accept(this);
+      IRAddress testResultAddr = nextAddress;
 
       if (testResultAddr instanceof IRNullAddress)
       {
@@ -326,7 +342,8 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       final IRTempAddress branchResultAddr = new IRTempAddress();
 
       // Recursively generate IR instructions for the then branch
-      final IRAddress consequentResultAddr = expr.consequent().accept(this);
+      expr.consequent().accept(this);
+      final IRAddress consequentResultAddr = nextAddress;
 
       // Indicates whether the expression evaluates to a value
       boolean hasResult = false;
@@ -349,7 +366,8 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       if (expr instanceof IfThenElseExpr)
       {
         // Recursively generate an explicit else branch
-        final IRAddress alternativeResultAddr = ((IfThenElseExpr) expr).alternative().accept(this);
+        ((IfThenElseExpr) expr).alternative().accept(this);
+        final IRAddress alternativeResultAddr = nextAddress;
 
         if (alternativeResultAddr instanceof IRTempAddress)
         {
@@ -369,16 +387,16 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
 
       if (hasResult)
       {
-        return branchResultAddr;
+        nextAddress = branchResultAddr;
       } else
       {
-        return new IRNullAddress();
+        nextAddress = new IRNullAddress();
       }
     }
 
-    public IRAddress visit(IfThenElseExpr expr)
+    public void visit(IfThenElseExpr expr)
     {
-      return visit((IfExpr)expr);
+      visit((IfExpr)expr);
     }
 
     /*
@@ -403,7 +421,8 @@ public final class IRGenerator implements ASTNodeVisitor<IRAddress>
       }
       else
       {
-        addr = expr.accept(this);
+        expr.accept(this);
+        addr = nextAddress;
       }
 
       return addr;

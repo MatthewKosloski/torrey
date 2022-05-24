@@ -1,25 +1,25 @@
 package me.mtk.torrey.frontend.ast;
 
-public interface ASTNodeVisitor<T>
+public interface ASTNodeVisitor
 {
   // Root AST node.
-  public T visit(Program program);
+  public void visit(Program program);
 
   // Regular AST nodes. One could argue that these
   // shouldn't be nodes on the AST, but rather fields
   // on the LetExpr node.
-  public T visit(LetBinding binding);
-  public T visit(LetBindings bindings);
+  public void visit(LetBinding binding);
+  public void visit(LetBindings bindings);
 
   // Expressions.
-  public T visit(ArithmeticExpr expr);
-  public T visit(BooleanExpr expr);
-  public T visit(CompareExpr expr);
-  public T visit(IdentifierExpr expr);
-  public T visit(IfExpr expr);
-  public T visit(IfThenElseExpr expr);
-  public T visit(IntegerExpr expr);
-  public T visit(LetExpr expr);
-  public T visit(PrintExpr expr);
-  public T visit(UnaryExpr expr);
+  public void visit(ArithmeticExpr expr);
+  public void visit(BooleanExpr expr);
+  public void visit(CompareExpr expr);
+  public void visit(IdentifierExpr expr);
+  public void visit(IfExpr expr);
+  public void visit(IfThenElseExpr expr);
+  public void visit(IntegerExpr expr);
+  public void visit(LetExpr expr);
+  public void visit(PrintExpr expr);
+  public void visit(UnaryExpr expr);
 }

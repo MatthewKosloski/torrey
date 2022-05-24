@@ -10,8 +10,8 @@ public final class CompareExpr extends BinaryExpr
   }
 
   @Override
-  public <T> T accept(ASTNodeVisitor<T> visitor)
+  public void accept(ASTNodeVisitor visitor)
   {
-    return visitor.visit(this);
+    visitor.visit(this);
   }
 }

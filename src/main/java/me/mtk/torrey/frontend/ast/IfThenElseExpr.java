@@ -16,8 +16,8 @@ public final class IfThenElseExpr extends IfExpr
   }
 
   @Override
-  public <T> T accept(ASTNodeVisitor<T> visitor)
+  public void accept(ASTNodeVisitor visitor)
   {
-    return visitor.visit(this);
+    visitor.visit(this);
   }
 }
