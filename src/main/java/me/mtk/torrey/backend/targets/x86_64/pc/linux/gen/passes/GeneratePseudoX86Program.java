@@ -111,25 +111,25 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
 
   private void gen(IRCopyInst inst)
   {
-    final IRAddress srcAddr = inst.arg1();
-    final IRAddress destAddr = inst.result();
+    final IRAddress irSrcAddr = inst.arg1();
+    final IRAddress irDestAddr = inst.result();
 
-    final X86Address src = transAddress(srcAddr);
-    final X86Address dest = transAddress(destAddr);
+    final X86Address x86SrcAddr = transAddress(irSrcAddr);
+    final X86Address x86DestAddr = transAddress(irDestAddr);
 
-    x86.addInst(new Movq(src, dest));
+    x86.addInst(new Movq(x86SrcAddr, x86DestAddr));
   }
 
   private void gen(IRUnaryInst inst)
   {
-    final IRAddress srcAddr = inst.arg1();
-    final IRAddress destAddr = inst.result();
+    final IRAddress irSrcAddr = inst.arg1();
+    final IRAddress irDestAddr = inst.result();
 
-    final X86Address src = transAddress(srcAddr);
-    final X86Address dest = transAddress(destAddr);
+    final X86Address x86SrcAddr = transAddress(irSrcAddr);
+    final X86Address x86DestAddr = transAddress(irDestAddr);
 
-    x86.addInst(new Movq(src, dest));
-    x86.addInst(new Negq(dest));
+    x86.addInst(new Movq(x86SrcAddr, x86DestAddr));
+    x86.addInst(new Negq(x86DestAddr));
   }
 
   private void gen(IRBinaryInst inst)
