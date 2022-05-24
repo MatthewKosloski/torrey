@@ -30,6 +30,7 @@ public abstract class X86Inst
 
     // Memory
     MOVQ ("movq"),
+    MOVABSQ ("movabsq"),
     POPQ ("popq"),
     PUSHQ ("pushq");
 
