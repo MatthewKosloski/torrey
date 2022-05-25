@@ -5,6 +5,200 @@ source _utils.sh
 run_binary_arithmetic_add_expr_tests () {
   echo "Tests for \"(\" \"+\" expr expr \")\""
 
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report integer underflow errors when the operators are integer literals that are less than -2^63" \
+    $1 \
+    "
+    ; -2^63 = -9223372036854775808
+    (+ 1 (- 9223372036854775809))
+    (+ (- 9223372036854775809) 1)
+    (+ (- 9223372036854775809) (- 9223372036854775809))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Encountered integer underflow from operand '9223372036854775809' (2:13)
+
+(+ 1 (- 9223372036854775809))
+        ^^^^^^^^^^^^^^^^^^^
+
+Encountered integer underflow from operand '9223372036854775809' (3:11)
+
+(+ (- 9223372036854775809) 1)
+      ^^^^^^^^^^^^^^^^^^^
+
+Encountered integer underflow from operand '9223372036854775809' (4:11)
+
+(+ (- 9223372036854775809) (- 9223372036854775809))
+      ^^^^^^^^^^^^^^^^^^^
+
+Encountered integer underflow from operand '9223372036854775809' (4:35)
+
+(+ (- 9223372036854775809) (- 9223372036854775809))
+                              ^^^^^^^^^^^^^^^^^^^
+
+4 Errors"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should accept an integer literal operand that is -2^63" \
+    $1 \
+    "
+    ; -2^63 = -9223372036854775808
+    (println
+      (+ 0 (- 9223372036854775808))
+      (+ (- 9223372036854775808) 0))" \
+    "-9223372036854775808
+-9223372036854775808"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should accept an integer literal operand that is less than -2^31" \
+    $1 \
+    "
+    ; -2^31 = -2147483648
+    (println
+      (+ (- 2147483649) 1)
+      (+ 1 (- 2147483649))
+      (+ (- 2147483649) (- 2147483649)))" \
+    "-2147483648
+-2147483648
+-4294967298"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should accept integer literal -2^31 as operands" \
+    $1 \
+    "
+    ; -2^31 = -2147483648
+    (println
+      (+ (- 2147483648) 1)
+      (+ 1 (- 2147483648))
+      (+ (- 2147483648) (- 2147483648)))" \
+    "-2147483647
+-2147483647
+-4294967296"
+
+# overflow
+
+ assert_exec_stdout_equalto_with_stdin \
+    "Should accept integer literal operands that are less than 2^31-1" \
+    $1 \
+    "
+    ; 2^31-1 = 2147483647
+    (println
+      (+ 2147483646 1)
+      (+ 1 2147483646)
+      (+ 2147483646 2147483646))" \
+    "2147483647
+2147483647
+4294967292"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should accept integer literal 2^31-1 as operands" \
+    $1 \
+    "
+    ; 2^31-1 = 2147483647
+    (println
+      (+ 2147483647 1)
+      (+ 1 2147483647)
+      (+ 2147483647 2147483647))" \
+    "2147483648
+2147483648
+4294967294"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should accept integer literal operands that are greater than 2^31-1" \
+    $1 \
+    "
+    ; 2^31-1 = 2147483647
+    (println
+      (+ 2147483648 1)
+      (+ 1 2147483648)
+      (+ 2147483648 2147483648))" \
+    "2147483649
+2147483649
+4294967296"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should accept integer literal 2^63-1 as operands" \
+    $1 \
+    "
+    ; 9223372036854775807 = 2^63-1
+    (println
+      (+ 9223372036854775807 0)
+      (+ 0 9223372036854775807))" \
+    "9223372036854775807
+9223372036854775807"
+
+  assert_torreyc_stderr_equalto_with_stdin \
+    "Should report integer overflow errors when the operators are integer literals that are greater than 2^63-1" \
+    $1 \
+    "
+    ; 9223372036854775808 = 2^63
+    (println
+      (+ 9223372036854775808 0)
+      (+ 0 9223372036854775808)
+      (+ 9223372036854775808 9223372036854775808))" \
+    "Encountered one or more semantic errors during type checking:
+
+
+Encountered integer overflow from operand '9223372036854775808' (3:10)
+
+(+ 9223372036854775808 0)
+   ^^^^^^^^^^^^^^^^^^^
+
+Encountered integer overflow from operand '9223372036854775808' (4:12)
+
+(+ 0 9223372036854775808)
+     ^^^^^^^^^^^^^^^^^^^
+
+Encountered integer overflow from operand '9223372036854775808' (5:10)
+
+(+ 9223372036854775808 9223372036854775808))
+   ^^^^^^^^^^^^^^^^^^^
+
+Encountered integer overflow from operand '9223372036854775808' (5:30)
+
+(+ 9223372036854775808 9223372036854775808))
+                       ^^^^^^^^^^^^^^^^^^^
+
+4 Errors"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should wrap around starting from -2^63 when sum of operands is greater than 2^63-1 at runtime" \
+    $1 \
+    "
+    ; -2^63, or -9223372036854775808, is the lower-bound of a 64-bit
+    ; signed integer. 2^63-1, or 9223372036854775807, is the upper-bound
+    ; of a 64-bit signed integer.
+    ;
+    ; Let x be any positive integer. Then, at runtime:
+    ;
+    ; (2^63-1) + x = -2^63 + (x - 1)
+    (let [upperBound 9223372036854775807 x 42]
+      (println (+ upperBound x))
+      (println (+ x upperBound))
+      (println (+ upperBound upperBound)))" \
+    "-9223372036854775767
+-9223372036854775767
+-2"
+
+  assert_exec_stdout_equalto_with_stdin \
+    "Should wrap around starting from 2^63-1 when sum of operands is less than -2^63 at runtime" \
+    $1 \
+    "
+    ; -2^63, or -9223372036854775808, is the lower-bound of a 64-bit
+    ; signed integer. 2^63-1, or 9223372036854775807, is the upper-bound
+    ; of a 64-bit signed integer.
+    ;
+    ; Let x be any negative integer. Then, at runtime:
+    ;
+    ; -2^63 + x = 2^63-1 - (|x| - 1)
+    (let [lowerBound (- 9223372036854775808) x (- 42)]
+      (println (+ lowerBound x))
+      (println (+ x lowerBound))
+      (println (+ lowerBound lowerBound)))" \
+    "9223372036854775766
+9223372036854775766
+0"
+
   assert_exec_stdout_equalto_with_stdin \
     "Should not require white space between the operator and the first operand" \
     $1 \
