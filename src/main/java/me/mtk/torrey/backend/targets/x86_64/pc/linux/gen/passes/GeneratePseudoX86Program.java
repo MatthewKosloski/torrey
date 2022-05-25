@@ -163,11 +163,10 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
       x86.addInst(new Movq(x86Arg1Addr, x86DestAddr));
 
       // Add or subtract the second argument
-      // by the first, storing the result in dest.
-      if (op == Quadruple.OpType.ADD)
-        x86.addInst(new Addq(x86Arg2Addr, x86DestAddr));
-      else
-        x86.addInst(new Subq(x86Arg2Addr, x86DestAddr));
+      // by the first, storing the result in x86DestAddr.
+      x86.addInst(op == Quadruple.OpType.ADD
+        ? new Addq(x86Arg2Addr, x86DestAddr)
+        : new Subq(x86Arg2Addr, x86DestAddr));
     }
     else if (op == Quadruple.OpType.MULT)
     {
@@ -177,7 +176,7 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
       // move second argument to rbx register
       x86.addInst(new Movq(x86Arg2Addr, Register.RBX));
 
-      // multiply the contents of %rax by arg2, placing the low
+      // multiply the contents of %rax by x86Arg2Addr, placing the low
       // 64 bits of the product in %rax.
       x86.addInst(new Imulq(Register.RBX));
 
