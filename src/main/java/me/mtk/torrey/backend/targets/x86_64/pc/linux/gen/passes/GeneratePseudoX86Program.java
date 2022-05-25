@@ -121,8 +121,8 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
     final int signedIntMaxValue = (1 << 31) - 1;
 
     if (inst.arg1().value() instanceof Long
-      && (long) inst.arg1().value() < signedIntMinValue
-      || (long) inst.arg1().value() > signedIntMaxValue)
+      && ((long) inst.arg1().value() < signedIntMinValue
+      || (long) inst.arg1().value() > signedIntMaxValue))
     {
       x86.addInst(new Movq(x86SrcAddr, Register.R10));
       x86.addInst(new Movq(Register.R10, x86DestAddr));
