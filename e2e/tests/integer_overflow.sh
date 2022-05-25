@@ -9,7 +9,7 @@ run_integer_overflow_tests () {
     "Should accept an integer literal that is less than 2^31-1" \
     $1 \
     "
-    ; 2^31-1 = 2147483646
+    ; 2^31-1 = 2147483647
     (print 2147483646)" \
     "2147483646"
 
