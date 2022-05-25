@@ -157,7 +157,10 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
     final X86Address x86Arg2Addr = Register.R11;
     final X86Address x86DestAddr = transAddress(irDestAddr);
 
-    // Move operands to temporary registers %r10 and %r11
+    // Move operands to temporary registers %r10 and %r11.
+    // We do this in case one or both operands exceed the
+    // range of signed 32-bit int (because 64-bit immediates
+    // cannot be moved to the stack).
     x86.addInst(new Movq(transAddress(irArg1Addr), x86Arg1Addr));
     x86.addInst(new Movq(transAddress(irArg2Addr), x86Arg2Addr));
 
