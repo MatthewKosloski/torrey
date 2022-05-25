@@ -148,48 +148,49 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
   private void gen(IRBinaryInst inst)
   {
     final Quadruple.OpType op = inst.opType();
-    final IRAddress arg1Addr = inst.arg1();
-    final IRAddress arg2Addr = inst.arg2();
-    final IRAddress destAddr = inst.result();
 
-    final X86Address arg1 = transAddress(arg1Addr);
-    final X86Address arg2 = transAddress(arg2Addr);
-    final Temporary dest = (Temporary) transAddress(destAddr);
+    final IRAddress irArg1Addr = inst.arg1();
+    final IRAddress irArg2Addr = inst.arg2();
+    final IRAddress irDestAddr = inst.result();
+
+    final X86Address x86Arg1Addr = transAddress(irArg1Addr);
+    final X86Address x86Arg2Addr = transAddress(irArg2Addr);
+    final Temporary x86DestAddr = (Temporary) transAddress(irDestAddr);
 
     if (op == Quadruple.OpType.ADD || op == Quadruple.OpType.SUB)
     {
       // Store first argument in temp
-      x86.addInst(new Movq(arg1, dest));
+      x86.addInst(new Movq(x86Arg1Addr, x86DestAddr));
 
       // Add or subtract the second argument
       // by the first, storing the result in dest.
       if (op == Quadruple.OpType.ADD)
-        x86.addInst(new Addq(arg2, dest));
+        x86.addInst(new Addq(x86Arg2Addr, x86DestAddr));
       else
-        x86.addInst(new Subq(arg2, dest));
+        x86.addInst(new Subq(x86Arg2Addr, x86DestAddr));
     }
     else if (op == Quadruple.OpType.MULT)
     {
       // move first argument to rax register
-      x86.addInst(new Movq(arg1, Register.RAX));
+      x86.addInst(new Movq(x86Arg1Addr, Register.RAX));
 
       // move second argument to rbx register
-      x86.addInst(new Movq(arg2, Register.RBX));
+      x86.addInst(new Movq(x86Arg2Addr, Register.RBX));
 
       // multiply the contents of %rax by arg2, placing the low
       // 64 bits of the product in %rax.
       x86.addInst(new Imulq(Register.RBX));
 
       // move the product, which is in %rax, to a temp location.
-      x86.addInst(new Movq(Register.RAX, dest));
+      x86.addInst(new Movq(Register.RAX, x86DestAddr));
     }
     else if (op == Quadruple.OpType.DIV)
     {
       // move dividend to rax register
-      x86.addInst(new Movq(arg1, Register.RAX));
+      x86.addInst(new Movq(x86Arg1Addr, Register.RAX));
 
       // move divisor to temp destination
-      x86.addInst(new Movq(arg2, dest));
+      x86.addInst(new Movq(x86Arg2Addr, x86DestAddr));
 
       // sign-extend %rax into %rdx. The former contains
       // the low 64 bits of dividend, the latter contains
@@ -197,10 +198,10 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
       x86.addInst(new Cqo());
 
       // divide %rdx:%rax by divisor, leaving result in %rax.
-      x86.addInst(new Idivq(dest));
+      x86.addInst(new Idivq(x86DestAddr));
 
       // Move contents of %rax to destination.
-      x86.addInst(new Movq(Register.RAX, dest));
+      x86.addInst(new Movq(Register.RAX, x86DestAddr));
     }
     else
       throw new Error("X86Generator.gen(BinaryInst):"
