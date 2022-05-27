@@ -133,6 +133,7 @@ public abstract class Quadruple
       }
     }
 
+    @Override
     public String toString()
     {
       return terminalSymbol;

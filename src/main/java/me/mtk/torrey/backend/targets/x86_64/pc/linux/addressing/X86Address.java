@@ -48,6 +48,7 @@ public abstract class X86Address
    *
    * @return A string containing the value of this address.
    */
+  @Override
   public String toString()
   {
     return String.format("%s", value.toString());

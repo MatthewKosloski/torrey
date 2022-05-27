@@ -45,6 +45,7 @@ public class IRBinaryInst extends Quadruple
    *
    * @return The string of this instruction.
    */
+  @Override
   public String toString()
   {
     return String.format("%s = %s %s %s", result, arg1, opType, arg2);

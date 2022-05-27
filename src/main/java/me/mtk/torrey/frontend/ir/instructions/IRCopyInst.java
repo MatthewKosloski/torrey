@@ -23,6 +23,7 @@ public final class IRCopyInst extends Quadruple
     super(OpType.COPY, rhs, null, lhs);
   }
 
+  @Override
   public String toString()
   {
     return String.format("%s %s %s", result, opType, arg1);

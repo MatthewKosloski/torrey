@@ -39,6 +39,7 @@ public final class IRCallInst extends Quadruple
   /**
    * The string respresentation of the call instruction.
    */
+  @Override
   public String toString()
   {
     return String.format("%s %s, %s", opType, arg1, arg2);

@@ -22,6 +22,7 @@ public final class IRIfInst extends Quadruple
    *
    * @return The string of this instruction.
    */
+  @Override
   public String toString()
   {
     if (arg1 != null && arg2 != null && result != null && opType != null)

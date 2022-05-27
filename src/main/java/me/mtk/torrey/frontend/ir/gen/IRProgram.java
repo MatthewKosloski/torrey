@@ -57,6 +57,7 @@ public final class IRProgram
       return temps;
     }
 
+    @Override
     public String toString()
     {
       final StringBuilder sb = new StringBuilder();

@@ -22,6 +22,7 @@ public final class IRParamInst extends Quadruple
    *
    * @return The string of this instruction.
    */
+  @Override
   public String toString()
   {
     return String.format("%s %s", opType, arg1);

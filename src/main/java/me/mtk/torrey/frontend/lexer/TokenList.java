@@ -37,6 +37,7 @@ public final class TokenList
    *
    * @return A String object.
    */
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();

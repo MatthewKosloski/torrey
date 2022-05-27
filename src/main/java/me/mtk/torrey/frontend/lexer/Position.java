@@ -45,6 +45,7 @@ public final class Position
    *
    * @return The toString representation of this Position.
    */
+  @Override
   public String toString()
   {
     return String.format("(%d:%d)", line, col);

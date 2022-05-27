@@ -141,6 +141,7 @@ public abstract class ASTNode
     return token;
   }
 
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();

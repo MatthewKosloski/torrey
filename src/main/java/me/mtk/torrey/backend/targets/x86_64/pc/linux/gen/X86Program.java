@@ -53,6 +53,7 @@ public final class X86Program implements TargetProgram
     return textSegment;
   }
 
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
