@@ -11,6 +11,8 @@ package me.mtk.torrey.frontend.error_reporter;
  */
 public final class ErrorMessages
 {
+  private ErrorMessages() { }
+
   public static final String UnexpectedCharacter = "Unexpected character '%s'";
   public static final String ExpectedButFound = "Expected '%s' but found '%s'";
   public static final String ExpectedExpr = "Expected an integer, unary, binary, print, let, or identifier expression but found '%s' instead";
