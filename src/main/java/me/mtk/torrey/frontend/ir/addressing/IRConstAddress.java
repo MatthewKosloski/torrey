@@ -7,11 +7,11 @@ public final class IRConstAddress extends IntegralIRAddress
 {
   public IRConstAddress(long constant)
   {
-    super(IRAddressingMode.CONSTANT, constant);
+    super(constant);
   }
 
   public IRConstAddress(boolean constant)
   {
-    super(IRAddressingMode.CONSTANT, constant ? 1 : 0);
+    super(constant ? 1 : 0);
   }
 }

@@ -12,9 +12,9 @@ public abstract class IntegralIRAddress implements IRAddress
      * Constructs a new address.
      * @param value The integral value stored at this address.
      */
-    public IntegralIRAddress(IRAddressingMode mode, long value)
+    public IntegralIRAddress(long value)
     {
-      this.mode = mode;
+      this.mode = IRAddressingMode.CONSTANT;
       this.value = value;
     }
 

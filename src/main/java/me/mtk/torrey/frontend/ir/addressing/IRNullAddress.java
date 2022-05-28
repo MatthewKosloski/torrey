@@ -8,7 +8,7 @@ public final class IRNullAddress extends IntegralIRAddress
 {
   public IRNullAddress()
   {
-    super(IRAddressingMode.CONSTANT, 0);
+    super(0);
   }
 
   public IRConstAddress toIRConstantAddress()
