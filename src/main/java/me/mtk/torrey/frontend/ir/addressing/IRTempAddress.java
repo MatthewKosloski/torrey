@@ -3,7 +3,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 /**
  * Represents an address with TEMP addressing mode.
  */
-public final class IRTempAddress extends IRAddress
+public final class IRTempAddress extends StringIRAddress
 {
   // The number of the temporary address.
   private static int num = 0;
