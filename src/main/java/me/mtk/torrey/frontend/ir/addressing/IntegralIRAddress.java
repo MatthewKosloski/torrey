@@ -46,6 +46,6 @@ public abstract class IntegralIRAddress implements IRAddress
     @Override
     public String toString()
     {
-      return String.format("%s", Long.toString(value));
+      return Long.toString(value);
     }
 }
