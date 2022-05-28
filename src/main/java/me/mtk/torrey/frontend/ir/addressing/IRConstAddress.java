@@ -14,9 +14,4 @@ public final class IRConstAddress extends IRAddress
   {
     super(IRAddressingMode.CONSTANT, constant ? 1 : 0);
   }
-
-  public IRConstAddress(String constantStr)
-  {
-    super(IRAddressingMode.CONSTANT, Long.parseLong(constantStr));
-  }
 }
