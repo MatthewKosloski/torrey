@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class StringIRAddressTest
 {
-  class ConcreteImpl extends StringIRAddress
+  class ConcreteImpl extends IRStringAddress
   {
     public ConcreteImpl(IRAddressingMode mode, String value)
     {

@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class IntegralIRAddressTest
 {
-  class ConcreteImpl extends IntegralIRAddress
+  class ConcreteImpl extends IRIntegralAddress
   {
     public ConcreteImpl(long value)
     {

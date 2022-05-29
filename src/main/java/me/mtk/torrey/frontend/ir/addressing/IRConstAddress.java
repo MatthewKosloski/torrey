@@ -3,7 +3,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 /**
  * Represents an address with CONSTANT addressing mode.
  */
-public final class IRConstAddress extends IntegralIRAddress
+public final class IRConstAddress extends IRIntegralAddress
 {
   public IRConstAddress(long constant)
   {

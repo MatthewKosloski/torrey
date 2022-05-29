@@ -1,6 +1,6 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-public abstract class StringIRAddress implements IRAddress
+public abstract class IRStringAddress implements IRAddress
 {
     // The mode of this address.
     private IRAddressingMode mode;
@@ -12,7 +12,7 @@ public abstract class StringIRAddress implements IRAddress
      * Constructs a new address.
      * @param value The string value stored at this address.
      */
-    public StringIRAddress(IRAddressingMode mode, String value)
+    public IRStringAddress(IRAddressingMode mode, String value)
     {
       this.mode = mode;
       this.value = value;
@@ -46,12 +46,12 @@ public abstract class StringIRAddress implements IRAddress
         return true;
       }
 
-      if (!(o instanceof StringIRAddress))
+      if (!(o instanceof IRStringAddress))
       {
         return false;
       }
 
-      StringIRAddress that = (StringIRAddress)o;
+      IRStringAddress that = (IRStringAddress)o;
 
       return this.mode == that.mode && this.value.equals(that.value);
     }

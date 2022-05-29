@@ -1,6 +1,6 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-public abstract class IntegralIRAddress implements IRAddress
+public abstract class IRIntegralAddress implements IRAddress
 {
     // The mode of this address.
     private IRAddressingMode mode;
@@ -12,7 +12,7 @@ public abstract class IntegralIRAddress implements IRAddress
      * Constructs a new address.
      * @param value The integral value stored at this address.
      */
-    public IntegralIRAddress(long value)
+    public IRIntegralAddress(long value)
     {
       this.mode = IRAddressingMode.CONSTANT;
       this.value = value;
@@ -46,12 +46,12 @@ public abstract class IntegralIRAddress implements IRAddress
         return true;
       }
 
-      if (!(o instanceof IntegralIRAddress))
+      if (!(o instanceof IRIntegralAddress))
       {
         return false;
       }
 
-      IntegralIRAddress that = (IntegralIRAddress)o;
+      IRIntegralAddress that = (IRIntegralAddress)o;
 
       return this.mode == that.mode && this.value == that.value;
     }
