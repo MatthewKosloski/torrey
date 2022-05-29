@@ -1,7 +1,10 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class IRLabelAddressTest
 {
@@ -10,8 +13,8 @@ public class IRLabelAddressTest
   {
     IRLabelAddress actual = new IRLabelAddress("l0");
 
-    Assert.assertEquals(IRAddressingMode.LABEL, actual.mode());
-    Assert.assertEquals("l0", actual.value());
+    assertEquals(IRAddressingMode.LABEL, actual.mode());
+    assertEquals("l0", actual.value());
   }
 
   @Test
@@ -20,7 +23,7 @@ public class IRLabelAddressTest
     IRLabelAddress x = new IRLabelAddress("l0");
     IRLabelAddress y = new IRLabelAddress("l0");
 
-    Assert.assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
   }
 
   @Test
@@ -29,6 +32,6 @@ public class IRLabelAddressTest
     IRLabelAddress x = new IRLabelAddress("l0");
     IRLabelAddress y = new IRLabelAddress("l1");
 
-    Assert.assertFalse(x.equals(y));
+    assertFalse(x.equals(y));
   }
 }

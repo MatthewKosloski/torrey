@@ -1,7 +1,10 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class IRStringAddressTest
 {
@@ -18,8 +21,8 @@ public class IRStringAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(IRAddressingMode.TEMP, "t42");
 
-    Assert.assertEquals(IRAddressingMode.TEMP, impl.mode());
-    Assert.assertEquals("t42", impl.value());
+    assertEquals(IRAddressingMode.TEMP, impl.mode());
+    assertEquals("t42", impl.value());
   }
 
   @Test
@@ -27,7 +30,7 @@ public class IRStringAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertEquals(IRAddressingMode.LABEL, impl.mode());
+    assertEquals(IRAddressingMode.LABEL, impl.mode());
   }
 
   @Test
@@ -35,7 +38,7 @@ public class IRStringAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(IRAddressingMode.NAME, "torrey_println");
 
-    Assert.assertEquals("torrey_println", impl.value());
+    assertEquals("torrey_println", impl.value());
   }
 
   @Test
@@ -44,7 +47,7 @@ public class IRStringAddressTest
     ConcreteImpl x = new ConcreteImpl(IRAddressingMode.TEMP, "l0");
     ConcreteImpl y = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertFalse(x.equals(y));
+    assertFalse(x.equals(y));
   }
 
   @Test
@@ -53,7 +56,7 @@ public class IRStringAddressTest
     ConcreteImpl x = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
     ConcreteImpl y = new ConcreteImpl(IRAddressingMode.LABEL, "l1");
 
-    Assert.assertFalse(x.equals(y));
+    assertFalse(x.equals(y));
   }
 
   @Test
@@ -61,7 +64,7 @@ public class IRStringAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertTrue(impl.equals(impl));
+    assertTrue(impl.equals(impl));
   }
 
   @Test
@@ -70,8 +73,8 @@ public class IRStringAddressTest
     ConcreteImpl x = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
     ConcreteImpl y = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertTrue(x.equals(y));
-    Assert.assertTrue(y.equals(x));
+    assertTrue(x.equals(y));
+    assertTrue(y.equals(x));
   }
 
   @Test
@@ -81,9 +84,9 @@ public class IRStringAddressTest
     ConcreteImpl y = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
     ConcreteImpl z = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertTrue(x.equals(y));
-    Assert.assertTrue(y.equals(z));
-    Assert.assertTrue(x.equals(z));
+    assertTrue(x.equals(y));
+    assertTrue(y.equals(z));
+    assertTrue(x.equals(z));
   }
 
   @Test
@@ -92,8 +95,8 @@ public class IRStringAddressTest
     ConcreteImpl x = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
     ConcreteImpl y = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertTrue(x.equals(y));
-    Assert.assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
   }
 
   @Test
@@ -101,7 +104,7 @@ public class IRStringAddressTest
   {
     ConcreteImpl x = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
-    Assert.assertFalse(x.equals(null));
+    assertFalse(x.equals(null));
   }
 
   @Test
@@ -111,7 +114,7 @@ public class IRStringAddressTest
     ConcreteImpl y = new ConcreteImpl(IRAddressingMode.LABEL, "l0");
 
 
-    Assert.assertEquals(x.hashCode(), y.hashCode());
+    assertEquals(x.hashCode(), y.hashCode());
   }
 
   @Test
@@ -119,6 +122,6 @@ public class IRStringAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(IRAddressingMode.TEMP, "t42");
 
-    Assert.assertEquals("t42", impl.toString());
+    assertEquals("t42", impl.toString());
   }
 }

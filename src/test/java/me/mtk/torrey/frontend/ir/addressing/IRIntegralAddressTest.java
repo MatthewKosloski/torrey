@@ -1,7 +1,10 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class IRIntegralAddressTest
 {
@@ -18,8 +21,8 @@ public class IRIntegralAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(42);
 
-    Assert.assertEquals(IRAddressingMode.CONSTANT, impl.mode());
-    Assert.assertEquals((Long)42L, impl.value());
+    assertEquals(IRAddressingMode.CONSTANT, impl.mode());
+    assertEquals((Long)42L, impl.value());
   }
 
   @Test
@@ -27,7 +30,7 @@ public class IRIntegralAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(42);
 
-    Assert.assertEquals(IRAddressingMode.CONSTANT, impl.mode());
+    assertEquals(IRAddressingMode.CONSTANT, impl.mode());
   }
 
   @Test
@@ -35,7 +38,7 @@ public class IRIntegralAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(42);
 
-    Assert.assertEquals((Long)42L, impl.value());
+    assertEquals((Long)42L, impl.value());
   }
 
   @Test
@@ -44,7 +47,7 @@ public class IRIntegralAddressTest
     ConcreteImpl x = new ConcreteImpl(42);
     ConcreteImpl y = new ConcreteImpl(43);
 
-    Assert.assertFalse(x.equals(y));
+    assertFalse(x.equals(y));
   }
 
   @Test
@@ -52,7 +55,7 @@ public class IRIntegralAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(42);
 
-    Assert.assertTrue(impl.equals(impl));
+    assertTrue(impl.equals(impl));
   }
 
   @Test
@@ -61,8 +64,8 @@ public class IRIntegralAddressTest
     ConcreteImpl x = new ConcreteImpl(42);
     ConcreteImpl y = new ConcreteImpl(42);
 
-    Assert.assertTrue(x.equals(y));
-    Assert.assertTrue(y.equals(x));
+    assertTrue(x.equals(y));
+    assertTrue(y.equals(x));
   }
 
   @Test
@@ -72,9 +75,9 @@ public class IRIntegralAddressTest
     ConcreteImpl y = new ConcreteImpl(42);
     ConcreteImpl z = new ConcreteImpl(42);
 
-    Assert.assertTrue(x.equals(y));
-    Assert.assertTrue(y.equals(z));
-    Assert.assertTrue(x.equals(z));
+    assertTrue(x.equals(y));
+    assertTrue(y.equals(z));
+    assertTrue(x.equals(z));
   }
 
   @Test
@@ -83,8 +86,8 @@ public class IRIntegralAddressTest
     ConcreteImpl x = new ConcreteImpl(42);
     ConcreteImpl y = new ConcreteImpl(42);
 
-    Assert.assertTrue(x.equals(y));
-    Assert.assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
   }
 
   @Test
@@ -92,7 +95,7 @@ public class IRIntegralAddressTest
   {
     ConcreteImpl x = new ConcreteImpl(42);
 
-    Assert.assertFalse(x.equals(null));
+    assertFalse(x.equals(null));
   }
 
   @Test
@@ -101,7 +104,7 @@ public class IRIntegralAddressTest
     ConcreteImpl x = new ConcreteImpl(42);
     ConcreteImpl y = new ConcreteImpl(42);
 
-    Assert.assertEquals(x.hashCode(), y.hashCode());
+    assertEquals(x.hashCode(), y.hashCode());
   }
 
 
@@ -110,6 +113,6 @@ public class IRIntegralAddressTest
   {
     ConcreteImpl impl = new ConcreteImpl(42);
 
-    Assert.assertEquals("42", impl.toString());
+    assertEquals("42", impl.toString());
   }
 }

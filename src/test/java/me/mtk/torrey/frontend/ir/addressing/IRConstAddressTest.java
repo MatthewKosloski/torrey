@@ -1,7 +1,10 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class IRConstAddressTest
 {
@@ -10,8 +13,8 @@ public class IRConstAddressTest
   {
     IRConstAddress actual = new IRConstAddress(42);
 
-    Assert.assertEquals(IRAddressingMode.CONSTANT, actual.mode());
-    Assert.assertEquals((Long)42L, actual.value());
+    assertEquals(IRAddressingMode.CONSTANT, actual.mode());
+    assertEquals((Long)42L, actual.value());
   }
 
   @Test
@@ -19,8 +22,8 @@ public class IRConstAddressTest
   {
     IRConstAddress actual = new IRConstAddress(true);
 
-    Assert.assertEquals(IRAddressingMode.CONSTANT, actual.mode());
-    Assert.assertEquals((Long)1L, actual.value());
+    assertEquals(IRAddressingMode.CONSTANT, actual.mode());
+    assertEquals((Long)1L, actual.value());
   }
 
   @Test
@@ -28,8 +31,8 @@ public class IRConstAddressTest
   {
     IRConstAddress actual = new IRConstAddress(false);
 
-    Assert.assertEquals(IRAddressingMode.CONSTANT, actual.mode());
-    Assert.assertEquals((Long)0L, actual.value());
+    assertEquals(IRAddressingMode.CONSTANT, actual.mode());
+    assertEquals((Long)0L, actual.value());
   }
 
   @Test
@@ -38,7 +41,7 @@ public class IRConstAddressTest
     IRConstAddress expected = new IRConstAddress(0);
     IRConstAddress actual = IRConstAddress.from(IRNullAddress.getInstance());
 
-    Assert.assertEquals(expected, actual);
+    assertEquals(expected, actual);
   }
 
 
@@ -48,7 +51,7 @@ public class IRConstAddressTest
     IRConstAddress x = new IRConstAddress(true);
     IRConstAddress y = new IRConstAddress(true);
 
-    Assert.assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
   }
 
   @Test
@@ -57,6 +60,6 @@ public class IRConstAddressTest
     IRConstAddress x = new IRConstAddress(true);
     IRConstAddress y = new IRConstAddress(false);
 
-    Assert.assertFalse(x.equals(y));
+    assertFalse(x.equals(y));
   }
 }

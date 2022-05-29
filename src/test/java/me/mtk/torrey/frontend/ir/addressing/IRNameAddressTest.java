@@ -1,7 +1,10 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class IRNameAddressTest
 {
@@ -10,8 +13,8 @@ public class IRNameAddressTest
   {
     IRNameAddress actual = new IRNameAddress("torrey_println");
 
-    Assert.assertEquals(IRAddressingMode.NAME, actual.mode());
-    Assert.assertEquals("torrey_println", actual.value());
+    assertEquals(IRAddressingMode.NAME, actual.mode());
+    assertEquals("torrey_println", actual.value());
   }
 
   @Test
@@ -20,7 +23,7 @@ public class IRNameAddressTest
     IRNameAddress x = new IRNameAddress("torrey_println");
     IRNameAddress y = new IRNameAddress("torrey_println");
 
-    Assert.assertTrue(x.equals(y));
+    assertTrue(x.equals(y));
   }
 
   @Test
@@ -29,6 +32,6 @@ public class IRNameAddressTest
     IRNameAddress x = new IRNameAddress("torrey_println");
     IRNameAddress y = new IRNameAddress("torrey_print");
 
-    Assert.assertFalse(x.equals(y));
+    assertFalse(x.equals(y));
   }
 }

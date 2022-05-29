@@ -1,7 +1,9 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class IRNullAddressTest
 {
@@ -10,8 +12,8 @@ public class IRNullAddressTest
   {
     IRNullAddress actual = IRNullAddress.getInstance();
 
-    Assert.assertEquals(IRAddressingMode.CONSTANT, actual.mode());
-    Assert.assertEquals((Long)0L, actual.value());
+    assertEquals(IRAddressingMode.CONSTANT, actual.mode());
+    assertEquals((Long)0L, actual.value());
   }
 
   @Test
@@ -20,6 +22,6 @@ public class IRNullAddressTest
     IRNullAddress x = IRNullAddress.getInstance();
     IRNullAddress y = IRNullAddress.getInstance();
 
-    Assert.assertTrue(x == y);
+    assertTrue(x == y);
   }
 }

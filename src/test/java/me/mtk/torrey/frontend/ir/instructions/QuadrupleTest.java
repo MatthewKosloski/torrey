@@ -1,7 +1,9 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import org.junit.Test;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import me.mtk.torrey.frontend.ir.instructions.Quadruple.OpType;
 import me.mtk.torrey.frontend.lexer.TokenType;
@@ -15,49 +17,49 @@ public class QuadrupleTest
   @Test
   public void opType_allOpTypes_mapToTerminalSymbols()
   {
-    Assert.assertEquals("+", OpType.ADD.toString());
-    Assert.assertEquals("-", OpType.SUB.toString());
-    Assert.assertEquals("*", OpType.MULT.toString());
-    Assert.assertEquals("/", OpType.DIV.toString());
-    Assert.assertEquals("==", OpType.EQUAL.toString());
-    Assert.assertEquals("!=", OpType.NEQUAL.toString());
-    Assert.assertEquals("<", OpType.LT.toString());
-    Assert.assertEquals("<=", OpType.LTE.toString());
-    Assert.assertEquals(">", OpType.GT.toString());
-    Assert.assertEquals(">=", OpType.GTE.toString());
-    Assert.assertEquals("call", OpType.CALL.toString());
-    Assert.assertEquals("=", OpType.COPY.toString());
-    Assert.assertEquals("goto", OpType.GOTO.toString());
-    Assert.assertEquals("label", OpType.LABEL.toString());
-    Assert.assertEquals("param", OpType.PARAM.toString());
-    Assert.assertEquals("-", OpType.MINUS.toString());
+    assertEquals("+", OpType.ADD.toString());
+    assertEquals("-", OpType.SUB.toString());
+    assertEquals("*", OpType.MULT.toString());
+    assertEquals("/", OpType.DIV.toString());
+    assertEquals("==", OpType.EQUAL.toString());
+    assertEquals("!=", OpType.NEQUAL.toString());
+    assertEquals("<", OpType.LT.toString());
+    assertEquals("<=", OpType.LTE.toString());
+    assertEquals(">", OpType.GT.toString());
+    assertEquals(">=", OpType.GTE.toString());
+    assertEquals("call", OpType.CALL.toString());
+    assertEquals("=", OpType.COPY.toString());
+    assertEquals("goto", OpType.GOTO.toString());
+    assertEquals("label", OpType.LABEL.toString());
+    assertEquals("param", OpType.PARAM.toString());
+    assertEquals("-", OpType.MINUS.toString());
 
-    Assert.assertEquals(EXPECTED_NUMBER_OF_IR_OP_TYPES, OpType.values().length);
+    assertEquals(EXPECTED_NUMBER_OF_IR_OP_TYPES, OpType.values().length);
   }
 
   @Test
   public void getBinaryOpTypeFromTokenType_allMappableTokenTypes_mapToBinaryOpTypes()
   {
-    Assert.assertEquals(OpType.ADD, OpType.getBinaryOpTypeFromTokenType(TokenType.PLUS));
-    Assert.assertEquals(OpType.SUB, OpType.getBinaryOpTypeFromTokenType(TokenType.MINUS));
-    Assert.assertEquals(OpType.MULT, OpType.getBinaryOpTypeFromTokenType(TokenType.STAR));
-    Assert.assertEquals(OpType.DIV, OpType.getBinaryOpTypeFromTokenType(TokenType.SLASH));
-    Assert.assertEquals(OpType.EQUAL, OpType.getBinaryOpTypeFromTokenType(TokenType.EQUAL));
-    Assert.assertEquals(OpType.NEQUAL, OpType.getBinaryOpTypeFromTokenType(TokenType.NOT));
-    Assert.assertEquals(OpType.LT, OpType.getBinaryOpTypeFromTokenType(TokenType.LT));
-    Assert.assertEquals(OpType.LTE, OpType.getBinaryOpTypeFromTokenType(TokenType.LTE));
-    Assert.assertEquals(OpType.GT, OpType.getBinaryOpTypeFromTokenType(TokenType.GT));
-    Assert.assertEquals(OpType.GTE, OpType.getBinaryOpTypeFromTokenType(TokenType.GTE));
+    assertEquals(OpType.ADD, OpType.getBinaryOpTypeFromTokenType(TokenType.PLUS));
+    assertEquals(OpType.SUB, OpType.getBinaryOpTypeFromTokenType(TokenType.MINUS));
+    assertEquals(OpType.MULT, OpType.getBinaryOpTypeFromTokenType(TokenType.STAR));
+    assertEquals(OpType.DIV, OpType.getBinaryOpTypeFromTokenType(TokenType.SLASH));
+    assertEquals(OpType.EQUAL, OpType.getBinaryOpTypeFromTokenType(TokenType.EQUAL));
+    assertEquals(OpType.NEQUAL, OpType.getBinaryOpTypeFromTokenType(TokenType.NOT));
+    assertEquals(OpType.LT, OpType.getBinaryOpTypeFromTokenType(TokenType.LT));
+    assertEquals(OpType.LTE, OpType.getBinaryOpTypeFromTokenType(TokenType.LTE));
+    assertEquals(OpType.GT, OpType.getBinaryOpTypeFromTokenType(TokenType.GT));
+    assertEquals(OpType.GTE, OpType.getBinaryOpTypeFromTokenType(TokenType.GTE));
 
-    Assert.assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
+    assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
   }
 
   public void getBinaryOpTypeFromTokenType_tokenTypeDoesNotMap_throwsError()
   {
-    Error lparenThrown = Assert.assertThrows(
+    Error lparenThrown = assertThrows(
       Error.class,
       () -> OpType.getBinaryOpTypeFromTokenType(TokenType.LPAREN));
 
-    Assert.assertEquals("Unexpected token type LPAREN", lparenThrown.getMessage());
+    assertEquals("Unexpected token type LPAREN", lparenThrown.getMessage());
   }
 }
