@@ -1,5 +1,6 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
@@ -165,26 +166,46 @@ public abstract class Quadruple
    */
   public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
   {
-    this.opType = opType;
-    this.arg1 = arg1;
-    this.arg2 = arg2;
-    this.result = result;
+    this.opType = Objects.requireNonNull(opType);
+    this.arg1 = Objects.requireNonNull(arg1);
+    this.arg2 = Objects.requireNonNull(arg2);
+    this.result = Objects.requireNonNull(result);
   }
 
   public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
   {
-    this.opType = opType;
-    this.arg1 = arg1;
-    this.arg2 = arg2;
-    this.result = result;
+    this.opType = Objects.requireNonNull(opType);
+    this.arg1 = Objects.requireNonNull(arg1);
+    this.arg2 = Objects.requireNonNull(arg2);
+    this.result = Objects.requireNonNull(result);
   }
 
   public Quadruple(OpType opType, IRAddress arg)
   {
-    this.opType = opType;
-    this.arg1 = arg;
+    this.opType = Objects.requireNonNull(opType);
+    this.arg1 = Objects.requireNonNull(arg);
     this.arg2 = null;
     this.result = null;
+  }
+
+  public Quadruple(Quadruple quadruple)
+  {
+    Objects.requireNonNull(quadruple);
+
+    this.opType = quadruple.opType;
+    this.arg1 = quadruple.arg1.makeCopy();
+
+    this.arg2 = null;
+    if (quadruple.arg2 != null)
+    {
+      this.arg2 = quadruple.arg2.makeCopy();
+    }
+
+    this.result = null;
+    if (quadruple.result != null)
+    {
+      this.result = quadruple.result.makeCopy();
+    }
   }
 
   public OpType opType()
@@ -210,5 +231,54 @@ public abstract class Quadruple
   public void setResult(IRAddress newResult)
   {
     result = newResult;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (o == this)
+    {
+      return true;
+    }
+
+    if (!(o instanceof Quadruple))
+    {
+      return false;
+    }
+
+    Quadruple that = (Quadruple)o;
+
+    boolean isEqual = this.opType == that.opType
+      && this.arg1.equals(that.arg1);
+
+    if (this.arg2 != null)
+    {
+      isEqual = isEqual && this.arg2.equals(that.arg2);
+    }
+    else
+    {
+      isEqual = isEqual && that.arg2 == null;
+    }
+
+    if (this.result != null)
+    {
+      isEqual = isEqual && this.result.equals(that.result);
+    }
+    else
+    {
+      isEqual = isEqual && that.result == null;
+    }
+
+    return isEqual;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hashCode = this.opType.hashCode();
+    hashCode = 31 * hashCode + this.arg1.hashCode();
+    hashCode = 31 * hashCode + (this.arg2 != null ? this.arg2.hashCode() : 0);
+    hashCode = 31 * hashCode + (this.result != null ? this.result.hashCode() : 0);
+    return hashCode;
   }
 }
