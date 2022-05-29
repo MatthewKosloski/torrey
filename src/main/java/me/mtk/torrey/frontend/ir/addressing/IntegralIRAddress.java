@@ -38,6 +38,32 @@ public abstract class IntegralIRAddress implements IRAddress
       return value;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+      if (o == this)
+      {
+        return true;
+      }
+
+      if (!(o instanceof IntegralIRAddress))
+      {
+        return false;
+      }
+
+      IntegralIRAddress that = (IntegralIRAddress)o;
+
+      return this.mode == that.mode && this.value == that.value;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int result = this.mode.hashCode();
+      result = 31 * result + Long.hashCode(value);
+      return result;
+    }
+
     /**
      * The string representation of this address.
      *

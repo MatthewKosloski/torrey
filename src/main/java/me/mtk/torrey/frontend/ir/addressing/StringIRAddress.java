@@ -38,6 +38,32 @@ public abstract class StringIRAddress implements IRAddress
       return value;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+      if (o == this)
+      {
+        return true;
+      }
+
+      if (!(o instanceof StringIRAddress))
+      {
+        return false;
+      }
+
+      StringIRAddress that = (StringIRAddress)o;
+
+      return this.mode == that.mode && this.value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int result = this.mode.hashCode();
+      result = 31 * result + this.value.hashCode();
+      return result;
+    }
+
     /**
      * The string representation of this address.
      *
