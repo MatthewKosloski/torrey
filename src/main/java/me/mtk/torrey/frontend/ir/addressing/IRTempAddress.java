@@ -9,4 +9,10 @@ public final class IRTempAddress extends IRStringAddress
   {
     super(IRAddressingMode.TEMP, value);
   }
+
+  @Override
+  public IRTempAddress makeCopy()
+  {
+    return new IRTempAddress(this.value());
+  }
 }

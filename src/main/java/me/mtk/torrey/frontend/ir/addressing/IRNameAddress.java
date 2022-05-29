@@ -9,4 +9,10 @@ public final class IRNameAddress extends IRStringAddress
   {
     super(IRAddressingMode.NAME, name);
   }
+
+  @Override
+  public IRNameAddress makeCopy()
+  {
+    return new IRNameAddress(this.value());
+  }
 }

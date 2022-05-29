@@ -14,6 +14,12 @@ public class IRStringAddressTest
     {
       super(mode, value);
     }
+
+    @Override
+    public IRStringAddress makeCopy()
+    {
+      return new ConcreteImpl(this.mode(), this.value());
+    }
   }
 
   @Test

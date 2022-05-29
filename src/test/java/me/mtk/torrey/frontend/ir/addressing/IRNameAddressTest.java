@@ -2,6 +2,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,16 @@ public class IRNameAddressTest
     IRNameAddress y = new IRNameAddress("torrey_println");
 
     assertTrue(x.equals(y));
+  }
+
+  @Test
+  public void makeCopy_normalScenario_makesCopy()
+  {
+    IRNameAddress expected = new IRNameAddress("torrey_println");
+    IRNameAddress actual = expected.makeCopy();
+
+    assertEquals(expected, actual);
+    assertNotSame(expected, actual);
   }
 
   @Test

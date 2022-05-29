@@ -2,6 +2,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,16 @@ public class IRLabelAddressTest
 
     assertEquals(IRAddressingMode.LABEL, actual.mode());
     assertEquals("l0", actual.value());
+  }
+
+  @Test
+  public void makeCopy_normalScenario_makesCopy()
+  {
+    IRLabelAddress expected = new IRLabelAddress("l0");
+    IRLabelAddress actual = expected.makeCopy();
+
+    assertEquals(expected, actual);
+    assertNotSame(expected, actual);
   }
 
   @Test

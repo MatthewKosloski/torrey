@@ -4,4 +4,5 @@ public interface IRAddress
 {
   IRAddressingMode mode();
   Object value();
+  IRAddress makeCopy();
 }

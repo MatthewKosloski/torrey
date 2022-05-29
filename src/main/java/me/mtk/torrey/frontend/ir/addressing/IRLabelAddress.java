@@ -9,4 +9,10 @@ public final class IRLabelAddress extends IRStringAddress
   {
     super(IRAddressingMode.LABEL, label);
   }
+
+  @Override
+  public IRLabelAddress makeCopy()
+  {
+    return new IRLabelAddress(this.value());
+  }
 }

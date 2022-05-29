@@ -13,6 +13,12 @@ public class IRNullAddress extends IRIntegralAddress
     super(0);
   }
 
+  @Override
+  public IRNullAddress makeCopy()
+  {
+    return new IRNullAddress();
+  }
+
   public static IRNullAddress getInstance()
   {
     return INSTANCE;

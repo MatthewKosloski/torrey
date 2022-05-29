@@ -14,6 +14,12 @@ public class IRIntegralAddressTest
     {
       super(value);
     }
+
+    @Override
+    public IRIntegralAddress makeCopy()
+    {
+      return new ConcreteImpl(this.value());
+    }
   }
 
   @Test

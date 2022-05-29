@@ -2,6 +2,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,16 @@ public class IRConstAddressTest
 
     assertEquals(IRAddressingMode.CONSTANT, actual.mode());
     assertEquals((Long)0L, actual.value());
+  }
+
+  @Test
+  public void makeCopy_normalScenario_makesCopy()
+  {
+    IRConstAddress expected = new IRConstAddress(0);
+    IRConstAddress actual = expected.makeCopy();
+
+    assertEquals(expected, actual);
+    assertNotSame(expected, actual);
   }
 
   @Test

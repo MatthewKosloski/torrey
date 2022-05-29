@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.ir.addressing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,16 @@ public class IRNullAddressTest
 
     assertEquals(IRAddressingMode.CONSTANT, actual.mode());
     assertEquals((Long)0L, actual.value());
+  }
+
+  @Test
+  public void makeCopy_normalScenario_makesCopy()
+  {
+    IRNullAddress expected = IRNullAddress.getInstance();
+    IRNullAddress actual = expected.makeCopy();
+
+    assertEquals(expected, actual);
+    assertNotSame(expected, actual);
   }
 
   @Test
