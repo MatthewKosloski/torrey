@@ -19,16 +19,6 @@ public abstract class IRStringAddress implements IRAddress
     }
 
     /**
-     * Creates a copy of the provided address.
-     * @param address An address.
-     */
-    public IRStringAddress(IRStringAddress address)
-    {
-      this.mode = address.mode;
-      this.value = new String(address.value);
-    }
-
-    /**
      * Returns the addressing mode of this instruction.
      *
      * @return An addressing mode.
