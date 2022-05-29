@@ -14,4 +14,9 @@ public final class IRConstAddress extends IntegralIRAddress
   {
     super(constant ? 1 : 0);
   }
+
+  public static IRConstAddress from(IRNullAddress addr)
+  {
+    return new IRConstAddress(addr.value());
+  }
 }

@@ -198,7 +198,7 @@ public final class IRGenerator implements ASTNodeVisitor
       irProgram.addQuads(params);
       irProgram.addQuad(new IRCallInst(procName, numParams));
 
-      nextAddress = new IRNullAddress();
+      nextAddress = IRNullAddress.getInstance();
     }
 
     /**
@@ -244,7 +244,7 @@ public final class IRGenerator implements ASTNodeVisitor
 
       if (returnAddress == null)
       {
-        returnAddress = new IRNullAddress();
+        returnAddress = IRNullAddress.getInstance();
       }
 
       nextAddress = returnAddress;
@@ -317,7 +317,7 @@ public final class IRGenerator implements ASTNodeVisitor
       {
         // The test condition does not evaluate to a value, so
         // we'll convert its NullAddress to a constant
-        testResultAddr = ((IRNullAddress) testResultAddr).toIRConstantAddress();
+        testResultAddr = IRConstAddress.from((IRNullAddress) testResultAddr);
       }
 
       // Jump to the else label if the test condition is false
@@ -393,7 +393,7 @@ public final class IRGenerator implements ASTNodeVisitor
         nextAddress = branchResultAddr;
       } else
       {
-        nextAddress = new IRNullAddress();
+        nextAddress = IRNullAddress.getInstance();
       }
     }
 
