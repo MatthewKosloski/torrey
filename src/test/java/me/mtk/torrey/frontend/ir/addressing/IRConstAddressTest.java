@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class IRConstAddressTest
 {
   @Test
-  public void constructorThatTakesLong_normalScenario_setsProperties()
+  public void constructor_argumentIsLong_setsProperties()
   {
     IRConstAddress actual = new IRConstAddress(42);
 
@@ -18,7 +18,7 @@ public class IRConstAddressTest
   }
 
   @Test
-  public void constructorThatTakesBoolean_argumentIsTrue_setsProperties()
+  public void constructor_argumentIsTrue_setsProperties()
   {
     IRConstAddress actual = new IRConstAddress(true);
 
@@ -27,7 +27,7 @@ public class IRConstAddressTest
   }
 
   @Test
-  public void constructorThatTakesBoolean_argumentIsFalse_setsProperties()
+  public void constructor_argumentIsFalse_setsProperties()
   {
     IRConstAddress actual = new IRConstAddress(false);
 
@@ -36,7 +36,7 @@ public class IRConstAddressTest
   }
 
   @Test
-  public void fromThatTakesIRNullAddress_normalScenario_returnsEquivalentIRConstAddress()
+  public void from_argumentIsIRNullAddress_returnsEquivalentIRConstAddress()
   {
     IRConstAddress expected = new IRConstAddress(0);
     IRConstAddress actual = IRConstAddress.from(IRNullAddress.getInstance());
