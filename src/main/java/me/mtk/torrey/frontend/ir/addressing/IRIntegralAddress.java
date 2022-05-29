@@ -19,6 +19,16 @@ public abstract class IRIntegralAddress implements IRAddress
     }
 
     /**
+     * Creates a copy of the provided address.
+     * @param address An address.
+     */
+    public IRIntegralAddress(IRIntegralAddress address)
+    {
+      this.mode = address.mode;
+      this.value = address.value;
+    }
+
+    /**
      * Returns the addressing mode of this instruction.
      *
      * @return An addressing mode.
