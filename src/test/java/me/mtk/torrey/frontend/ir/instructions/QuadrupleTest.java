@@ -32,6 +32,24 @@ public class QuadrupleTest
   private final IRLabelAddress testIRLabelAddress = new IRLabelAddress("l0");
   private final IRTempAddress testIRTempAddress = new IRTempAddress("t0");
 
+  class ConcreteImpl extends Quadruple
+  {
+    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
+    {
+      super(opType, arg1, arg2, result);
+    }
+
+    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
+    {
+      super(opType, arg1, arg2, result);
+    }
+
+    public ConcreteImpl(OpType opType, IRAddress arg)
+    {
+      super(opType, arg);
+    }
+  }
+
   public static Stream<Arguments> provider1()
   {
     return Stream.of(
@@ -219,24 +237,6 @@ public class QuadrupleTest
 
     assertEquals("Unexpected token type " + tokenType.toString(), thrown.getMessage());
     assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
-  }
-
-  class ConcreteImpl extends Quadruple
-  {
-    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
-    {
-      super(opType, arg1, arg2, result);
-    }
-
-    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
-    {
-      super(opType, arg1, arg2, result);
-    }
-
-    public ConcreteImpl(OpType opType, IRAddress arg)
-    {
-      super(opType, arg);
-    }
   }
 
   @Test
