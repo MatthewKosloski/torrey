@@ -3,7 +3,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class IntegralIRAddressTest
+public class IRIntegralAddressTest
 {
   class ConcreteImpl extends IRIntegralAddress
   {
