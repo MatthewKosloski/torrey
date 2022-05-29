@@ -2,6 +2,7 @@ package me.mtk.torrey.frontend.ir.addressing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,11 @@ public class IRStringAddressTest
     {
       super(mode, value);
     }
+
+    public ConcreteImpl(IRStringAddress address)
+    {
+      super(address);
+    }
   }
 
   @Test
@@ -23,6 +29,16 @@ public class IRStringAddressTest
 
     assertEquals(IRAddressingMode.TEMP, impl.mode());
     assertEquals("t42", impl.value());
+  }
+
+  @Test
+  public void constructor_withIRStringAddress_createsCopy()
+  {
+    ConcreteImpl original = new ConcreteImpl(IRAddressingMode.TEMP, "t42");
+    ConcreteImpl copy = new ConcreteImpl(original);
+
+    assertEquals(copy, original);
+    assertNotSame(copy, original);
   }
 
   @Test
