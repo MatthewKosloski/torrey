@@ -141,17 +141,17 @@ public abstract class Quadruple
   }
 
   // The operator type of the instruction.
-  protected OpType opType;
+  OpType opType;
 
   // The first argument of the instruction.
-  protected IRAddress arg1;
+  IRAddress arg1;
 
   // The second argument of the instruction.
-  protected IRAddress arg2;
+  IRAddress arg2;
 
   // The address at which the result of the instruction
   // is to be stored.
-  protected IRAddress result;
+  IRAddress result;
 
   /**
    * Instantiates a new quadruple to hold the properties
