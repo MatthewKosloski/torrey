@@ -5,11 +5,8 @@ package me.mtk.torrey.frontend.ir.addressing;
  */
 public final class IRTempAddress extends StringIRAddress
 {
-  // The number of the temporary address.
-  private static int num = 0;
-
-  public IRTempAddress()
+  public IRTempAddress(String value)
   {
-    super(IRAddressingMode.TEMP, String.format("t%d", num++));
+    super(IRAddressingMode.TEMP, value);
   }
 }

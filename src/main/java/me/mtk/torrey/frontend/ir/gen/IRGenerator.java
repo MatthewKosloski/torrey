@@ -30,8 +30,9 @@ public final class IRGenerator implements ASTNodeVisitor
     // The most recently calculated address.
     private IRAddress nextAddress;
 
-    // The ID of the next IR label.
     private int nextIRLabelNumber = 0;
+
+    private int nextIRTempNumber = 0;
 
     /**
      * Instantiates a new IRGenVisitor with an abstract
@@ -79,7 +80,7 @@ public final class IRGenerator implements ASTNodeVisitor
 
     public void visit(IntegerExpr expr)
     {
-      final IRTempAddress result = new IRTempAddress();
+      final IRTempAddress result = newIRTempAddress();
       final IRConstAddress rhs = new IRConstAddress(expr.toConstant());
 
       irProgram.addQuad(new IRCopyInst(result, rhs));
@@ -89,7 +90,7 @@ public final class IRGenerator implements ASTNodeVisitor
 
     public void visit(BooleanExpr expr)
     {
-      final IRTempAddress result = new IRTempAddress();
+      final IRTempAddress result = newIRTempAddress();
       final boolean bool = expr.token().type() == TokenType.TRUE;
       final IRConstAddress rhs = new IRConstAddress(bool);
 
@@ -109,7 +110,7 @@ public final class IRGenerator implements ASTNodeVisitor
     public void visit(UnaryExpr expr)
     {
       final TokenType tokType = expr.token().type();
-      final IRTempAddress result = new IRTempAddress();
+      final IRTempAddress result = newIRTempAddress();
       final IRAddress arg = getDestinationAddr(expr.first());
 
       if (expr.token().type() == TokenType.MINUS && expr.first() instanceof IntegerExpr)
@@ -134,7 +135,7 @@ public final class IRGenerator implements ASTNodeVisitor
      */
     public void visit(ArithmeticExpr expr)
     {
-      final IRTempAddress result = new IRTempAddress();
+      final IRTempAddress result = newIRTempAddress();
       final TokenType tokType = expr.token().type();
       final IRAddress arg1 = getDestinationAddr(expr.first());
       final IRAddress arg2 = getDestinationAddr(expr.second());
@@ -155,7 +156,7 @@ public final class IRGenerator implements ASTNodeVisitor
     {
       final TokenType tokType = expr.token().type();
       final IRLabelAddress label = newIRLabel();
-      final IRTempAddress comparisonResult = new IRTempAddress();
+      final IRTempAddress comparisonResult = newIRTempAddress();
 
       // Recursively generate IR instructions for the operands
       final IRAddress arg1 = getDestinationAddr(expr.first());
@@ -276,7 +277,7 @@ public final class IRGenerator implements ASTNodeVisitor
      */
     public void visit(LetBinding binding)
     {
-      final IRTempAddress result = new IRTempAddress();
+      final IRTempAddress result = newIRTempAddress();
       final String id = binding.first().token().rawText();
 
       // The source of the copy instruction is the
@@ -342,7 +343,7 @@ public final class IRGenerator implements ASTNodeVisitor
           elseLabel));
       }
 
-      final IRTempAddress branchResultAddr = new IRTempAddress();
+      final IRTempAddress branchResultAddr = newIRTempAddress();
 
       // Recursively generate IR instructions for the then branch
       expr.consequent().accept(this);
@@ -448,5 +449,10 @@ public final class IRGenerator implements ASTNodeVisitor
     private IRLabelAddress newIRLabel()
     {
       return new IRLabelAddress(String.format("l%d", nextIRLabelNumber++));
+    }
+
+    private IRTempAddress newIRTempAddress()
+    {
+      return new IRTempAddress(String.format("t%d", nextIRTempNumber++));
     }
 }
