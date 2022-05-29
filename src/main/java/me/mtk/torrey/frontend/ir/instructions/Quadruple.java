@@ -180,6 +180,14 @@ public abstract class Quadruple
     this.result = Objects.requireNonNull(result);
   }
 
+  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2)
+  {
+    this.opType = Objects.requireNonNull(opType);
+    this.arg1 = Objects.requireNonNull(arg1);
+    this.arg2 = Objects.requireNonNull(arg2);
+    this.result = null;
+  }
+
   public Quadruple(OpType opType, IRAddress arg)
   {
     this.opType = Objects.requireNonNull(opType);

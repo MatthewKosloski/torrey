@@ -25,13 +25,12 @@ import me.mtk.torrey.frontend.lexer.TokenType;
 
 public class QuadrupleTest
 {
-
   private static final int EXPECTED_NUMBER_OF_IR_OP_TYPES = 16;
   private static final int EXPECTED_NUMBER_OF_TOKEN_TYPES = 26;
-  private static final IRConstAddress testIRConstAddress1 = new IRConstAddress(10);
-  private static final IRConstAddress testIRConstAddress2 = new IRConstAddress(32);
-  private static final IRLabelAddress testIRLabelAddress = new IRLabelAddress("l0");
-  private static final IRTempAddress testIRTempAddress = new IRTempAddress("t0");
+  private static final IRConstAddress IR_CONST_ADDR_1 = new IRConstAddress(10);
+  private static final IRConstAddress IR_CONST_ADDR_2 = new IRConstAddress(32);
+  private static final IRLabelAddress IR_LABEL_ADDR = new IRLabelAddress("l0");
+  private static final IRTempAddress IR_TEMP_ADDR = new IRTempAddress("t0");
 
   private class ConcreteImpl extends Quadruple
   {
@@ -43,6 +42,11 @@ public class QuadrupleTest
     public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
     {
       super(opType, arg1, arg2, result);
+    }
+
+    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2)
+    {
+      super(opType, arg1, arg2);
     }
 
     public ConcreteImpl(OpType opType, IRAddress arg)
@@ -250,23 +254,23 @@ public class QuadrupleTest
   {
     ConcreteImpl actual = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     assertEquals(OpType.ADD, actual.opType);
-    assertSame(testIRConstAddress1, actual.arg1);
-    assertSame(testIRConstAddress2, actual.arg2);
-    assertSame(testIRTempAddress, actual.result);
+    assertSame(IR_CONST_ADDR_1, actual.arg1);
+    assertSame(IR_CONST_ADDR_2, actual.arg2);
+    assertSame(IR_TEMP_ADDR, actual.result);
   }
 
   public static Stream<Arguments> provider6()
   {
     return Stream.of(
-      arguments(null, testIRConstAddress1, testIRConstAddress2, testIRTempAddress),
-      arguments(OpType.ADD, null, testIRConstAddress2, testIRTempAddress),
-      arguments(OpType.ADD, testIRConstAddress1, null, testIRTempAddress),
-      arguments(OpType.ADD, testIRConstAddress1, testIRConstAddress2, null));
+      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2, IR_TEMP_ADDR),
+      arguments(OpType.ADD, null, IR_CONST_ADDR_2, IR_TEMP_ADDR),
+      arguments(OpType.ADD, IR_CONST_ADDR_1, null, IR_TEMP_ADDR),
+      arguments(OpType.ADD, IR_CONST_ADDR_1, IR_CONST_ADDR_2, null));
   }
 
   @ParameterizedTest
@@ -290,23 +294,23 @@ public class QuadrupleTest
   {
     ConcreteImpl actual = new ConcreteImpl(
       OpType.LT, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRLabelAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_LABEL_ADDR); // result
 
     assertEquals(OpType.LT, actual.opType);
-    assertSame(testIRConstAddress1, actual.arg1);
-    assertSame(testIRConstAddress2, actual.arg2);
-    assertSame(testIRLabelAddress, actual.result);
+    assertSame(IR_CONST_ADDR_1, actual.arg1);
+    assertSame(IR_CONST_ADDR_2, actual.arg2);
+    assertSame(IR_LABEL_ADDR, actual.result);
   }
 
   public static Stream<Arguments> provider7()
   {
     return Stream.of(
-      arguments(null, testIRConstAddress1, testIRConstAddress2, testIRLabelAddress),
-      arguments(OpType.LT, null, testIRConstAddress2, testIRLabelAddress),
-      arguments(OpType.LT, testIRConstAddress1, null, testIRLabelAddress),
-      arguments(OpType.LT, testIRConstAddress1, testIRConstAddress2, null));
+      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2, IR_LABEL_ADDR),
+      arguments(OpType.LT, null, IR_CONST_ADDR_2, IR_LABEL_ADDR),
+      arguments(OpType.LT, IR_CONST_ADDR_1, null, IR_LABEL_ADDR),
+      arguments(OpType.LT, IR_CONST_ADDR_1, IR_CONST_ADDR_2, null));
   }
 
   @ParameterizedTest
@@ -330,10 +334,10 @@ public class QuadrupleTest
   {
     ConcreteImpl actual = new ConcreteImpl(
       OpType.LABEL, // opType
-      testIRLabelAddress); // result
+      IR_LABEL_ADDR); // result
 
     assertEquals(OpType.LABEL, actual.opType);
-    assertSame(testIRLabelAddress, actual.arg1);
+    assertSame(IR_LABEL_ADDR, actual.arg1);
     assertNull(actual.arg2);
     assertNull(actual.result);
   }
@@ -341,7 +345,7 @@ public class QuadrupleTest
   public static Stream<Arguments> provider8()
   {
     return Stream.of(
-      arguments(null, testIRLabelAddress),
+      arguments(null, IR_LABEL_ADDR),
       arguments(OpType.LABEL, null));
   }
 
@@ -357,13 +361,49 @@ public class QuadrupleTest
   }
 
   @Test
+  public void constructor_withOpTypeAndArgsAndNonNullArgs_setsProperties()
+  {
+    ConcreteImpl actual = new ConcreteImpl(
+      OpType.ADD, // opType
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2); // arg2
+
+    assertEquals(OpType.ADD, actual.opType);
+    assertSame(IR_CONST_ADDR_1, actual.arg1);
+    assertSame(IR_CONST_ADDR_2, actual.arg2);
+    assertNull(actual.result);
+  }
+
+  public static Stream<Arguments> provider10()
+  {
+    return Stream.of(
+      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2),
+      arguments(OpType.LABEL, null, IR_CONST_ADDR_2),
+      arguments(OpType.LABEL, IR_CONST_ADDR_1, null));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provider10")
+  public void constructor_withOpTypeAndArgsAndNullArgs_throwsNullPointerException(
+    OpType opType,
+    IRAddress arg1,
+    IRAddress arg2)
+  {
+    NullPointerException thrown = assertThrows(
+      NullPointerException.class,
+      () -> new ConcreteImpl(opType, arg1, arg2));
+
+    assertNotNull(thrown);
+  }
+
+  @Test
   public void constructor_withQuadruple_makesCopy()
   {
     ConcreteImpl original = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl copy = new ConcreteImpl(original);
 
@@ -381,7 +421,7 @@ public class QuadrupleTest
   {
     ConcreteImpl original = new ConcreteImpl(
       OpType.LABEL, // opType
-      testIRLabelAddress); // arg1
+      IR_LABEL_ADDR); // arg1
 
     ConcreteImpl copy = new ConcreteImpl(original);
 
@@ -397,9 +437,9 @@ public class QuadrupleTest
   {
     OpType actual = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR // result
     ).opType();
 
     assertEquals(OpType.ADD, actual);
@@ -410,12 +450,12 @@ public class QuadrupleTest
   {
     IRAddress actual = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR // result
     ).arg1();
 
-    assertSame(testIRConstAddress1, actual);
+    assertSame(IR_CONST_ADDR_1, actual);
   }
 
   @Test
@@ -423,12 +463,12 @@ public class QuadrupleTest
   {
     IRAddress actual = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR // result
     ).arg2();
 
-    assertSame(testIRConstAddress2, actual);
+    assertSame(IR_CONST_ADDR_2, actual);
   }
 
   @Test
@@ -436,12 +476,12 @@ public class QuadrupleTest
   {
     IRAddress actual = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR // result
     ).result();
 
-    assertSame(testIRTempAddress, actual);
+    assertSame(IR_TEMP_ADDR, actual);
   }
 
   @Test
@@ -451,9 +491,9 @@ public class QuadrupleTest
 
     ConcreteImpl actual = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     actual.setResult(newResultAddress);
 
@@ -465,15 +505,15 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.SUB, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // arg1
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // arg1
 
     assertFalse(x.equals(y));
   }
@@ -484,14 +524,14 @@ public class QuadrupleTest
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
       new IRConstAddress(10), // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.SUB, // opType
       new IRConstAddress(32), // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // arg1
 
     assertFalse(x.equals(y));
   }
@@ -501,15 +541,15 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
+      IR_CONST_ADDR_1, // arg1
       new IRConstAddress(10), // arg2
-      testIRTempAddress); // result
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.SUB, // opType
-      testIRConstAddress1, // arg1
+      IR_CONST_ADDR_1, // arg1
       new IRConstAddress(32), // arg2
-      testIRTempAddress); // arg1
+      IR_TEMP_ADDR); // arg1
 
     assertFalse(x.equals(y));
   }
@@ -519,14 +559,14 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
       new IRTempAddress("t0")); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.SUB, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
       new IRTempAddress("t1")); // arg1
 
     assertFalse(x.equals(y));
@@ -537,13 +577,13 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.LABEL, // opType
-      testIRLabelAddress); // arg1
+      IR_LABEL_ADDR); // arg1
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.SUB, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // arg1
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // arg1
 
       assertFalse(x.equals(y));
   }
@@ -553,13 +593,13 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.LABEL, // opType
-      testIRLabelAddress); // arg1
+      IR_LABEL_ADDR); // arg1
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.SUB, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // arg1
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // arg1
 
       assertFalse(y.equals(x));
   }
@@ -578,13 +618,13 @@ public class QuadrupleTest
   {
     ConcreteImpl tuple = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1); // arg1
+      IR_CONST_ADDR_1); // arg1
 
     ConcreteImpl quadruple = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl lhs = isLhsATuple ? tuple : quadruple;
     ConcreteImpl rhs = isRhsATuple ? tuple : quadruple;
@@ -598,9 +638,9 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     assertTrue(x.equals(x));
   }
@@ -610,15 +650,15 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     assertTrue(x.equals(y));
     assertTrue(y.equals(x));
@@ -629,21 +669,21 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl z = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     assertTrue(x.equals(y));
     assertTrue(y.equals(z));
@@ -655,15 +695,15 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     assertTrue(x.equals(y));
     assertTrue(x.equals(y));
@@ -674,9 +714,9 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     assertFalse(x.equals(null));
   }
@@ -686,15 +726,15 @@ public class QuadrupleTest
   {
     ConcreteImpl x = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
     ConcreteImpl y = new ConcreteImpl(
       OpType.ADD, // opType
-      testIRConstAddress1, // arg1
-      testIRConstAddress2, // arg2
-      testIRTempAddress); // result
+      IR_CONST_ADDR_1, // arg1
+      IR_CONST_ADDR_2, // arg2
+      IR_TEMP_ADDR); // result
 
 
     assertEquals(x.hashCode(), y.hashCode());
