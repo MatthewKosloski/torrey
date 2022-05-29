@@ -30,6 +30,9 @@ public final class IRGenerator implements ASTNodeVisitor
     // The most recently calculated address.
     private IRAddress nextAddress;
 
+    // The ID of the next IR label.
+    private int nextIRLabelNumber = 0;
+
     /**
      * Instantiates a new IRGenVisitor with an abstract
      * syntax tree to be converted to an IR program.
@@ -151,7 +154,7 @@ public final class IRGenerator implements ASTNodeVisitor
     public void visit(CompareExpr expr)
     {
       final TokenType tokType = expr.token().type();
-      final IRLabelAddress label = new IRLabelAddress();
+      final IRLabelAddress label = newIRLabel();
       final IRTempAddress comparisonResult = new IRTempAddress();
 
       // Recursively generate IR instructions for the operands
@@ -318,7 +321,7 @@ public final class IRGenerator implements ASTNodeVisitor
       }
 
       // Jump to the else label if the test condition is false
-      final IRLabelAddress elseLabel = new IRLabelAddress();
+      final IRLabelAddress elseLabel = newIRLabel();
 
       if (expr.test().evalType() == DataType.INTEGER)
       {
@@ -357,7 +360,7 @@ public final class IRGenerator implements ASTNodeVisitor
 
       // After the then branch, we should jump to the done label
       // to skip over the else block
-      final IRLabelAddress doneLabel = new IRLabelAddress();
+      final IRLabelAddress doneLabel = newIRLabel();
       irProgram.addQuad(new IRGotoInst(doneLabel));
 
       // Start of else block
@@ -440,5 +443,10 @@ public final class IRGenerator implements ASTNodeVisitor
     private IRAddress getDestinationAddr(ASTNode n)
     {
       return getDestinationAddr((Expr) n);
+    }
+
+    private IRLabelAddress newIRLabel()
+    {
+      return new IRLabelAddress(String.format("l%d", nextIRLabelNumber++));
     }
 }

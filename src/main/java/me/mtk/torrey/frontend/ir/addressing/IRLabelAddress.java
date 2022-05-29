@@ -5,11 +5,8 @@ package me.mtk.torrey.frontend.ir.addressing;
  */
 public final class IRLabelAddress extends StringIRAddress
 {
-  // The number of the label address.
-  private static int num = 0;
-
-  public IRLabelAddress()
+  public IRLabelAddress(String label)
   {
-    super(IRAddressingMode.LABEL, String.format("l%d", num++));
+    super(IRAddressingMode.LABEL, label);
   }
 }
