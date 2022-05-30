@@ -49,6 +49,11 @@ public class QuadrupleTest
       super(opType, arg1, arg2);
     }
 
+    public ConcreteImpl(OpType opType, IRAddress arg, IRTempAddress result)
+    {
+      super(opType, arg, result);
+    }
+
     public ConcreteImpl(OpType opType, IRAddress arg)
     {
       super(opType, arg);
@@ -356,6 +361,45 @@ public class QuadrupleTest
     NullPointerException thrown = assertThrows(
       NullPointerException.class,
       () -> new ConcreteImpl(opType, arg));
+
+    assertNotNull(thrown);
+  }
+
+  @Test
+  public void constructor_withArgAndResultAndNonNullArgs_setsProperties()
+  {
+    ConcreteImpl actual = new ConcreteImpl(
+      OpType.COPY, // opType
+      IR_CONST_ADDR_1, // arg1
+      IR_TEMP_ADDR); // result
+
+    assertEquals(OpType.COPY, actual.opType);
+    assertSame(IR_CONST_ADDR_1, actual.arg1);
+    assertNull(actual.arg2);
+    assertSame(IR_TEMP_ADDR, actual.result);
+  }
+
+  public static Stream<Arguments> provider11()
+  {
+    return Stream.of(
+      arguments(null, IR_CONST_ADDR_1, IR_TEMP_ADDR),
+      arguments(OpType.COPY, null, IR_TEMP_ADDR),
+      arguments(OpType.COPY, IR_CONST_ADDR_1, null));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provider11")
+  public void constructor_withArgAndResultAndNullArgs_throwsNullPointerException(
+    OpType opType,
+    IRAddress arg,
+    IRTempAddress result)
+  {
+    NullPointerException thrown = assertThrows(
+      NullPointerException.class,
+      () -> new ConcreteImpl(
+        opType, // opType
+        arg, // arg1
+        result)); // result
 
     assertNotNull(thrown);
   }
