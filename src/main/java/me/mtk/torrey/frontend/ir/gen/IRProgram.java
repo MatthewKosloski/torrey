@@ -16,35 +16,35 @@ public final class IRProgram
     quads = new ArrayList<>();
   }
 
-    public void addQuad(Quadruple quad)
+  public void addQuad(Quadruple quad)
+  {
+    quads.add(quad);
+  }
+
+  public void addQuads(List<Quadruple> quads)
+  {
+    for (Quadruple quad : quads)
     {
-      quads.add(quad);
+      addQuad(quad);
+    }
+  }
+
+  public List<Quadruple> quads()
+  {
+    return quads;
+  }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < quads.size(); i++)
+    {
+      sb.append(quads.get(i).toString())
+        .append(i == quads.size() - 1 ? "" : "\n");
     }
 
-    public void addQuads(List<Quadruple> quads)
-    {
-      for (Quadruple quad : quads)
-      {
-        addQuad(quad);
-      }
-    }
-
-    public List<Quadruple> quads()
-    {
-      return quads;
-    }
-
-    @Override
-    public String toString()
-    {
-      final StringBuilder sb = new StringBuilder();
-
-      for (int i = 0; i < quads.size(); i++)
-      {
-        sb.append(quads.get(i).toString())
-          .append(i == quads.size() - 1 ? "" : "\n");
-      }
-
-      return sb.toString();
-    }
+    return sb.toString();
+  }
 }
