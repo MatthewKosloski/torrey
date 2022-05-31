@@ -1,5 +1,6 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 
 /**
@@ -14,7 +15,7 @@ public final class IRParamInst extends Quadruple
    */
   public IRParamInst(IRAddress addr)
   {
-    super(OpType.PARAM, addr);
+    super(OpType.PARAM, Objects.requireNonNull(addr), null, null);
   }
 
   /**

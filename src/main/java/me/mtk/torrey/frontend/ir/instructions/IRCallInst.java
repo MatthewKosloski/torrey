@@ -1,5 +1,7 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
+
 import me.mtk.torrey.frontend.ir.addressing.*;
 
 public final class IRCallInst extends Quadruple
@@ -12,9 +14,13 @@ public final class IRCallInst extends Quadruple
    * @param numParams A constant address indicating the number
    * of parameters to the procedure.
    */
-  public IRCallInst(IRNameAddress procName, IRConstAddress numParams)
+  public IRCallInst(IRAddress procName, IRAddress numParams)
   {
-    super(OpType.CALL, procName, numParams);
+    super(
+      OpType.CALL,
+      requireName(Objects.requireNonNull(procName)),
+      requireConstant(Objects.requireNonNull(numParams)),
+      null);
   }
 
   /**

@@ -12,20 +12,20 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
-import me.mtk.torrey.frontend.lexer.TokenType;
+import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
 import me.mtk.torrey.frontend.ir.instructions.Quadruple.OpType;
+import me.mtk.torrey.frontend.lexer.TokenType;
 
-public class IRBinaryInstTest
+public class IRIfInstTest
 {
   private static final int EXPECTED_NUMBER_OF_TOKEN_TYPES = 26;
-  private static final IRAddress IR_CONST_ADDR_1 = new IRConstAddress(10);
-  private static final IRAddress IR_CONST_ADDR_2 = new IRConstAddress(32);
-  private static final IRAddress IR_TEMP_ADDR = new IRTempAddress("t0");
+  private static final IRAddress IR_CONST_ADDR1 = new IRConstAddress(2);
+  private static final IRAddress IR_CONST_ADDR2 = new IRConstAddress(3);
+  private static final IRAddress IR_LABEL_ADDR = new IRLabelAddress("l0");
 
-  public static Stream<Arguments> tokenTypeToOpTypeMappings()
+  public static Stream<Arguments> tokenTypeToInvertedOpTypeMappings()
   {
-    return QuadrupleTest.tokenTypeToOpTypeMappings();
+    return QuadrupleTest.tokenTypeToInvertedOpTypeMappings();
   }
 
   public static Stream<Arguments> tokenTypesThatDoNotMapToAnOpType()
@@ -36,26 +36,26 @@ public class IRBinaryInstTest
   public static Stream<Arguments> nullArgumentCombos()
   {
     return Stream.of(
-      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2, IR_TEMP_ADDR),
-      arguments(TokenType.PLUS, null, IR_CONST_ADDR_2, IR_TEMP_ADDR),
-      arguments(TokenType.PLUS, IR_CONST_ADDR_1, null, IR_TEMP_ADDR),
-      arguments(TokenType.PLUS, IR_CONST_ADDR_1, IR_CONST_ADDR_2, null),
-      arguments(null, null, null, null));
+      arguments(null, null, null, null),
+      arguments(null, IR_CONST_ADDR1, IR_CONST_ADDR2, IR_LABEL_ADDR),
+      arguments(TokenType.GT, null, IR_CONST_ADDR2, IR_LABEL_ADDR),
+      arguments(TokenType.GT, IR_CONST_ADDR1, null, IR_LABEL_ADDR),
+      arguments(TokenType.GT, IR_CONST_ADDR1, IR_CONST_ADDR2, null));
   }
 
   @Test
   public void constructor_normalScenario_setsProperties()
   {
-    Quadruple actual = new IRBinaryInst(
-      TokenType.PLUS,
-      IR_CONST_ADDR_1,
-      IR_CONST_ADDR_2,
-      IR_TEMP_ADDR);
+    Quadruple actual = new IRIfInst(
+      TokenType.GT,
+      IR_CONST_ADDR1,
+      IR_CONST_ADDR2,
+      IR_LABEL_ADDR);
 
-    assertEquals(OpType.ADD, actual.opType);
-    assertSame(IR_CONST_ADDR_1, actual.arg1);
-    assertSame(IR_CONST_ADDR_2, actual.arg2);
-    assertSame(IR_TEMP_ADDR, actual.result);
+    assertEquals(OpType.LTE, actual.opType);
+    assertSame(IR_CONST_ADDR1, actual.arg1);
+    assertSame(IR_CONST_ADDR2, actual.arg2);
+    assertSame(IR_LABEL_ADDR, actual.result);
   }
 
   @Test
@@ -63,11 +63,11 @@ public class IRBinaryInstTest
   {
     assertThrows(
       IllegalArgumentException.class,
-      () -> new IRBinaryInst(
-        TokenType.PLUS,
-        IR_CONST_ADDR_1,
-        IR_CONST_ADDR_2,
-        new IRConstAddress(1)));
+      () -> new IRIfInst(
+        TokenType.GT,
+        IR_CONST_ADDR1,
+        IR_CONST_ADDR2,
+        IR_CONST_ADDR2));
   }
 
   @ParameterizedTest
@@ -81,18 +81,22 @@ public class IRBinaryInstTest
   {
     assertThrows(
       NullPointerException.class,
-      () -> new IRBinaryInst(tokType, arg1, arg2, result));
+      () -> new IRIfInst(
+        tokType,
+        arg1,
+        arg2,
+        result));
   }
 
   @ParameterizedTest
-  @MethodSource("tokenTypeToOpTypeMappings")
-  public void constructor_tokenTypeMapsToOpType_mapsTokenTypeToOpType(TokenType tokType, OpType opType)
+  @MethodSource("tokenTypeToInvertedOpTypeMappings")
+  public void constructor_tokenTypeMapsToInvertedOpType_mapsTokenTypeToOpType(TokenType tokType, OpType opType)
   {
-    Quadruple actual = new IRBinaryInst(
+    Quadruple actual = new IRIfInst(
       tokType,
-      IR_CONST_ADDR_1,
-      IR_CONST_ADDR_2,
-      IR_TEMP_ADDR);
+      IR_CONST_ADDR1,
+      IR_CONST_ADDR2,
+      IR_LABEL_ADDR);
 
     assertEquals(opType, actual.opType);
     assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
@@ -104,11 +108,11 @@ public class IRBinaryInstTest
   {
     Error thrown = assertThrows(
       Error.class,
-      () -> new IRBinaryInst(
+      () -> new IRIfInst(
         tokType,
-        IR_CONST_ADDR_1,
-        IR_CONST_ADDR_2,
-        IR_TEMP_ADDR));
+        IR_CONST_ADDR1,
+        IR_CONST_ADDR2,
+        IR_LABEL_ADDR));
 
     assertEquals("Unexpected token type " + tokType.toString(), thrown.getMessage());
     assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
@@ -117,12 +121,12 @@ public class IRBinaryInstTest
   @Test
   public void toString_normalScenario_returnsStringRepresentation()
   {
-    Quadruple actual = new IRBinaryInst(
-      TokenType.PLUS,
-      IR_CONST_ADDR_1,
-      IR_CONST_ADDR_2,
-      IR_TEMP_ADDR);
+    Quadruple actual = new IRIfInst(
+      TokenType.GT,
+      IR_CONST_ADDR1,
+      IR_CONST_ADDR2,
+      IR_LABEL_ADDR);
 
-    assertEquals("t0 = 10 + 32", actual.toString());
+    assertEquals("if 2 <= 3 goto l0", actual.toString());
   }
 }

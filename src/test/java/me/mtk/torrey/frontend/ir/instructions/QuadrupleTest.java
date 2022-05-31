@@ -2,9 +2,7 @@ package me.mtk.torrey.frontend.ir.instructions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,7 +16,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 import me.mtk.torrey.frontend.ir.instructions.Quadruple.OpType;
 import me.mtk.torrey.frontend.lexer.TokenType;
@@ -29,34 +26,13 @@ public class QuadrupleTest
   private static final int EXPECTED_NUMBER_OF_TOKEN_TYPES = 26;
   private static final IRConstAddress IR_CONST_ADDR_1 = new IRConstAddress(10);
   private static final IRConstAddress IR_CONST_ADDR_2 = new IRConstAddress(32);
-  private static final IRLabelAddress IR_LABEL_ADDR = new IRLabelAddress("l0");
   private static final IRTempAddress IR_TEMP_ADDR = new IRTempAddress("t0");
 
   private class ConcreteImpl extends Quadruple
   {
-    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
+    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRAddress result)
     {
       super(opType, arg1, arg2, result);
-    }
-
-    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
-    {
-      super(opType, arg1, arg2, result);
-    }
-
-    public ConcreteImpl(OpType opType, IRAddress arg1, IRAddress arg2)
-    {
-      super(opType, arg1, arg2);
-    }
-
-    public ConcreteImpl(OpType opType, IRAddress arg, IRTempAddress result)
-    {
-      super(opType, arg, result);
-    }
-
-    public ConcreteImpl(OpType opType, IRAddress arg)
-    {
-      super(opType, arg);
     }
 
     public ConcreteImpl(ConcreteImpl impl)
@@ -94,7 +70,7 @@ public class QuadrupleTest
     assertEquals(EXPECTED_NUMBER_OF_IR_OP_TYPES, OpType.values().length);
   }
 
-  public static Stream<Arguments> provider2()
+  public static Stream<Arguments> tokenTypeToOpTypeMappings()
   {
     return Stream.of(
       arguments(TokenType.PLUS, OpType.ADD),
@@ -109,8 +85,13 @@ public class QuadrupleTest
       arguments(TokenType.GTE, OpType.GTE));
   }
 
+  public static Stream<Arguments> unaryTokenTypeToOpTypeMappings()
+  {
+    return Stream.of(arguments(TokenType.MINUS, OpType.MINUS));
+  }
+
   @ParameterizedTest
-  @MethodSource("provider2")
+  @MethodSource("tokenTypeToOpTypeMappings")
   public void getBinaryOpTypeFromTokenType_tokenTypeHasMap_mapsToOpType(TokenType tokType, OpType expected)
   {
     OpType actual = OpType.getBinaryOpTypeFromTokenType(tokType);
@@ -138,13 +119,8 @@ public class QuadrupleTest
     assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
   }
 
-  public static Stream<Arguments> provider3()
-  {
-    return Stream.of(arguments(TokenType.MINUS, OpType.MINUS));
-  }
-
   @ParameterizedTest
-  @MethodSource("provider3")
+  @MethodSource("unaryTokenTypeToOpTypeMappings")
   public void getUnaryOpTypeFromTokenType_tokenTypeHasMap_mapsToOpType(TokenType tokType, OpType expected)
   {
     OpType actual = OpType.getUnaryOpTypeFromTokenType(tokType);
@@ -164,7 +140,6 @@ public class QuadrupleTest
     assertEquals("Unexpected token type " + tokType.toString(), thrown.getMessage());
     assertEquals(EXPECTED_NUMBER_OF_TOKEN_TYPES, TokenType.values().length);
   }
-
 
   public static Stream<Arguments> provider4()
   {
@@ -210,7 +185,7 @@ public class QuadrupleTest
     assertEquals(EXPECTED_NUMBER_OF_IR_OP_TYPES, OpType.values().length);
   }
 
-  public static Stream<Arguments> provider5()
+  public static Stream<Arguments> tokenTypeToInvertedOpTypeMappings()
   {
     return Stream.of(
       arguments(TokenType.PLUS, OpType.SUB),
@@ -225,8 +200,29 @@ public class QuadrupleTest
       arguments(TokenType.GTE, OpType.LT));
   }
 
+  public static Stream<Arguments> tokenTypesThatDoNotMapToAnOpType()
+  {
+    return Stream.of(
+      arguments(TokenType.LPAREN),
+      arguments(TokenType.RPAREN),
+      arguments(TokenType.LBRACK),
+      arguments(TokenType.RBRACK),
+      arguments(TokenType.PRINT),
+      arguments(TokenType.PRINTLN),
+      arguments(TokenType.LET),
+      arguments(TokenType.AND),
+      arguments(TokenType.OR),
+      arguments(TokenType.IF),
+      arguments(TokenType.TRUE),
+      arguments(TokenType.FALSE),
+      arguments(TokenType.INTEGER),
+      arguments(TokenType.IDENTIFIER),
+      arguments(TokenType.UNIDENTIFIED),
+      arguments(TokenType.EOF));
+  }
+
   @ParameterizedTest
-  @MethodSource("provider5")
+  @MethodSource("tokenTypeToInvertedOpTypeMappings")
   public void getInvertedBinaryOpTypeFromTokenType_tokenTypeHasMap_mapsToInvertedOpType(TokenType tokenType, OpType expected)
   {
     OpType actual = OpType.getInvertedBinaryOpTypeFromTokenType(tokenType);
@@ -236,14 +232,7 @@ public class QuadrupleTest
   }
 
   @ParameterizedTest
-  @EnumSource(mode = EnumSource.Mode.INCLUDE, names = {
-    "LPAREN", "RPAREN", "LBRACK", "RBRACK",
-    "PRINT", "PRINTLN",
-    "LET",
-    "AND", "OR", "IF",
-    "TRUE", "FALSE", "INTEGER",
-    "IDENTIFIER", "UNIDENTIFIED", "EOF",
-  })
+  @MethodSource("tokenTypesThatDoNotMapToAnOpType")
   public void getInvertedBinaryOpTypeFromTokenType_tokenTypeDoesNotHaveMap_throwsError(TokenType tokenType)
   {
     Error thrown = assertThrows(
@@ -255,7 +244,7 @@ public class QuadrupleTest
   }
 
   @Test
-  public void constructor_withIRTempAddressAndNonNullArgs_setsProperties()
+  public void constructor_normalScenario_setsProperties()
   {
     ConcreteImpl actual = new ConcreteImpl(
       OpType.ADD, // opType
@@ -267,177 +256,6 @@ public class QuadrupleTest
     assertSame(IR_CONST_ADDR_1, actual.arg1);
     assertSame(IR_CONST_ADDR_2, actual.arg2);
     assertSame(IR_TEMP_ADDR, actual.result);
-  }
-
-  public static Stream<Arguments> provider6()
-  {
-    return Stream.of(
-      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2, IR_TEMP_ADDR),
-      arguments(OpType.ADD, null, IR_CONST_ADDR_2, IR_TEMP_ADDR),
-      arguments(OpType.ADD, IR_CONST_ADDR_1, null, IR_TEMP_ADDR),
-      arguments(OpType.ADD, IR_CONST_ADDR_1, IR_CONST_ADDR_2, null));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provider6")
-  public void constructor_withIRTempAddressAndNullArgs_throwsNullPointerException(
-    OpType opType,
-    IRAddress arg1,
-    IRAddress arg2,
-    IRTempAddress result
-  )
-  {
-    NullPointerException thrown = assertThrows(
-      NullPointerException.class,
-      () -> new ConcreteImpl(opType, arg1, arg2, (IRTempAddress) result));
-
-    assertNotNull(thrown);
-  }
-
-  @Test
-  public void constructor_withIRLabelAddressAndNonNullArgs_setsProperties()
-  {
-    ConcreteImpl actual = new ConcreteImpl(
-      OpType.LT, // opType
-      IR_CONST_ADDR_1, // arg1
-      IR_CONST_ADDR_2, // arg2
-      IR_LABEL_ADDR); // result
-
-    assertEquals(OpType.LT, actual.opType);
-    assertSame(IR_CONST_ADDR_1, actual.arg1);
-    assertSame(IR_CONST_ADDR_2, actual.arg2);
-    assertSame(IR_LABEL_ADDR, actual.result);
-  }
-
-  public static Stream<Arguments> provider7()
-  {
-    return Stream.of(
-      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2, IR_LABEL_ADDR),
-      arguments(OpType.LT, null, IR_CONST_ADDR_2, IR_LABEL_ADDR),
-      arguments(OpType.LT, IR_CONST_ADDR_1, null, IR_LABEL_ADDR),
-      arguments(OpType.LT, IR_CONST_ADDR_1, IR_CONST_ADDR_2, null));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provider7")
-  public void constructor_withIRLabelAddressAndNullArgs_throwsNullPointerException(
-    OpType opType,
-    IRAddress arg1,
-    IRAddress arg2,
-    IRLabelAddress result
-  )
-  {
-    NullPointerException thrown = assertThrows(
-      NullPointerException.class,
-      () -> new ConcreteImpl(opType, arg1, arg2, (IRLabelAddress) result));
-
-    assertNotNull(thrown);
-  }
-
-  @Test
-  public void constructor_withSingleAddressAndNonNullArgs_setsProperties()
-  {
-    ConcreteImpl actual = new ConcreteImpl(
-      OpType.LABEL, // opType
-      IR_LABEL_ADDR); // result
-
-    assertEquals(OpType.LABEL, actual.opType);
-    assertSame(IR_LABEL_ADDR, actual.arg1);
-    assertNull(actual.arg2);
-    assertNull(actual.result);
-  }
-
-  public static Stream<Arguments> provider8()
-  {
-    return Stream.of(
-      arguments(null, IR_LABEL_ADDR),
-      arguments(OpType.LABEL, null));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provider8")
-  public void constructor_withSingleAddressAndNullArgs_throwsNullPointerException(OpType opType, IRAddress arg)
-  {
-    NullPointerException thrown = assertThrows(
-      NullPointerException.class,
-      () -> new ConcreteImpl(opType, arg));
-
-    assertNotNull(thrown);
-  }
-
-  @Test
-  public void constructor_withArgAndResultAndNonNullArgs_setsProperties()
-  {
-    ConcreteImpl actual = new ConcreteImpl(
-      OpType.COPY, // opType
-      IR_CONST_ADDR_1, // arg1
-      IR_TEMP_ADDR); // result
-
-    assertEquals(OpType.COPY, actual.opType);
-    assertSame(IR_CONST_ADDR_1, actual.arg1);
-    assertNull(actual.arg2);
-    assertSame(IR_TEMP_ADDR, actual.result);
-  }
-
-  public static Stream<Arguments> provider11()
-  {
-    return Stream.of(
-      arguments(null, IR_CONST_ADDR_1, IR_TEMP_ADDR),
-      arguments(OpType.COPY, null, IR_TEMP_ADDR),
-      arguments(OpType.COPY, IR_CONST_ADDR_1, null));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provider11")
-  public void constructor_withArgAndResultAndNullArgs_throwsNullPointerException(
-    OpType opType,
-    IRAddress arg,
-    IRTempAddress result)
-  {
-    NullPointerException thrown = assertThrows(
-      NullPointerException.class,
-      () -> new ConcreteImpl(
-        opType, // opType
-        arg, // arg1
-        result)); // result
-
-    assertNotNull(thrown);
-  }
-
-  @Test
-  public void constructor_withOpTypeAndArgsAndNonNullArgs_setsProperties()
-  {
-    ConcreteImpl actual = new ConcreteImpl(
-      OpType.ADD, // opType
-      IR_CONST_ADDR_1, // arg1
-      IR_CONST_ADDR_2); // arg2
-
-    assertEquals(OpType.ADD, actual.opType);
-    assertSame(IR_CONST_ADDR_1, actual.arg1);
-    assertSame(IR_CONST_ADDR_2, actual.arg2);
-    assertNull(actual.result);
-  }
-
-  public static Stream<Arguments> provider10()
-  {
-    return Stream.of(
-      arguments(null, IR_CONST_ADDR_1, IR_CONST_ADDR_2),
-      arguments(OpType.LABEL, null, IR_CONST_ADDR_2),
-      arguments(OpType.LABEL, IR_CONST_ADDR_1, null));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provider10")
-  public void constructor_withOpTypeAndArgsAndNullArgs_throwsNullPointerException(
-    OpType opType,
-    IRAddress arg1,
-    IRAddress arg2)
-  {
-    NullPointerException thrown = assertThrows(
-      NullPointerException.class,
-      () -> new ConcreteImpl(opType, arg1, arg2));
-
-    assertNotNull(thrown);
   }
 
   @Test
@@ -458,22 +276,6 @@ public class QuadrupleTest
     assertNotSame(original.arg2, copy.arg2);
     assertEquals(original.result, copy.result);
     assertNotSame(original.result, copy.result);
-  }
-
-  @Test
-  public void constructor_withTuple_makesCopy()
-  {
-    ConcreteImpl original = new ConcreteImpl(
-      OpType.LABEL, // opType
-      IR_LABEL_ADDR); // arg1
-
-    ConcreteImpl copy = new ConcreteImpl(original);
-
-    assertEquals(original.opType, copy.opType);
-    assertEquals(original.arg1, copy.arg1);
-    assertNotSame(original.arg1, copy.arg1);
-    assertNull(copy.arg2);
-    assertNull(copy.result);
   }
 
   @Test
@@ -615,67 +417,6 @@ public class QuadrupleTest
 
     assertFalse(x.equals(y));
   }
-
-  @Test
-  public void equals_lhsIsTupleAndRhsIsQuadruple_returnsFalse()
-  {
-    ConcreteImpl x = new ConcreteImpl(
-      OpType.LABEL, // opType
-      IR_LABEL_ADDR); // arg1
-
-    ConcreteImpl y = new ConcreteImpl(
-      OpType.SUB, // opType
-      IR_CONST_ADDR_1, // arg1
-      IR_CONST_ADDR_2, // arg2
-      IR_TEMP_ADDR); // arg1
-
-      assertFalse(x.equals(y));
-  }
-
-  @Test
-  public void equals_lhsIsQuadrupleAndRhsIsTuple_returnsFalse()
-  {
-    ConcreteImpl x = new ConcreteImpl(
-      OpType.LABEL, // opType
-      IR_LABEL_ADDR); // arg1
-
-    ConcreteImpl y = new ConcreteImpl(
-      OpType.SUB, // opType
-      IR_CONST_ADDR_1, // arg1
-      IR_CONST_ADDR_2, // arg2
-      IR_TEMP_ADDR); // arg1
-
-      assertFalse(y.equals(x));
-  }
-
-  public static Stream<Arguments> provider9()
-  {
-    return Stream.of(
-      arguments(true, false, false),
-      arguments(false, true, false),
-      arguments(true, true, true));
-  }
-
-  @ParameterizedTest
-  @MethodSource("provider9")
-  public void equals_withTuples_returnsEquality(boolean isLhsATuple, boolean isRhsATuple, boolean expectedEquality)
-  {
-    ConcreteImpl tuple = new ConcreteImpl(
-      OpType.ADD, // opType
-      IR_CONST_ADDR_1); // arg1
-
-    ConcreteImpl quadruple = new ConcreteImpl(
-      OpType.ADD, // opType
-      IR_CONST_ADDR_1, // arg1
-      IR_CONST_ADDR_2, // arg2
-      IR_TEMP_ADDR); // result
-
-    ConcreteImpl lhs = isLhsATuple ? tuple : quadruple;
-    ConcreteImpl rhs = isRhsATuple ? tuple : quadruple;
-
-    assertEquals(expectedEquality, lhs.equals(rhs));
-  }
-
 
   @Test
   public void equals_reflexivity_returnsTrue()

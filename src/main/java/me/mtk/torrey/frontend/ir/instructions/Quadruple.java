@@ -2,7 +2,9 @@ package me.mtk.torrey.frontend.ir.instructions;
 
 import java.util.Objects;
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
@@ -164,44 +166,12 @@ public abstract class Quadruple
    * @param result A temporary address to store the result of the
    * instruction.
    */
-  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
+  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRAddress result)
   {
-    this.opType = Objects.requireNonNull(opType);
-    this.arg1 = Objects.requireNonNull(arg1);
-    this.arg2 = Objects.requireNonNull(arg2);
-    this.result = Objects.requireNonNull(result);
-  }
-
-  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
-  {
-    this.opType = Objects.requireNonNull(opType);
-    this.arg1 = Objects.requireNonNull(arg1);
-    this.arg2 = Objects.requireNonNull(arg2);
-    this.result = Objects.requireNonNull(result);
-  }
-
-  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2)
-  {
-    this.opType = Objects.requireNonNull(opType);
-    this.arg1 = Objects.requireNonNull(arg1);
-    this.arg2 = Objects.requireNonNull(arg2);
-    this.result = null;
-  }
-
-  public Quadruple(OpType opType, IRAddress arg, IRTempAddress result)
-  {
-    this.opType = Objects.requireNonNull(opType);
-    this.arg1 = Objects.requireNonNull(arg);
-    this.arg2 = null;
-    this.result = Objects.requireNonNull(result);
-  }
-
-  public Quadruple(OpType opType, IRAddress arg)
-  {
-    this.opType = Objects.requireNonNull(opType);
-    this.arg1 = Objects.requireNonNull(arg);
-    this.arg2 = null;
-    this.result = null;
+    this.opType = opType;
+    this.arg1 = arg1;
+    this.arg2 = arg2;
+    this.result = result;
   }
 
   public Quadruple(Quadruple quadruple)
@@ -296,5 +266,45 @@ public abstract class Quadruple
     hashCode = 31 * hashCode + (this.arg2 != null ? this.arg2.hashCode() : 0);
     hashCode = 31 * hashCode + (this.result != null ? this.result.hashCode() : 0);
     return hashCode;
+  }
+
+  static IRAddress requireName(IRAddress address)
+  {
+    if (!(address instanceof IRNameAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
+  }
+
+  static IRAddress requireConstant(IRAddress address)
+  {
+    if (!(address instanceof IRConstAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
+  }
+
+  static IRAddress requireTemp(IRAddress address)
+  {
+    if (!(address instanceof IRTempAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
+  }
+
+  static IRAddress requireLabel(IRAddress address)
+  {
+    if (!(address instanceof IRLabelAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
   }
 }

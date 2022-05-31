@@ -1,20 +1,19 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
 import me.mtk.torrey.frontend.ir.addressing.*;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
 public final class IRIfInst extends Quadruple
 {
   public IRIfInst(TokenType tokType, IRAddress arg1, IRAddress arg2,
-    IRLabelAddress result)
+    IRAddress result)
   {
-    super(OpType.getInvertedBinaryOpTypeFromTokenType(tokType),
-      arg1, arg2, result);
-  }
-
-  public IRIfInst(IRConstAddress bool, IRLabelAddress result)
-  {
-    super(null, bool, null, result);
+    super(
+      OpType.getInvertedBinaryOpTypeFromTokenType(tokType),
+      Objects.requireNonNull(arg1),
+      Objects.requireNonNull(arg2),
+      requireLabel(Objects.requireNonNull(result)));
   }
 
   /**
@@ -25,9 +24,6 @@ public final class IRIfInst extends Quadruple
   @Override
   public String toString()
   {
-    if (arg1 != null && arg2 != null && result != null && opType != null)
-      return String.format("if %s %s %s goto %s", arg1,
-        opType, arg2, result);
-    return String.format("if %s goto %s", arg1, result);
+    return String.format("if %s %s %s goto %s", arg1, opType, arg2, result);
   }
 }

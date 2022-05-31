@@ -1,7 +1,8 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
+
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
 /**
@@ -16,14 +17,17 @@ public class IRBinaryInst extends Quadruple
    * which this IR instruction is derived.
    * @param arg1 The address at which the first operand is located.
    * @param arg2 The address at which the second operand is located.
-   * @param result The temp address at which the result of the operation
+   * @param result The address at which the result of the operation
    * is to be stored.
    */
   public IRBinaryInst(TokenType tokType, IRAddress arg1, IRAddress arg2,
-    IRTempAddress result)
+    IRAddress result)
   {
-    super(OpType.getBinaryOpTypeFromTokenType(tokType),
-      arg1, arg2, result);
+    super(
+      OpType.getBinaryOpTypeFromTokenType(tokType),
+      Objects.requireNonNull(arg1),
+      Objects.requireNonNull(arg2),
+      requireTemp(Objects.requireNonNull(result)));
   }
 
   /**

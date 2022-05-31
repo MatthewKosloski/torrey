@@ -1,7 +1,8 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
+
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
-import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 
 /**
  * Represents a simple "x = y" copy instruction,
@@ -18,9 +19,13 @@ public final class IRCopyInst extends Quadruple
    * @param rhs The right-hand side of the copy, that is,
    * the source.
    */
-  public IRCopyInst(IRTempAddress lhs, IRAddress rhs)
+  public IRCopyInst(IRAddress lhs, IRAddress rhs)
   {
-    super(OpType.COPY, rhs, lhs);
+    super(
+      OpType.COPY,
+      Objects.requireNonNull(rhs),
+      null,
+      requireTemp(Objects.requireNonNull(lhs)));
   }
 
   @Override

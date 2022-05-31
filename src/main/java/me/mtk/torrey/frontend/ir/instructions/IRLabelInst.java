@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
-import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
+import java.util.Objects;
+import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 
 public final class IRLabelInst extends Quadruple
 {
@@ -9,9 +10,13 @@ public final class IRLabelInst extends Quadruple
    *
    * @param label The name of the label.
    */
-  public IRLabelInst(IRLabelAddress label)
+  public IRLabelInst(IRAddress label)
   {
-    super(OpType.LABEL, label);
+    super(
+      OpType.LABEL,
+      requireLabel(Objects.requireNonNull(label)),
+      null,
+      null);
   }
 
   /**
