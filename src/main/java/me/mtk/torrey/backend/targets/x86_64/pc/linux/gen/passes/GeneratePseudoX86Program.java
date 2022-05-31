@@ -25,7 +25,7 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
     this.ir = input;
 
     // By default, allocate 8 bytes per temp variable.
-    int stackSize = ir.temps().size() * 8;
+    int stackSize = countIRTemps() * 8;
 
     // Ensure the stack pointer is 16-bytes aligned
     // by setting stackSize to the nearest
@@ -64,6 +64,44 @@ public final class GeneratePseudoX86Program implements Pass<X86Program>
     }
 
       return x86;
+  }
+
+  private int countIRTemps()
+  {
+    Map<IRAddress, Integer> occurrencesMap = new HashMap<>();
+
+    for (Quadruple quad : ir.quads())
+    {
+      boolean arg1IsATemp = quad.arg1() != null
+        && quad.arg1() instanceof IRTempAddress;
+      boolean arg2IsATemp = quad.arg2() != null
+        && quad.arg2() instanceof IRTempAddress;
+      boolean resultIsATemp = quad.result() != null
+        && quad.result() instanceof IRTempAddress;
+
+      if (arg1IsATemp)
+      {
+        int occurences = occurrencesMap.containsKey(quad.arg1())
+          ? occurrencesMap.get(quad.arg1()) + 1 : 1;
+        occurrencesMap.put(quad.arg1(), occurences);
+      }
+
+      if (arg2IsATemp)
+      {
+        int occurences = occurrencesMap.containsKey(quad.arg2())
+          ? occurrencesMap.get(quad.arg2()) + 1 : 1;
+        occurrencesMap.put(quad.arg2(), occurences);
+      }
+
+      if (resultIsATemp)
+      {
+        int occurences = occurrencesMap.containsKey(quad.result())
+          ? occurrencesMap.get(quad.result()) + 1 : 1;
+        occurrencesMap.put(quad.result(), occurences);
+      }
+    }
+
+    return occurrencesMap.keySet().size();
   }
 
   private void gen(IRIfInst inst)
