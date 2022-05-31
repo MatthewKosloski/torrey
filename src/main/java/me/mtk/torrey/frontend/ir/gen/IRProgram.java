@@ -35,6 +35,35 @@ public final class IRProgram
   }
 
   @Override
+  public boolean equals(Object o)
+  {
+    if (o == this)
+    {
+      return true;
+    }
+
+    if (!(o instanceof IRProgram))
+    {
+      return false;
+    }
+
+    IRProgram that = (IRProgram)o;
+
+    if (this.quads.size() != that.quads.size())
+    {
+      return false;
+    }
+
+    return this.quads.equals(that.quads);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return this.quads.hashCode();
+  }
+
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
