@@ -43,7 +43,7 @@ public final class IRGenerator implements ASTNodeVisitor
      */
     public IRGenerator(Program program)
     {
-      this.irProgram = new IRProgram();
+      this.irProgram = new DefaultIRProgram();
       this.program = program;
     }
 
