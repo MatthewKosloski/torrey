@@ -1,9 +1,8 @@
 package me.mtk.torrey.frontend.ir.gen;
 
-import me.mtk.torrey.frontend.ir.instructions.Quadruple;
-
 import java.util.ArrayList;
 import java.util.List;
+import me.mtk.torrey.frontend.ir.instructions.Quadruple;
 
 public final class DefaultIRProgram implements IRProgram
 {
