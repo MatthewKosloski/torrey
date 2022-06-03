@@ -5,6 +5,7 @@ import me.mtk.torrey.frontend.analysis.*;
 import me.mtk.torrey.frontend.ast.PrettyPrinterVisitor;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.error_reporter.*;
+import me.mtk.torrey.frontend.ir.gen.DefaultIRGenerator;
 import me.mtk.torrey.frontend.ir.gen.IRGenerator;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.lexer.Lexer;
@@ -154,8 +155,8 @@ public final class CompilerFrontend extends Compiler
     */
   private IRProgram irGen(Program semanticAST)
   {
-    final IRGenerator irVisitor = new IRGenerator(semanticAST);
-    final IRProgram irProgram = irVisitor.gen();
+    final IRGenerator irGenerator = new DefaultIRGenerator(semanticAST);
+    final IRProgram irProgram = irGenerator.gen();
 
     debug("IR program (output from IRGenerator): \n%s",
       irProgram.toString());
