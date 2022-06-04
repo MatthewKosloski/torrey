@@ -1,7 +1,6 @@
 package me.mtk.torrey.frontend.ir.gen;
 
 import java.util.*;
-
 import me.mtk.torrey.frontend.ast.*;
 import me.mtk.torrey.frontend.ast.Expr.DataType;
 import me.mtk.torrey.frontend.ir.addressing.*;
@@ -80,12 +79,23 @@ public final class DefaultIRGenerator implements IRGenerator
 
     public void visit(IntegerExpr expr)
     {
-      final IRTempAddress result = newIRTempAddress();
-      final IRConstAddress rhs = new IRConstAddress(expr.toConstant());
+      if (expr.parent() instanceof CompareExpr
+        || expr.parent() instanceof LetBinding
+        || expr.parent() instanceof UnaryExpr
+        || expr.parent() instanceof ArithmeticExpr)
+      {
+        final IRAddress address = new IRConstAddress(expr.toConstant());
+        nextAddress = address;
+      }
+      else
+      {
+        final IRAddress result = newIRTempAddress();
+        final IRAddress rhs = new IRConstAddress(expr.toConstant());
 
-      irProgram.addQuad(new IRCopyInst(result, rhs));
+        irProgram.addQuad(new IRCopyInst(result, rhs));
 
-      nextAddress = result;
+        nextAddress = result;
+      }
     }
 
     public void visit(BooleanExpr expr)
@@ -111,7 +121,9 @@ public final class DefaultIRGenerator implements IRGenerator
     {
       final TokenType tokType = expr.token().type();
       final IRTempAddress result = newIRTempAddress();
-      final IRAddress arg = getDestinationAddr(expr.first());
+
+      (expr.first()).accept(this);
+      final IRAddress arg = nextAddress;
 
       if (expr.token().type() == TokenType.MINUS && expr.first() instanceof IntegerExpr)
       {
@@ -137,8 +149,12 @@ public final class DefaultIRGenerator implements IRGenerator
     {
       final IRTempAddress result = newIRTempAddress();
       final TokenType tokType = expr.token().type();
-      final IRAddress arg1 = getDestinationAddr(expr.first());
-      final IRAddress arg2 = getDestinationAddr(expr.second());
+
+      (expr.first()).accept(this);
+      final IRAddress arg1 = nextAddress;
+
+      (expr.second()).accept(this);
+      final IRAddress arg2 = nextAddress;
 
       irProgram.addQuad(new IRBinaryInst(tokType, arg1, arg2, result));
 
@@ -159,8 +175,11 @@ public final class DefaultIRGenerator implements IRGenerator
       final IRTempAddress comparisonResult = newIRTempAddress();
 
       // Recursively generate IR instructions for the operands
-      final IRAddress arg1 = getDestinationAddr(expr.first());
-      final IRAddress arg2 = getDestinationAddr(expr.second());
+      (expr.first()).accept(this);
+      final IRAddress arg1 = nextAddress;
+
+      (expr.second()).accept(this);
+      final IRAddress arg2 = nextAddress;
 
       irProgram.addQuad(new IRCopyInst(comparisonResult, new IRConstAddress(0)));
       irProgram.addQuad(new IRIfInst(tokType, arg1, arg2, label));
@@ -282,7 +301,8 @@ public final class DefaultIRGenerator implements IRGenerator
 
       // The source of the copy instruction is the
       // destination of the bounded expression.
-      final IRAddress rhs = getDestinationAddr(binding.second());
+      (binding.second()).accept(this);
+      final IRAddress rhs = nextAddress;
 
       // Store the source address of the bounded expression
       // in the symbol table.
@@ -401,49 +421,6 @@ public final class DefaultIRGenerator implements IRGenerator
     public void visit(IfThenElseExpr expr)
     {
       visit((IfExpr)expr);
-    }
-
-    /*
-     * Returns the destination address of the
-     * result of the given expression.
-     *
-     * @param expr An expression.
-     * @return Either a constant address, if the
-     * expression is an integer, or a temporary address.
-     */
-    private IRAddress getDestinationAddr(Expr expr)
-    {
-      IRAddress addr = null;
-
-      if (expr instanceof IntegerExpr)
-      {
-        long constant = Expr.isChildOfUnaryMinusExpr(expr)
-          ? Long.parseLong(String.format("-%s", expr.token().rawText()))
-          : ((IntegerExpr)expr).toConstant();
-
-        addr = new IRConstAddress(constant);
-      }
-      else
-      {
-        expr.accept(this);
-        addr = nextAddress;
-      }
-
-      return addr;
-    }
-
-    /*
-     * Returns the destination address of the
-     * result of the given AST node (presumably
-     * an expression).
-     *
-     * @param n An AST node.
-     * @return Either a constant address, if the
-     * expression is an integer, or a temporary address.
-     */
-    private IRAddress getDestinationAddr(ASTNode n)
-    {
-      return getDestinationAddr((Expr) n);
     }
 
     private IRLabelAddress newIRLabel()
