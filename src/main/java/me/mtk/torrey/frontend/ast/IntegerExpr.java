@@ -21,7 +21,9 @@ public final class IntegerExpr extends PrimitiveExpr
 
   public long toConstant()
   {
-    return Long.parseLong(token().rawText());
+    return Expr.isChildOfUnaryMinusExpr(this)
+      ? Long.parseLong(String.format("-%s", token().rawText()))
+      : Long.parseLong(token().rawText());
   }
 
   @Override
