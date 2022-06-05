@@ -14,8 +14,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 import me.mtk.torrey.frontend.ir.instructions.Quadruple.OpType;
 import me.mtk.torrey.frontend.lexer.TokenType;
@@ -24,9 +28,11 @@ public class QuadrupleTest
 {
   private static final int EXPECTED_NUMBER_OF_IR_OP_TYPES = 16;
   private static final int EXPECTED_NUMBER_OF_TOKEN_TYPES = 26;
-  private static final IRConstAddress IR_CONST_ADDR_1 = new IRConstAddress(10);
-  private static final IRConstAddress IR_CONST_ADDR_2 = new IRConstAddress(32);
-  private static final IRTempAddress IR_TEMP_ADDR = new IRTempAddress("t0");
+  private static final IRAddress IR_CONST_ADDR_1 = new IRConstAddress(10);
+  private static final IRAddress IR_CONST_ADDR_2 = new IRConstAddress(32);
+  private static final IRAddress IR_TEMP_ADDR = new IRTempAddress("t0");
+  private static final IRAddress IR_LABEL_ADDR = new IRLabelAddress("l0");
+  private static final IRAddress IR_NAME_ADDR = new IRNameAddress("print");
 
   private class ConcreteImpl extends Quadruple
   {
@@ -344,6 +350,63 @@ public class QuadrupleTest
     actual.setResult(newResultAddress);
 
     assertSame(newResultAddress, actual.result);
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = { true, false })
+  public void equals_arg1IsNull_returnsEquality(boolean isEqual)
+  {
+    ConcreteImpl x = new ConcreteImpl(
+      OpType.GOTO, // opType
+      null, // arg1
+      null, // arg2
+      IR_LABEL_ADDR); // result
+
+    ConcreteImpl y = new ConcreteImpl(
+      OpType.GOTO, // opType
+      null, // arg1
+      null, // arg2
+      isEqual ? IR_LABEL_ADDR : new IRLabelAddress("l1")); // result
+
+    assertEquals(isEqual, x.equals(y));
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = { true, false })
+  public void equals_arg2IsNull_returnsEquality(boolean isEqual)
+  {
+    ConcreteImpl x = new ConcreteImpl(
+      OpType.GOTO, // opType
+      null, // arg1
+      null, // arg2
+      IR_LABEL_ADDR); // result
+
+    ConcreteImpl y = new ConcreteImpl(
+      OpType.GOTO, // opType
+      null, // arg1
+      null, // arg2
+      isEqual ? IR_LABEL_ADDR : new IRLabelAddress("l1")); // result
+
+    assertEquals(isEqual, x.equals(y));
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = { true, false })
+  public void equals_resultIsNull_returnsEquality(boolean isEqual)
+  {
+    ConcreteImpl x = new ConcreteImpl(
+      OpType.CALL, // opType
+      IR_NAME_ADDR, // arg1
+      IR_CONST_ADDR_1, // arg2
+      IR_LABEL_ADDR); // result
+
+    ConcreteImpl y = new ConcreteImpl(
+      OpType.CALL, // opType
+      IR_NAME_ADDR, // arg1
+      isEqual ? IR_CONST_ADDR_1 : IR_CONST_ADDR_2, // arg2
+      IR_LABEL_ADDR); // result
+
+    assertEquals(isEqual, x.equals(y));
   }
 
   @Test

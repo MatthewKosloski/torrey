@@ -234,8 +234,16 @@ public abstract class Quadruple
 
     Quadruple that = (Quadruple)o;
 
-    boolean isEqual = this.opType == that.opType
-      && this.arg1.equals(that.arg1);
+    boolean isEqual = this.opType == that.opType;
+
+    if (this.arg1 != null)
+    {
+      isEqual = isEqual && this.arg1.equals(that.arg1);
+    }
+    else
+    {
+      isEqual = isEqual && that.arg1 == null;
+    }
 
     if (this.arg2 != null)
     {
