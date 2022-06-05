@@ -126,6 +126,10 @@ public final class DefaultIRGenerator implements IRGenerator
 
       if (expr.token().type() == TokenType.MINUS && expr.first() instanceof IntegerExpr)
       {
+        // If this is a unary minus expression and the operand is an integer,
+        // then emit a copy instruction. Cannot use regular IRUnaryInst because
+        // the negative sign must be with the integer to fully suport
+        // 64-bit signed integers.
         irProgram.addQuad(new IRCopyInst(result, arg));
       }
       else
