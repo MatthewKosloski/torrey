@@ -99,9 +99,9 @@ public final class DefaultIRGenerator implements IRGenerator
 
     public void visit(BooleanExpr expr)
     {
-      final IRTempAddress result = newIRTempAddress();
-      final boolean bool = expr.token().type() == TokenType.TRUE;
-      final IRConstAddress rhs = new IRConstAddress(bool);
+      final IRAddress result = newIRTempAddress();
+      final IRAddress rhs = new IRConstAddress(
+        expr.token().type() == TokenType.TRUE);
 
       irProgram.addQuad(new IRCopyInst(result, rhs));
 
@@ -119,7 +119,7 @@ public final class DefaultIRGenerator implements IRGenerator
     public void visit(UnaryExpr expr)
     {
       final TokenType tokType = expr.token().type();
-      final IRTempAddress result = newIRTempAddress();
+      final IRAddress result = newIRTempAddress();
 
       (expr.first()).accept(this);
       final IRAddress arg = nextAddress;
@@ -150,7 +150,7 @@ public final class DefaultIRGenerator implements IRGenerator
      */
     public void visit(ArithmeticExpr expr)
     {
-      final IRTempAddress result = newIRTempAddress();
+      final IRAddress result = newIRTempAddress();
       final TokenType tokType = expr.token().type();
 
       (expr.first()).accept(this);
@@ -213,9 +213,9 @@ public final class DefaultIRGenerator implements IRGenerator
         params.add(new IRParamInst(nextAddress));
       }
 
-      final IRNameAddress procName = new IRNameAddress(
+      final IRAddress procName = new IRNameAddress(
         expr.token().rawText());
-      final IRConstAddress numParams = new IRConstAddress(
+      final IRAddress numParams = new IRConstAddress(
         expr.children().size());
 
       irProgram.addQuads(params);
@@ -345,7 +345,7 @@ public final class DefaultIRGenerator implements IRGenerator
       }
 
       // Jump to the else label if the test condition is false
-      final IRLabelAddress elseLabel = newIRLabel();
+      final IRAddress elseLabel = newIRLabel();
 
       if (expr.test().evalType() == DataType.INTEGER)
       {
@@ -366,7 +366,7 @@ public final class DefaultIRGenerator implements IRGenerator
           elseLabel));
       }
 
-      final IRTempAddress branchResultAddr = newIRTempAddress();
+      final IRAddress branchResultAddr = newIRTempAddress();
 
       // Recursively generate IR instructions for the then branch
       expr.consequent().accept(this);
@@ -384,7 +384,7 @@ public final class DefaultIRGenerator implements IRGenerator
 
       // After the then branch, we should jump to the done label
       // to skip over the else block
-      final IRLabelAddress doneLabel = newIRLabel();
+      final IRAddress doneLabel = newIRLabel();
       irProgram.addQuad(new IRGotoInst(doneLabel));
 
       // Start of else block
