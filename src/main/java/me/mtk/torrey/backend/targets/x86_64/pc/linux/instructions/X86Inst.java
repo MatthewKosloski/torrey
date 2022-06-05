@@ -30,6 +30,7 @@ public abstract class X86Inst
 
     // Memory
     MOVQ ("movq"),
+    MOVABSQ ("movabsq"),
     POPQ ("popq"),
     PUSHQ ("pushq");
 
@@ -63,6 +64,7 @@ public abstract class X86Inst
       }
     }
 
+    @Override
     public String toString()
     {
       return terminalSymbol;
@@ -109,6 +111,7 @@ public abstract class X86Inst
     this.arg2 = newArg2;
   }
 
+  @Override
   public String toString()
   {
     if (arg2 != null)

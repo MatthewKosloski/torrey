@@ -127,6 +127,7 @@ public final class Token
     return endPos;
   }
 
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();

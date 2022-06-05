@@ -161,6 +161,7 @@ public class ErrorReporter
   /**
    * Returns the error messages that have been reported.
    */
+  @Override
   public String toString()
   {
     final StringBuilder result = new StringBuilder();

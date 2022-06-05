@@ -16,11 +16,12 @@ public class Program extends ASTNode
   }
 
   @Override
-  public <T> T accept(ASTNodeVisitor<T> visitor)
+  public void accept(ASTNodeVisitor visitor)
   {
-    return visitor.visit(this);
+    visitor.visit(this);
   }
 
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();

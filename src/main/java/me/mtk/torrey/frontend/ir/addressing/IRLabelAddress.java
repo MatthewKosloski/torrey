@@ -3,13 +3,16 @@ package me.mtk.torrey.frontend.ir.addressing;
 /**
  * Represents an address with LABEL addressing mode.
  */
-public final class IRLabelAddress extends IRAddress
+public final class IRLabelAddress extends IRStringAddress
 {
-  // The number of the label address.
-  private static int num = 0;
-
-  public IRLabelAddress()
+  public IRLabelAddress(String label)
   {
-    super(IRAddressingMode.LABEL, String.format("l%d", num++));
+    super(IRAddressingMode.LABEL, label);
+  }
+
+  @Override
+  public IRLabelAddress makeCopy()
+  {
+    return new IRLabelAddress(this.value());
   }
 }

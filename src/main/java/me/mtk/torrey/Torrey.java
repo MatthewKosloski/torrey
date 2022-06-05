@@ -53,7 +53,10 @@ public final class Torrey
         torrey.showRegisteredTargets();
 
       if (config.help())
+      {
         jcmdr.usage();
+        System.exit(0);
+      }
 
       // Check stdin first.
       String input = TorreyIOUtils.readFromStdin();
@@ -129,13 +132,11 @@ public final class Torrey
   public void showRegisteredTargets()
   {
     final StringBuilder sb = new StringBuilder();
-    sb.append("Usage: --target <triple>,")
-      .append("\n\twhere <triple> is of the form ")
-      .append("<arch>-<vendor>-<sys>.\n\n");
-    sb.append("Registered targets (triples):\n");
+    sb.append("Usage: --target <triple>, where <triple> is of the form <arch>-<vendor>-<sys>\n");
+    sb.append("  Registered targets (triples):\n");
 
     for (String targetStr : Torrey.targetRegistry.getKeys())
-      sb.append("\t").append(targetStr);
+      sb.append("    ").append(targetStr);
 
     System.out.println(sb.toString());
     System.exit(0);

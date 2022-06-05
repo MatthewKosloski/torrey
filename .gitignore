@@ -1,11 +1,6 @@
 *.o
 *.class
 *.exe.stackdump
-*.aux
-*.log
-*.out
-*.pdf
-*.synctex.gz
 .vagrant
 target
 .classpath
@@ -13,5 +8,7 @@ target
 .settings
 dependency-reduced-pom.xml
 *.torrey
-node_modules
 *.jar
+*.log
+*.out
+*.txt

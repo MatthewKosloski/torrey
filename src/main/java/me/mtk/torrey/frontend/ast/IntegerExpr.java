@@ -14,19 +14,21 @@ public final class IntegerExpr extends PrimitiveExpr
     super(t, DataType.INTEGER);
   }
 
-  public IntegerExpr(int constant)
+  public IntegerExpr(long constant)
   {
     this(new Token(TokenType.INTEGER, constant + ""));
   }
 
-  public int toConstant()
+  public long toConstant()
   {
-    return Integer.parseInt(token().rawText());
+    return Expr.isChildOfUnaryMinusExpr(this)
+      ? Long.parseLong(String.format("-%s", token().rawText()))
+      : Long.parseLong(token().rawText());
   }
 
   @Override
-  public <T> T accept(ASTNodeVisitor<T> visitor)
+  public void accept(ASTNodeVisitor visitor)
   {
-    return visitor.visit(this);
+    visitor.visit(this);
   }
 }

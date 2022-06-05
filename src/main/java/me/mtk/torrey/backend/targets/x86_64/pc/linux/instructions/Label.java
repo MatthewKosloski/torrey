@@ -9,6 +9,7 @@ public final class Label extends X86Inst
     super(OpType.LABEL, label, null);
   }
 
+  @Override
   public String toString()
   {
     return String.format("%s:", arg1().toString());

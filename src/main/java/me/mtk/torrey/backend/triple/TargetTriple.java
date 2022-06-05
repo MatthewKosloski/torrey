@@ -32,6 +32,7 @@ public abstract class TargetTriple
     return sys;
   }
 
+  @Override
   public String toString()
   {
     return String.format("%s-%s-%s", arch, vendor, sys)

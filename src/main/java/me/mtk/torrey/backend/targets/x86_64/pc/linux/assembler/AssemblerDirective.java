@@ -18,6 +18,7 @@ public final class AssemblerDirective
     this(type, null);
   }
 
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();

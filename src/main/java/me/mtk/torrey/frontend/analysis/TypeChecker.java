@@ -1,6 +1,7 @@
 package me.mtk.torrey.frontend.analysis;
 
 import me.mtk.torrey.frontend.ast.*;
+import me.mtk.torrey.frontend.ast.Expr.DataType;
 import me.mtk.torrey.frontend.error_reporter.*;
 import me.mtk.torrey.frontend.lexer.*;
 import me.mtk.torrey.frontend.symbols.*;
@@ -10,7 +11,7 @@ import me.mtk.torrey.frontend.symbols.*;
  * the operands to operators. Also, determines the evaluation
  * types of identifiers, let expressions, and if expressions.
  */
-public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
+public final class TypeChecker implements ASTNodeVisitor
 {
   // A reference to the error reporter that will
   // report any semantic errors during type checking.
@@ -18,6 +19,9 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
 
   // The current environment.
   private Env top;
+
+  // The last evaluated type.
+  private Expr.DataType nextType;
 
   /**
    * Constructs a new TypeChecker that walks an
@@ -40,7 +44,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param program The program to be type checked.
    * @return The DataType of the program.
    */
-  public Expr.DataType visit(Program program)
+  public void visit(Program program)
   {
     try
     {
@@ -55,10 +59,6 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
       System.err.println(e.getMessage());
       System.exit(1);
     }
-
-    // A Program AST does not evaluate to a
-    // data type as it's not an expression.
-    return Expr.DataType.NIL;
   }
 
   /**
@@ -67,63 +67,27 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param expr The binary expression to be type checked.
    * @return Expr.DataType.BOOLEAN.
    */
-  public Expr.DataType visit(CompareExpr expr)
+  public void visit(CompareExpr expr)
   {
     final Expr first = (Expr) expr.first();
     final Expr second = (Expr) expr.second();
 
-    // Type check the operands.
+    // Evaluate and type-check the operands
     first.accept(this);
     second.accept(this);
 
     final Token operator = expr.token();
 
-    final boolean areInts = first.evalType() == Expr.DataType.INTEGER
-      && second.evalType() == Expr.DataType.INTEGER;
-    final boolean areBools = first.evalType() == Expr.DataType.BOOLEAN
-      && second.evalType() == Expr.DataType.BOOLEAN;
-    final boolean onlyFirstIsInt = first.evalType() == Expr.DataType.INTEGER
-      && second.evalType() != Expr.DataType.INTEGER;
-    final boolean onlyFirstIsBool = first.evalType() == Expr.DataType.BOOLEAN
-      && second.evalType() != Expr.DataType.BOOLEAN;
-
-    if (onlyFirstIsInt)
+    if (operator.isType(TokenType.LT, TokenType.LTE, TokenType.GT, TokenType.GTE))
     {
-      // The first operand is an integer. Expected the second
-      // operand to also be an integer.
-      reporter.error(
-        second.token(),
-        ErrorMessages.ExpectedOperandToBe,
-        operator.rawText(),
-        Expr.DataType.INTEGER,
-        second.evalType());
+      typeCheckLessThanGreaterThanExprOperands(first, second, operator);
     }
-    else if (onlyFirstIsBool)
+    else if (operator.isType(TokenType.EQUAL))
     {
-      // The first operand is a boolean. Expected the second
-      // operand to also be a boolean.
-      reporter.error(second.token(),
-      ErrorMessages.ExpectedOperandToBe,
-        operator.rawText(),
-        Expr.DataType.BOOLEAN,
-        second.evalType());
-    }
-    else if (!(areInts || areBools))
-    {
-      // Either both operands are not integers or
-      // both operands are not booleans.
-      reporter.error(first.token(),
-        ErrorMessages.ExpectedOperandToBeEither,
-        operator.rawText(),
-        Expr.DataType.INTEGER,
-        Expr.DataType.BOOLEAN,
-        first.evalType());
+      typeCheckEqualityExprOperands(first, second, operator);
     }
 
-    if (expr.getFold().isFalsy())
-      expr.makeFalsy();
-
-      return expr.evalType();
+    nextType = expr.evalType();
   }
 
   /**
@@ -132,7 +96,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param expr The binary arithmetic expression to be type-checked.
    * @return DataType INTEGER.
    */
-  public Expr.DataType visit(ArithmeticExpr expr)
+  public void visit(ArithmeticExpr expr)
   {
     final Expr first = (Expr) expr.first();
     final Expr second = (Expr) expr.second();
@@ -168,10 +132,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
         operator.rawText());
     }
 
-    if (expr.getFold().isFalsy())
-      expr.makeFalsy();
-
-    return expr.evalType();
+    nextType = expr.evalType();
   }
 
   /**
@@ -180,12 +141,9 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param expr The boolean expression to be type-checked.
    * @return Expr.DataType.BOOLEAN
    */
-  public Expr.DataType visit(BooleanExpr expr)
+  public void visit(BooleanExpr expr)
   {
-    if (!expr.toBoolean())
-      expr.makeFalsy();
-
-    return expr.evalType();
+    nextType = expr.evalType();
   }
 
   /**
@@ -194,12 +152,32 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param expr The integer expression to be type-checked.
    * @return Expr.DataType.INTEGER
    */
-  public Expr.DataType visit(IntegerExpr expr)
+  public void visit(IntegerExpr expr)
   {
-    if (expr.toConstant() == 0)
-      expr.makeFalsy();
+    final String rawText = expr.token().rawText();
+    final String lowerLimit = (Long.MIN_VALUE + "").substring(1);
+    final String upperLimit = Long.MAX_VALUE + "";
 
-    return expr.evalType();
+    if (expr.parent() instanceof UnaryExpr
+      && rawText.length() == lowerLimit.length()
+      && rawText.compareTo(lowerLimit) > 0)
+    {
+      reporter.error(
+        expr.token(),
+        ErrorMessages.IntegerUnderflow,
+        rawText);
+    }
+    else if (!(expr.parent() instanceof UnaryExpr)
+      && rawText.length() == upperLimit.length()
+      && rawText.compareTo(upperLimit) > 0)
+    {
+      reporter.error(
+        expr.token(),
+        ErrorMessages.IntegerOverflow,
+        rawText);
+    }
+
+    nextType = expr.evalType();
   }
 
   /**
@@ -209,7 +187,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param expr The print expression to be type checked.
    * @return DataType PRINT.
    */
-  public Expr.DataType visit(PrintExpr expr)
+  public void visit(PrintExpr expr)
   {
     for (ASTNode child : expr.children())
     {
@@ -225,9 +203,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
           childExpr.token().rawText());
     }
 
-    expr.makeFalsy();
-
-    return Expr.DataType.NIL;
+    nextType = Expr.DataType.NIL;
   }
 
   /**
@@ -237,7 +213,7 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
    * @param expr The unary expression to be type checked.
    * @return DataType INTEGER.
    */
-  public Expr.DataType visit(UnaryExpr expr)
+  public void visit(UnaryExpr expr)
   {
     final Token operator = expr.token();
     final Expr operand = (Expr) expr.first();
@@ -256,25 +232,19 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
         operand.evalType());
     }
 
-    if (operand.isFalsy())
-      expr.makeFalsy();
-
-    return expr.evalType();
+    nextType = expr.evalType();
   }
 
-  public Expr.DataType visit(IdentifierExpr expr)
+  public void visit(IdentifierExpr expr)
   {
     final String id = expr.token().rawText();
     final Symbol sym = top.get(id);
 
-    if (sym.expr().isFalsy())
-      expr.makeFalsy();
-
     expr.setEvalType(sym.expr().evalType());
-    return expr.evalType();
+    nextType = expr.evalType();
   }
 
-  public Expr.DataType visit(LetExpr expr)
+  public void visit(LetExpr expr)
   {
     if (expr.children().size() > 1)
     {
@@ -294,17 +264,12 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
       // as the type of its last expression.
       final Expr lastExpr = (Expr) expr.last();
       expr.setEvalType(lastExpr.evalType());
-
-      if (lastExpr.isFalsy())
-        expr.makeFalsy();
-
-      return expr.evalType();
     }
 
-    return expr.evalType();
+    nextType = expr.evalType();
   }
 
-  public Expr.DataType visit(LetBindings bindings)
+  public void visit(LetBindings bindings)
   {
     // Call visit(LetBinding) to type check
     // all the bindings in this AST node.
@@ -313,10 +278,10 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
 
     // A LetBindings AST does not evaluate to a
     // data type as it's not an expression.
-    return Expr.DataType.NIL;
+    nextType = Expr.DataType.NIL;
   }
 
-  public Expr.DataType visit(LetBinding binding)
+  public void visit(LetBinding binding)
   {
     final IdentifierExpr idExpr = (IdentifierExpr) binding.first();
     final Expr boundedExpr = (Expr) binding.second();
@@ -334,57 +299,37 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
 
     // A LetBinding AST does not evaluate to a
     // data type as it's not an expression.
-    return Expr.DataType.NIL;
+    nextType = Expr.DataType.NIL;
   }
 
-  public Expr.DataType visit(IfExpr expr)
+  public void visit(IfExpr expr)
   {
     // Type-check the test condition and its child nodes.
     expr.test().accept(this);
-
-    if (expr.test().evalType() == Expr.DataType.NIL)
-    {
-      reporter.error(
-        expr.test().token(),
-        ErrorMessages.CannotBeTestedForTruthiness,
-        expr.test().evalType());
-    }
 
     // Type-check the consequent and its child nodes.
     expr.consequent().accept(this);
 
-    Expr.DataType evalType = Expr.DataType.NIL;
-    if (expr.test().isTruthy())
-      // The test condition is true, so the type of
-      // this if expression is the type of the consequent.
-      evalType = expr.consequent().evalType();
-    else
-      // The test condition is false, so this if expression is false.
-      expr.makeFalsy();
+    // The if-then expression evaluates to the
+    // same type as its consequent (even though it
+    // may never execute the consequent).
+    expr.setEvalType(expr.consequent().evalType());
 
-    expr.setEvalType(evalType);
-
-    return expr.evalType();
+    nextType = expr.evalType();
   }
 
-  public Expr.DataType visit(IfThenElseExpr expr)
+  public void visit(IfThenElseExpr expr)
   {
     // Type-check the test condition and its child nodes.
     expr.test().accept(this);
 
-    if (expr.test().evalType() == Expr.DataType.NIL)
-    {
-      reporter.error(
-        expr.test().token(),
-        ErrorMessages.CannotBeTestedForTruthiness,
-        expr.test().evalType());
-    }
-
     // Type-check the consequent and its child nodes.
-    final Expr.DataType consequentType = expr.consequent().accept(this);
+    expr.consequent().accept(this);
+    final Expr.DataType consequentType = nextType;
 
     // Type-check the alternative and its child nodes.
-    final Expr.DataType alternativeType = expr.alternative().accept(this);
+    expr.alternative().accept(this);
+    final Expr.DataType alternativeType = nextType;
 
     if (consequentType != alternativeType)
     {
@@ -394,27 +339,108 @@ public final class TypeChecker implements ASTNodeVisitor<Expr.DataType>
         ErrorMessages.BothBranchesToIfMustBeSameType);
     }
 
-    Expr.DataType evalType = Expr.DataType.NIL;
-    if (expr.test().isTruthy())
+    expr.setEvalType(expr.consequent().evalType());
+
+    nextType = expr.evalType();
+  }
+
+  private void typeCheckLessThanGreaterThanExprOperands(Expr first, Expr second, Token operator)
+  {
+    if (first.evalType() != DataType.INTEGER)
     {
-      // The test condition is true, so the type of
-      // this if expression is the type of the consequent.
-      evalType = expr.consequent().evalType();
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        first.evalType());
     }
-    else
+
+    if (second.evalType() != DataType.INTEGER)
     {
-      // The test condition is false, so the type of this
-      // if expression is the type of the alternative.
-      evalType = expr.alternative().evalType();
-
-      // The test condition is false, so this if
-      // expression is false.
-      expr.makeFalsy();
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        second.evalType());
     }
+  }
 
-    expr.setEvalType(evalType);
+  private void typeCheckEqualityExprOperands(Expr first, Expr second, Token operator)
+  {
+    final boolean firstIsIntOrBool = first.evalType() == Expr.DataType.INTEGER
+      || first.evalType() == Expr.DataType.BOOLEAN;
+    final boolean secondIsIntOrBool = second.evalType() == Expr.DataType.INTEGER
+      || second.evalType() == Expr.DataType.BOOLEAN;
+    final boolean onlyFirstIsInt = first.evalType() == Expr.DataType.INTEGER
+      && second.evalType() != Expr.DataType.INTEGER;
+    final boolean onlyFirstIsBool = first.evalType() == Expr.DataType.BOOLEAN
+      && second.evalType() != Expr.DataType.BOOLEAN;
+    final boolean onlySecondIsInt = second.evalType() == Expr.DataType.INTEGER
+      && first.evalType() != Expr.DataType.INTEGER;
+    final boolean onlySecondIsBool = second.evalType() == Expr.DataType.BOOLEAN
+      && first.evalType() != Expr.DataType.BOOLEAN;
 
-    return expr.evalType();
+    if (onlyFirstIsInt)
+    {
+      // The first operand is an integer but the second operand is not.
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        second.evalType());
+    }
+    else if (onlyFirstIsBool)
+    {
+      // The first operand is a boolean but the second operand is not.
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.BOOLEAN,
+        second.evalType());
+    }
+    else if (onlySecondIsInt)
+    {
+      // The second operand is an integer but the first operand is not.
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        first.evalType());
+    }
+    else if (onlySecondIsBool)
+    {
+      // The second operand is an boolean but the first operand is not.
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBe,
+        operator.rawText(),
+        Expr.DataType.BOOLEAN,
+        first.evalType());
+    }
+    else if (!firstIsIntOrBool && !secondIsIntOrBool)
+    {
+      // Both operands are something other than integer or boolean.
+      reporter.error(
+        first.token(),
+        ErrorMessages.ExpectedOperandToBeEither,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        Expr.DataType.BOOLEAN,
+        first.evalType());
+
+      reporter.error(
+        second.token(),
+        ErrorMessages.ExpectedOperandToBeEither,
+        operator.rawText(),
+        Expr.DataType.INTEGER,
+        Expr.DataType.BOOLEAN,
+        second.evalType());
+    }
   }
 
 }

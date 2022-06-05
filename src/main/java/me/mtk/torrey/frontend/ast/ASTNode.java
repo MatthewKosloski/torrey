@@ -26,11 +26,8 @@ public abstract class ASTNode
 
   /**
    * Calls the appropriate visit() method on the visitor.
-   * @param <T> A data type.
-   * @param visitor A visitor.
-   * @return An object.
    */
-  public abstract <T> T accept(ASTNodeVisitor<T> visitor);
+  public abstract void accept(ASTNodeVisitor visitor);
 
   /**
    * Construct a new AST node from a token.
@@ -144,6 +141,7 @@ public abstract class ASTNode
     return token;
   }
 
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();

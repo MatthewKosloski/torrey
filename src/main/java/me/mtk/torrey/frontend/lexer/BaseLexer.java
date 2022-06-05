@@ -95,21 +95,12 @@ public abstract class BaseLexer
       nextToken();
     }
 
-    if (tokens.size() != 0)
-    {
-      tokenIndexStart++;
-      tokenStartCol++;
-      curCol++;
-    }
-    else
-    {
-      // empty file
-      tokenStartCol = curCol;
-      tokenStartLine = curLine;
-    }
+    tokenIndexStart = cursor;
+    tokenStartCol = curCol;
+    tokenStartLine = curLine;
 
     // Add the end-of-file token.
-    tokens.add(new Token(TokenType.EOF, ""));
+    addToken(TokenType.EOF);
 
     reporter.reportSyntaxErrors("Encountered one or more syntax "
       + "errors during lexing:");
@@ -132,7 +123,7 @@ public abstract class BaseLexer
     // The rawText of the token is either the null
     // character "\0" or a substring of the input
     // bounded by [tokenIndexStart, tokenIndexEnd).
-    final String text = tokenIndexEnd > input.length()
+    final String text = type == TokenType.EOF
       ? "\0"
       : input.substring(tokenIndexStart, tokenIndexEnd);
 

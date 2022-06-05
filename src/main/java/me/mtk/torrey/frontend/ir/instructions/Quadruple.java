@@ -1,7 +1,10 @@
 package me.mtk.torrey.frontend.ir.instructions;
 
+import java.util.Objects;
 import me.mtk.torrey.frontend.ir.addressing.IRAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRConstAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRLabelAddress;
+import me.mtk.torrey.frontend.ir.addressing.IRNameAddress;
 import me.mtk.torrey.frontend.ir.addressing.IRTempAddress;
 import me.mtk.torrey.frontend.lexer.TokenType;
 
@@ -66,6 +69,7 @@ public abstract class Quadruple
           case STAR: return OpType.MULT;
           case SLASH: return OpType.DIV;
           case EQUAL: return OpType.EQUAL;
+          case NOT: return OpType.NEQUAL;
           case LT: return OpType.LT;
           case LTE: return OpType.LTE;
           case GT: return OpType.GT;
@@ -132,6 +136,7 @@ public abstract class Quadruple
       }
     }
 
+    @Override
     public String toString()
     {
       return terminalSymbol;
@@ -139,17 +144,17 @@ public abstract class Quadruple
   }
 
   // The operator type of the instruction.
-  protected OpType opType;
+  OpType opType;
 
   // The first argument of the instruction.
-  protected IRAddress arg1;
+  IRAddress arg1;
 
   // The second argument of the instruction.
-  protected IRAddress arg2;
+  IRAddress arg2;
 
   // The address at which the result of the instruction
   // is to be stored.
-  protected IRAddress result;
+  IRAddress result;
 
   /**
    * Instantiates a new quadruple to hold the properties
@@ -161,7 +166,7 @@ public abstract class Quadruple
    * @param result A temporary address to store the result of the
    * instruction.
    */
-  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRTempAddress result)
+  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRAddress result)
   {
     this.opType = opType;
     this.arg1 = arg1;
@@ -169,20 +174,24 @@ public abstract class Quadruple
     this.result = result;
   }
 
-  public Quadruple(OpType opType, IRAddress arg1, IRAddress arg2, IRLabelAddress result)
+  public Quadruple(Quadruple quadruple)
   {
-    this.opType = opType;
-    this.arg1 = arg1;
-    this.arg2 = arg2;
-    this.result = result;
-  }
+    Objects.requireNonNull(quadruple);
 
-  public Quadruple(OpType opType, IRAddress arg)
-  {
-    this.opType = opType;
-    this.arg1 = arg;
+    this.opType = quadruple.opType;
+    this.arg1 = quadruple.arg1.makeCopy();
+
     this.arg2 = null;
+    if (quadruple.arg2 != null)
+    {
+      this.arg2 = quadruple.arg2.makeCopy();
+    }
+
     this.result = null;
+    if (quadruple.result != null)
+    {
+      this.result = quadruple.result.makeCopy();
+    }
   }
 
   public OpType opType()
@@ -203,5 +212,107 @@ public abstract class Quadruple
   public IRAddress result()
   {
     return result;
+  }
+
+  public void setResult(IRAddress newResult)
+  {
+    result = newResult;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (o == this)
+    {
+      return true;
+    }
+
+    if (!(o instanceof Quadruple))
+    {
+      return false;
+    }
+
+    Quadruple that = (Quadruple)o;
+
+    boolean isEqual = this.opType == that.opType;
+
+    if (this.arg1 != null)
+    {
+      isEqual = isEqual && this.arg1.equals(that.arg1);
+    }
+    else
+    {
+      isEqual = isEqual && that.arg1 == null;
+    }
+
+    if (this.arg2 != null)
+    {
+      isEqual = isEqual && this.arg2.equals(that.arg2);
+    }
+    else
+    {
+      isEqual = isEqual && that.arg2 == null;
+    }
+
+    if (this.result != null)
+    {
+      isEqual = isEqual && this.result.equals(that.result);
+    }
+    else
+    {
+      isEqual = isEqual && that.result == null;
+    }
+
+    return isEqual;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hashCode = this.opType.hashCode();
+    hashCode = 31 * hashCode + this.arg1.hashCode();
+    hashCode = 31 * hashCode + (this.arg2 != null ? this.arg2.hashCode() : 0);
+    hashCode = 31 * hashCode + (this.result != null ? this.result.hashCode() : 0);
+    return hashCode;
+  }
+
+  static IRAddress requireName(IRAddress address)
+  {
+    if (!(address instanceof IRNameAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
+  }
+
+  static IRAddress requireConstant(IRAddress address)
+  {
+    if (!(address instanceof IRConstAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
+  }
+
+  static IRAddress requireTemp(IRAddress address)
+  {
+    if (!(address instanceof IRTempAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
+  }
+
+  static IRAddress requireLabel(IRAddress address)
+  {
+    if (!(address instanceof IRLabelAddress))
+    {
+      throw new IllegalArgumentException();
+    }
+
+    return address;
   }
 }

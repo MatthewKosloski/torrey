@@ -5,6 +5,7 @@ import me.mtk.torrey.frontend.analysis.*;
 import me.mtk.torrey.frontend.ast.PrettyPrinterVisitor;
 import me.mtk.torrey.frontend.ast.Program;
 import me.mtk.torrey.frontend.error_reporter.*;
+import me.mtk.torrey.frontend.ir.gen.DefaultIRGenerator;
 import me.mtk.torrey.frontend.ir.gen.IRGenerator;
 import me.mtk.torrey.frontend.ir.gen.IRProgram;
 import me.mtk.torrey.frontend.lexer.Lexer;
@@ -92,7 +93,8 @@ public final class CompilerFrontend extends Compiler
       new ErrorReporter(input), tokens.tokens());
     final Program ast = grammar.parse();
 
-    final String prettyAST = ppVisitor.visit(ast);
+    ppVisitor.visit(ast);
+    final String prettyAST = ppVisitor.getPrint();
 
     debug("AST (output from Grammar): \n%s", prettyAST);
 
@@ -125,17 +127,10 @@ public final class CompilerFrontend extends Compiler
     final Binder binder = new Binder(new ErrorReporter(input));
     binder.visit(ast);
 
-    if (config.debug())
-      debug("AST (output from Binder): \n%s",
-        ppVisitor.visit(ast));
-
-    // Reduces complex expressions (both arithmetic and logical).
-    final ConstantFolder constantFolder = new ConstantFolder();
-    constantFolder.visit(ast);
-
-    if (config.debug())
-      debug("Optimized AST (output from ConstantFolderVisitor): \n%s",
-      ppVisitor.visit(ast));
+    ppVisitor.visit(ast);
+    String prettyAST = ppVisitor.getPrint();
+    debug("AST (output from Binder): \n%s",
+    prettyAST);
 
     // Type-checks operands to expressions and decorates
     // the AST with type information.
@@ -143,12 +138,10 @@ public final class CompilerFrontend extends Compiler
       (new ErrorReporter(input));
     typeChecker.visit(ast);
 
+    ppVisitor.visit(ast);
+    prettyAST = ppVisitor.getPrint();
     debug("Optimized AST (output from TypeChecker): \n%s",
-      ppVisitor.visit(ast));
-
-    if (config.debug())
-      debug("Optimized AST (output from TypeChecker): \n%s",
-        ppVisitor.visit(ast));
+      prettyAST);
 
     return ast;
   }
@@ -162,8 +155,8 @@ public final class CompilerFrontend extends Compiler
     */
   private IRProgram irGen(Program semanticAST)
   {
-    final IRGenerator irVisitor = new IRGenerator(semanticAST);
-    final IRProgram irProgram = irVisitor.gen();
+    final IRGenerator irGenerator = new DefaultIRGenerator(semanticAST);
+    final IRProgram irProgram = irGenerator.gen();
 
     debug("IR program (output from IRGenerator): \n%s",
       irProgram.toString());
