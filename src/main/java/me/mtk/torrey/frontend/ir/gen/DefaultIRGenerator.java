@@ -174,8 +174,8 @@ public final class DefaultIRGenerator implements IRGenerator
     public void visit(CompareExpr expr)
     {
       final TokenType tokType = expr.token().type();
-      final IRLabelAddress label = newIRLabel();
-      final IRTempAddress comparisonResult = newIRTempAddress();
+      final IRAddress label = newIRLabel();
+      final IRAddress comparisonResult = newIRTempAddress();
 
       // Recursively generate IR instructions for the operands
       (expr.first()).accept(this);
