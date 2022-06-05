@@ -246,7 +246,7 @@ public final class DefaultIRGenerator implements IRGenerator
       // to the identifiers and populate the symbol table.
       ((LetBindings) expr.first()).accept(this);
 
-      IRAddress returnAddress = null;
+      IRAddress returnAddress = IRNullAddress.getInstance();
 
       // Recursively generate IR instructions for the body expressions
       for (int i = 1; i < expr.children().size(); i++)
@@ -264,12 +264,6 @@ public final class DefaultIRGenerator implements IRGenerator
 
       // Restore the previous environment.
       top = prevEnv;
-
-      if (returnAddress == null)
-      {
-        returnAddress = IRNullAddress.getInstance();
-      }
-
       nextAddress = returnAddress;
     }
 
