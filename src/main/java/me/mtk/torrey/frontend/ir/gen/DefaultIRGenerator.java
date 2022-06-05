@@ -79,10 +79,9 @@ public final class DefaultIRGenerator implements IRGenerator
 
     public void visit(IntegerExpr expr)
     {
-      if (expr.parent() instanceof CompareExpr
-        || expr.parent() instanceof LetBinding
-        || expr.parent() instanceof UnaryExpr
-        || expr.parent() instanceof ArithmeticExpr)
+      if (expr.parent() instanceof UnaryExpr
+        || expr.parent() instanceof BinaryExpr
+        || expr.parent() instanceof LetBinding)
       {
         final IRAddress address = new IRConstAddress(expr.toConstant());
         nextAddress = address;
